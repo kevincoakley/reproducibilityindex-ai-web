@@ -9,22 +9,47 @@
       id="paper-search"
       class="search-input"
       type="search"
-      placeholder="Filter by title or authors"
+      placeholder="Filter by title"
       autocomplete="off"
     />
+
+    <p class="table-key">
+      Key: PC - Pseudocode, OSC - Open Source Code, OSD - Open Datasets, DS - Dataset Splits, HS - Hardware Specification, SD - Software Dependencies, ES - Experiment Setup
+    </p>
 
     <table id="papers-table">
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Authors</th>
+          <th><button type="button" class="sort-button" data-sort-key="title">Title</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="pc">PC</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="osc">OSC</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="ods">ODS</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="ds">DS</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="hs">HS</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="sd">SD</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="es">ES</button></th>
         </tr>
       </thead>
       <tbody>
         {% for row in results %}
-          <tr data-title="{{ row.title|lower }}" data-authors="{{ row.authors|lower }}">
+          <tr
+            data-title="{{ row.title|lower }}"
+            data-pc="{{ row.pseudocode_result_binary }}"
+            data-osc="{{ row.open_source_code_result_binary }}"
+            data-ods="{{ row.open_datasets_result_binary }}"
+            data-ds="{{ row.dataset_splits_result_binary }}"
+            data-hs="{{ row.hardware_specification_result_binary }}"
+            data-sd="{{ row.software_dependencies_result_binary }}"
+            data-es="{{ row.experiment_setup_result_binary }}"
+          >
             <td><a href="{{ url_for('pages.paper_detail_plural', key=row.key) }}">{{ row.title }}</a></td>
-            <td>{{ row.authors }}</td>
+            <td class="result-col">{{ row.pseudocode_result_icon }}</td>
+            <td class="result-col">{{ row.open_source_code_result_icon }}</td>
+            <td class="result-col">{{ row.open_datasets_result_icon }}</td>
+            <td class="result-col">{{ row.dataset_splits_result_icon }}</td>
+            <td class="result-col">{{ row.hardware_specification_result_icon }}</td>
+            <td class="result-col">{{ row.software_dependencies_result_icon }}</td>
+            <td class="result-col">{{ row.experiment_setup_result_icon }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -34,13 +59,68 @@
   <script>
     const searchInput = document.getElementById("paper-search");
     const tableRows = Array.from(document.querySelectorAll("#papers-table tbody tr"));
+    const tableBody = document.querySelector("#papers-table tbody");
+    const sortButtons = Array.from(document.querySelectorAll(".sort-button"));
+    const sortTypes = {
+      title: "text",
+      pc: "number",
+      osc: "number",
+      ods: "number",
+      ds: "number",
+      hs: "number",
+      sd: "number",
+      es: "number",
+    };
+    let sortKey = "title";
+    let sortDirection = "asc";
+
+    const sortRows = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const rows = [...tableRows];
+      rows.sort((left, right) => {
+        const leftValue = left.dataset[sortKey] ?? "";
+        const rightValue = right.dataset[sortKey] ?? "";
+        if (sortTypes[sortKey] === "number") {
+          return sortDirection === "asc"
+            ? Number(leftValue) - Number(rightValue)
+            : Number(rightValue) - Number(leftValue);
+        }
+        return sortDirection === "asc"
+          ? leftValue.localeCompare(rightValue)
+          : rightValue.localeCompare(leftValue);
+      });
+
+      rows.forEach((row) => {
+        const matchesSearch = row.dataset.title.includes(query);
+        row.style.display = matchesSearch ? "" : "none";
+        tableBody.appendChild(row);
+      });
+    };
 
     searchInput.addEventListener("input", (event) => {
-      const query = event.target.value.trim().toLowerCase();
-      tableRows.forEach((row) => {
-        const haystack = `${row.dataset.title} ${row.dataset.authors}`;
-        row.style.display = haystack.includes(query) ? "" : "none";
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) {
+        return;
+      }
+      sortRows();
+    });
+
+    sortButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextKey = button.dataset.sortKey;
+        if (!nextKey) {
+          return;
+        }
+        if (sortKey === nextKey) {
+          sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        } else {
+          sortKey = nextKey;
+          sortDirection = "asc";
+        }
+        sortRows();
       });
     });
+
+    sortRows();
   </script>
 {% endblock %}

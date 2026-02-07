@@ -7,6 +7,17 @@ from app.datastore.base import DataStore
 bp = Blueprint("pages", __name__)
 
 
+RESULT_COLUMN_FIELDS = [
+    "pseudocode_result",
+    "open_source_code_result",
+    "open_datasets_result",
+    "dataset_splits_result",
+    "hardware_specification_result",
+    "software_dependencies_result",
+    "experiment_setup_result",
+]
+
+
 DETAIL_ROWS = [
     ("Research Type", "research_type_result", "research_type_paper_text"),
     ("Researcher Affiliation", "affiliation_result", "affiliation_paper_text"),
@@ -61,6 +72,29 @@ def _to_verdict(value: object, field_name: str | None = None) -> str:
     return str(value)
 
 
+def _to_binary(value: object) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return 1 if value else 0
+    if isinstance(value, (int, float)) and value in (0, 1):
+        return int(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes"}:
+            return 1
+        if normalized in {"0", "false", "no"}:
+            return 0
+    return None
+
+
+def _to_binary_icon(value: object) -> str:
+    binary = _to_binary(value)
+    if binary is None:
+        return "N/A"
+    return "✅" if binary == 1 else "❌"
+
+
 @bp.route("/")
 def index() -> str:
     return render_template("home.html")
@@ -86,7 +120,18 @@ def conference_results(conference: str, year: str) -> str:
     if conference_row is None:
         abort(404)
 
-    results = _store().list_results(conference, year)
+    raw_results = _store().list_results(conference, year)
+    results: list[dict[str, object]] = []
+    for row in raw_results:
+        normalized = dict(row)
+        for field in RESULT_COLUMN_FIELDS:
+            binary_value = _to_binary(row.get(field))
+            normalized[f"{field}_binary"] = (
+                binary_value if binary_value is not None else -1
+            )
+            normalized[f"{field}_icon"] = _to_binary_icon(row.get(field))
+        results.append(normalized)
+
     return render_template(
         "conference_results.html",
         conference=conference_row,

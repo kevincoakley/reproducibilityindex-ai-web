@@ -3,6 +3,16 @@
 {% block content %}
   <section class="card">
     <h2>{{ conference.conference_name }} ({{ conference.conference }}) - {{ year }}</h2>
+    <p>
+      Conference Proceedings:
+      {% if proceedings_url %}
+        <a class="icon-link" href="{{ proceedings_url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
+          <span aria-hidden="true">&#128196;</span>
+        </a>
+      {% else %}
+        N/A
+      {% endif %}
+    </p>
 
     <label for="paper-search" class="search-label">Search Papers</label>
     <input
@@ -28,6 +38,7 @@
           <th><button type="button" class="sort-button" data-sort-key="hs">HS</button></th>
           <th><button type="button" class="sort-button" data-sort-key="sd">SD</button></th>
           <th><button type="button" class="sort-button" data-sort-key="es">ES</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="total">Total</button></th>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +52,7 @@
             data-hs="{{ row.hardware_specification_result_binary }}"
             data-sd="{{ row.software_dependencies_result_binary }}"
             data-es="{{ row.experiment_setup_result_binary }}"
+            data-total="{{ row.total }}"
           >
             <td><a href="{{ url_for('pages.paper_detail_plural', key=row.key) }}">{{ row.title }}</a></td>
             <td class="result-col">{{ row.pseudocode_result_icon }}</td>
@@ -50,6 +62,7 @@
             <td class="result-col">{{ row.hardware_specification_result_icon }}</td>
             <td class="result-col">{{ row.software_dependencies_result_icon }}</td>
             <td class="result-col">{{ row.experiment_setup_result_icon }}</td>
+            <td class="result-col">{{ row.total }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -70,6 +83,7 @@
       hs: "number",
       sd: "number",
       es: "number",
+      total: "number",
     };
     let sortKey = "title";
     let sortDirection = "asc";

@@ -120,22 +120,37 @@ def conference_results(conference: str, year: str) -> str:
     if conference_row is None:
         abort(404)
 
+    proceedings = _store().list_proceedings(conference)
+    proceeding_row = next(
+        (row for row in proceedings if str(row.get("year")) == year), None
+    )
+    proceedings_url = (
+        str(proceeding_row.get("url"))
+        if proceeding_row is not None and proceeding_row.get("url")
+        else ""
+    )
+
     raw_results = _store().list_results(conference, year)
     results: list[dict[str, object]] = []
     for row in raw_results:
         normalized = dict(row)
+        total = 0
         for field in RESULT_COLUMN_FIELDS:
             binary_value = _to_binary(row.get(field))
+            if binary_value is not None:
+                total += binary_value
             normalized[f"{field}_binary"] = (
                 binary_value if binary_value is not None else -1
             )
             normalized[f"{field}_icon"] = _to_binary_icon(row.get(field))
+        normalized["total"] = total
         results.append(normalized)
 
     return render_template(
         "conference_results.html",
         conference=conference_row,
         year=year,
+        proceedings_url=proceedings_url,
         results=results,
     )
 

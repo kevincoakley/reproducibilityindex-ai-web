@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -13,13 +14,14 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     app = Flask(__name__)
 
     default_db_path = Path(__file__).resolve().parents[1] / "results.sqlite"
+    default_object_storage_url = (
+        "https://object.cloud.sdsc.edu/v1/" "AUTH_da4962d3368042ac8337e2dfdd3e7bf3/"
+    )
     app.config.from_mapping(
-        SITE_TITLE="reproducibilityindex.ai",
-        DB_BACKEND="sqlite",
-        SQLITE_DB_PATH=str(default_db_path),
-        OBJECT_STORAGE_URL=(
-            "https://object.cloud.sdsc.edu/v1/" "AUTH_da4962d3368042ac8337e2dfdd3e7bf3/"
-        ),
+        SITE_TITLE=os.getenv("SITE_TITLE", "reproducibilityindex.ai"),
+        DB_BACKEND=os.getenv("DB_BACKEND", "sqlite"),
+        SQLITE_DB_PATH=os.getenv("SQLITE_DB_PATH", str(default_db_path)),
+        OBJECT_STORAGE_URL=os.getenv("OBJECT_STORAGE_URL", default_object_storage_url),
     )
 
     if test_config:

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>{{ paper.title }}</h2>
+    <p><strong>Authors:</strong> {{ paper.authors }}</p>
+    <p>
+      <a class="icon-link" href="{{ paper.pdf_url }}" target="_blank" rel="noopener noreferrer" title="Paper PDF">
+        <span aria-hidden="true">&#128196;</span>
+      </a>
+      <a href="{{ url_for('pages.conference_results', conference=paper.conference, year=paper.year) }}">
+        {{ paper.conference }} {{ paper.year }}
+      </a>
+      |
+      <a href="{{ url_for('pages.run_detail', run=paper.run) }}">Run {{ paper.run }}</a>
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Result</th>
+          <th>Paper Text</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in detail_rows %}
+          <tr>
+            <td><strong>{{ row.label }}</strong></td>
+            <td>{{ row.verdict }}</td>
+            <td>{{ row.evidence }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

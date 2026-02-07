@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>{{ conference.conference_name }} ({{ conference.conference }})</h2>
+    <p>
+      Conference URL:
+      <a class="icon-link" href="{{ conference.url }}" target="_blank" rel="noopener noreferrer" title="Conference website">
+        <span aria-hidden="true">&#128279;</span>
+      </a>
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Number of Papers</th>
+          <th>Proceedings URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in proceedings %}
+          <tr>
+            <td>
+              <a href="{{ url_for('pages.conference_results', conference=conference.conference, year=row.year) }}">{{ row.year }}</a>
+            </td>
+            <td>{{ row.number_papers }}</td>
+            <td>
+              <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
+                <span aria-hidden="true">&#128196;</span>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

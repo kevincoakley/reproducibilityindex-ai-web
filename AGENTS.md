@@ -3,7 +3,7 @@
 > Purpose: This file provides context, conventions, and setup instructions for AI agents working on this repository.
 
 ## 1. Project Overview
-- Description: This repository contains the dynamic website for the reproducibilityindex.ai project
+- Description: This repository contains the dynamic website using the Flask framework for the reproducibilityindex.ai project
 - Language: Python
 - Package Manager: `uv` (Do not use pip or poetry directly)
 
@@ -11,14 +11,31 @@
 
 ```
 .
-├── .gitignore                   # Git ignore file
-├── .python-version              # Python version file
-├── AGENTS.md                    # This file
-├── pyproject.toml               # Project configuration
-├── README.md                    # Project description
-├── results.sqlite               # SQLite database file for dynamic website
-├── tests/                       # Directory for test files
-└── uv.lock                      # Lock file for dependencies
+├── .coveragerc                     # Coverage configuration file
+├── .gitignore                      # Git ignore file
+├── .python-version                 # Python version file
+├── AGENTS.md                       # This file
+├── app                             # Flask application package
+│   ├── datastore                   # Data access layer
+│   │   ├── __init__.py             # Package initializer
+│   │   ├── base.py                 # Base datastore interface
+│   │   └── sqlite_store.py         # SQLite implementation of the datastore
+│   ├── routes.py                   # Flask route definitions
+│   ├── static                      # Static files (CSS, JS, images)
+│   │   └── styles.css              # Main stylesheet
+│   └── templates                   # HTML templates
+│       ├── base.html               # Base template with common layout
+│       ├── conference_results.html # Template for /conferences/<conference>
+│       ├── conference_years.html   # Template for /conferences/<conference>/<year>
+│       ├── home.html               # Template for homepage
+│       ├── paper_detail.html       # Template for /paper/<key>
+│       └── run_detail.html         # Template for /runs/<run>
+├── pyproject.toml                  # Project configuration
+├── README.md                       # Project description
+├── results.sqlite                  # SQLite database file for dynamic website
+├── run.py                          # Entry point for running the dynamic website
+├── tests/                          # Directory for test files
+└── uv.lock                         # Lock file for dependencies
 ```
 
 ## 3. Development Workflow & Commands
@@ -77,11 +94,24 @@ Always use `uv` for package management and script execution.
   - Bootstrap-inspired Aesthetic: The buttons, spacing, and overall responsiveness are reminiscent of modern web frameworks like Bootstrap or Tailwind, which are commonly used for scientific and open-source project pages.
 - The title of the website should be: reproducibilityindex.ai . However, this should be a varaible and not hard coded.
 
-## 6. Critical Rules for Agents
+### 6. Database
+- The database will only read data from the database never write to the database
+- The database is at results.sqlite, please read the database if you have any questions about the format:
+  - conferences -> a list of the conferences to be displayed.
+  - proceedings -> a list of the proceedings for each of the conferences.
+  - results -> the results of our analsys of the papers. 
+  - runs -> details about how the results were found.
+- Database table links:
+  - conferences.conference = proceedings.conference = results.conference
+  - proceedings.year = results.year
+  - results.run = runs.run
+
+## 7. Critical Rules for Agents
 - Do not update `uv.lock` manually. Use `uv add` or `uv sync`.
 - Check `pyproject.toml` to see existing dependencies before adding new ones.
 - Run tests after every significant code change to ensure no regressions.
 - Ensure code is formatted with Black
 - Preserve existing code style and patterns
-- Ask for clarification if requirements are unclear
 - Aways update the README.md file with instructions for running the code. Be concise, don't include unnecessary information. Focus on how to run the code for testing (unit tests and dev server) and in production.
+- Keep the website very simple, it will consist of a few static pages and a few dynamic paths using data from a read-only database.
+- Ask for clarification if requirements are unclear

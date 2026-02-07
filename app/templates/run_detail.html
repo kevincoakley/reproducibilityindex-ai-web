@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>Run {{ run_row.run }}</h2>
+    <dl class="run-meta">
+      <div>
+        <dt>Model</dt>
+        <dd>{{ run_row.model }}</dd>
+      </div>
+      <div>
+        <dt>Temperature</dt>
+        <dd>{{ run_row.temperature }}</dd>
+      </div>
+      <div>
+        <dt>Top P</dt>
+        <dd>{{ run_row.top_p }}</dd>
+      </div>
+    </dl>
+
+    <h3>Prompt</h3>
+    <pre><code>{{ run_row.prompt }}</code></pre>
+
+    <h3>Questions</h3>
+    <pre><code>{{ run_row.questions }}</code></pre>
+  </section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>{{ conference.conference_name }} ({{ conference.conference }}) - {{ year }}</h2>
+
+    <label for="paper-search" class="search-label">Search Papers</label>
+    <input
+      id="paper-search"
+      class="search-input"
+      type="search"
+      placeholder="Filter by title or authors"
+      autocomplete="off"
+    />
+
+    <table id="papers-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Authors</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in results %}
+          <tr data-title="{{ row.title|lower }}" data-authors="{{ row.authors|lower }}">
+            <td><a href="{{ url_for('pages.paper_detail_plural', key=row.key) }}">{{ row.title }}</a></td>
+            <td>{{ row.authors }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    const searchInput = document.getElementById("paper-search");
+    const tableRows = Array.from(document.querySelectorAll("#papers-table tbody tr"));
+
+    searchInput.addEventListener("input", (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      tableRows.forEach((row) => {
+        const haystack = `${row.dataset.title} ${row.dataset.authors}`;
+        row.style.display = haystack.includes(query) ? "" : "none";
+      });
+    });
+  </script>
+{% endblock %}

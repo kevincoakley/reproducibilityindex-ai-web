@@ -5,22 +5,41 @@
     <h2>{{ paper.title }}</h2>
     <p><strong>Authors:</strong> {{ paper.authors }}</p>
     <p>
-      <a class="icon-link" href="{{ paper.pdf_url }}" target="_blank" rel="noopener noreferrer" title="Paper PDF">
-        <span aria-hidden="true">&#128196;</span>
-      </a>
       <a href="{{ url_for('pages.conference_results', conference=paper.conference, year=paper.year) }}">
         {{ paper.conference }} {{ paper.year }}
       </a>
       |
-      <a href="{{ url_for('pages.run_detail', run=paper.run) }}">Run {{ paper.run }}</a>
+      <a href="{{ paper.pdf_url }}" target="_blank" rel="noopener noreferrer" title="Conference PDF">
+        Conference PDF <span aria-hidden="true">&#128196;</span>
+      </a>
+      |
+      <a
+        href="{{ object_storage_url }}ml-papers/{{ paper.conference }}/{{ paper.year }}/{{ paper.key }}.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Archive PDF"
+      >
+        Archive PDF <span aria-hidden="true">&#128196;</span>
+      </a>
+      |
+      <a
+        href="{{ object_storage_url }}ml-papers-txt/{{ paper.conference }}/{{ paper.year }}/{{ paper.key }}.txt"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Plain Text"
+      >
+        Plain Text <span aria-hidden="true">&#128196;</span>
+      </a>
+      |
+      <a href="{{ url_for('pages.run_detail', run=paper.run) }}">LLM Run Details</a>
     </p>
 
     <table>
       <thead>
         <tr>
-          <th>Category</th>
+          <th>Reproducibility Variable</th>
           <th>Result</th>
-          <th>Paper Text</th>
+          <th>LLM Response</th>
         </tr>
       </thead>
       <tbody>

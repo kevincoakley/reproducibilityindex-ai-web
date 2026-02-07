@@ -32,7 +32,20 @@ def _store() -> DataStore:
     return current_app.extensions["data_store"]
 
 
-def _to_verdict(value: object) -> str:
+def _to_verdict(value: object, field_name: str | None = None) -> str:
+    if field_name == "research_type_result":
+        if value in (1, "1", True):
+            return "Theoretical"
+        if value in (0, "0", False):
+            return "Experimental"
+    if field_name == "affiliation_result":
+        if value in (0, "0"):
+            return "Academia"
+        if value in (1, "1"):
+            return "Collaboration"
+        if value in (2, "2"):
+            return "Industry"
+
     if value is None:
         return "N/A"
     if isinstance(value, bool):
@@ -92,7 +105,7 @@ def _render_paper_detail(key: str) -> str:
         detail_rows.append(
             {
                 "label": label,
-                "verdict": _to_verdict(paper.get(verdict_field)),
+                "verdict": _to_verdict(paper.get(verdict_field), verdict_field),
                 "evidence": str(paper.get(text_field) or ""),
             }
         )

@@ -12,10 +12,12 @@
 ```
 .
 ├── .coveragerc                     # Coverage configuration file
+├── .dockerignore                   # Docker ignore file
 ├── .gitignore                      # Git ignore file
 ├── .python-version                 # Python version file
 ├── AGENTS.md                       # This file
-├── app                             # Flask application package
+├── app                             # Flask application package 
+│   ├── __init__.py                 # Package initializer
 │   ├── datastore                   # Data access layer
 │   │   ├── __init__.py             # Package initializer
 │   │   ├── base.py                 # Base datastore interface
@@ -30,6 +32,7 @@
 │       ├── home.html               # Template for homepage
 │       ├── paper_detail.html       # Template for /paper/<key>
 │       └── run_detail.html         # Template for /runs/<run>
+├── Dockerfile                      # Docker configuration file
 ├── pyproject.toml                  # Project configuration
 ├── README.md                       # Project description
 ├── results.sqlite                  # SQLite database file for dynamic website
@@ -106,7 +109,14 @@ Always use `uv` for package management and script execution.
   - proceedings.year = results.year
   - results.run = runs.run
 
-## 7. Critical Rules for Agents
+### 7. Deployment
+- The website will be deployed using Docker in production.
+- The Dockerfile should be simple and efficient, using a lightweight Python base image.
+- Don't include unnecessary files in the Docker image (use .dockerignore effectively).
+- Update the Dockerfile when changes are made that might affect the production environment (e.g. new dependencies, changes to how the app is run).
+- Update the README.md with instructions for running the code in production using Docker.
+
+## 8. Critical Rules for Agents
 - Do not update `uv.lock` manually. Use `uv add` or `uv sync`.
 - Check `pyproject.toml` to see existing dependencies before adding new ones.
 - Run tests after every significant code change to ensure no regressions.

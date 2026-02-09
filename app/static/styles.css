@@ -78,6 +78,27 @@ table {
   margin-top: 0.75rem;
 }
 
+.table-scroll-10 {
+  margin-top: 0.75rem;
+  max-height: calc(2.5rem * 11);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+}
+
+.table-scroll-10 table {
+  margin-top: 0;
+}
+
+.table-scroll-10 thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+#home-proceedings-table tbody tr {
+  height: 2.5rem;
+}
+
 th,
 td {
   border: 1px solid var(--line);

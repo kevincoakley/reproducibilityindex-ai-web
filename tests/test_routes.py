@@ -51,6 +51,22 @@ def client(app):
     return app.test_client()
 
 
+def test_home_page_lists_all_proceedings_table(
+    client, sample_data: dict[str, str]
+) -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="home-proceedings-table"' in body
+    assert 'class="table-scroll-10"' in body
+    assert 'data-sort-key="globalMean"' in body
+    assert f"/conferences/{sample_data['conference']}" in body
+    assert ">Conference<" in body
+    assert ">Year<" in body
+    assert ">Global Mean<" in body
+
+
 def test_conference_page(client, sample_data: dict[str, str]) -> None:
     response = client.get(f"/conferences/{sample_data['conference']}")
 

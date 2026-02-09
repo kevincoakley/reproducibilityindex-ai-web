@@ -111,7 +111,36 @@ def _to_percent_display(value: object) -> str:
 
 @bp.route("/")
 def index() -> str:
-    return render_template("home.html")
+    proceedings: list[dict[str, object]] = []
+    for row in _store().list_all_proceedings():
+        global_mean_raw = row.get("global_mean")
+        global_mean_sort = -1.0
+        if isinstance(global_mean_raw, (int, float)):
+            global_mean_sort = float(global_mean_raw)
+        elif isinstance(global_mean_raw, str):
+            try:
+                global_mean_sort = float(global_mean_raw.strip())
+            except ValueError:
+                global_mean_sort = -1.0
+
+        proceedings.append(
+            {
+                "conference": row.get("conference"),
+                "year": row.get("year"),
+                "number_papers": _to_metric_display(row.get("number_papers")),
+                "global_mean": _to_metric_display(global_mean_raw),
+                "global_mean_sort": global_mean_sort,
+                "global_median": _to_metric_display(row.get("global_median")),
+                "documentation_mean": _to_metric_display(row.get("documentation_mean")),
+                "dataset_mean": _to_metric_display(row.get("dataset_mean")),
+                "code_mean": _to_metric_display(row.get("code_mean")),
+                "percent_emperical": _to_percent_display(row.get("percent_emperical")),
+                "percent_industry": _to_percent_display(row.get("percent_industry")),
+                "url": row.get("url"),
+            }
+        )
+
+    return render_template("home.html", proceedings=proceedings)
 
 
 @bp.route("/conferences/<conference>")

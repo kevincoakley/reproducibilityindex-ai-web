@@ -70,6 +70,26 @@ class SQLiteDataStore(DataStore):
             (conference,),
         )
 
+    def list_all_proceedings(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT
+                p.conference,
+                p.year,
+                pm.number_papers,
+                pm.global_mean,
+                pm.global_median,
+                pm.documentation_mean,
+                pm.dataset_mean,
+                pm.code_mean,
+                pm.percent_emperical,
+                pm.percent_industry,
+                p.url
+            FROM proceedings AS p
+            LEFT JOIN proceedings_metrics AS pm
+              ON p.conference = pm.conference AND p.year = pm.year
+            ORDER BY p.conference ASC, p.year DESC
+            """)
+
     def get_proceedings_metrics(self, conference: str, year: str) -> Record | None:
         return self._fetch_one(
             """

@@ -83,6 +83,10 @@ Always use `uv` for package management and script execution.
 - Use type hints where appropriate
 - Write docstrings for functions and classes
 
+### Commenting
+- Use clear and concise comments to explain non-obvious code
+- Use docstrings for all public modules, functions, classes, and methods
+
 ### Type Hinting
 - Use standard Python type hints for function arguments and return values.
 - Example: `def my_func(name: str) -> int:`
@@ -102,11 +106,12 @@ Always use `uv` for package management and script execution.
 - The database is at results.sqlite, please read the database if you have any questions about the format:
   - conferences -> a list of the conferences to be displayed.
   - proceedings -> a list of the proceedings for each of the conferences.
-  - results -> the results of our analsys of the papers. 
+  - proceedings_metrics -> the metrics for each of the proceedings.
+  - results -> the results of our analysis of the papers. 
   - runs -> details about how the results were found.
 - Database table links:
-  - conferences.conference = proceedings.conference = results.conference
-  - proceedings.year = results.year
+  - conferences.conference = proceedings.conference = proceedings_metrics.conference = results.conference
+  - proceedings.year = proceedings_metrics.year = results.year
   - results.run = runs.run
 
 ### 7. Deployment

@@ -22,6 +22,10 @@ class DataStore(ABC):
         """Return proceedings rows for a conference."""
 
     @abstractmethod
+    def get_proceedings_metrics(self, conference: str, year: str) -> Record | None:
+        """Return metrics for a conference proceeding year."""
+
+    @abstractmethod
     def list_results(self, conference: str, year: str) -> list[Record]:
         """Return paper results for a conference and year."""
 

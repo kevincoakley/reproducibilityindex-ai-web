@@ -95,6 +95,20 @@ def _to_binary_icon(value: object) -> str:
     return "✅" if binary == 1 else "❌"
 
 
+def _to_metric_display(value: object) -> str:
+    if value is None:
+        return "N/A"
+    text = str(value).strip()
+    return text if text else "N/A"
+
+
+def _to_percent_display(value: object) -> str:
+    text = _to_metric_display(value)
+    if text == "N/A" or text.endswith("%"):
+        return text
+    return f"{text}%"
+
+
 @bp.route("/")
 def index() -> str:
     return render_template("home.html")
@@ -129,6 +143,23 @@ def conference_results(conference: str, year: str) -> str:
         if proceeding_row is not None and proceeding_row.get("url")
         else ""
     )
+    proceedings_metrics = _store().get_proceedings_metrics(conference, year) or {}
+    metrics = {
+        "number_papers": _to_metric_display(proceedings_metrics.get("number_papers")),
+        "global_mean": _to_metric_display(proceedings_metrics.get("global_mean")),
+        "global_median": _to_metric_display(proceedings_metrics.get("global_median")),
+        "documentation_mean": _to_metric_display(
+            proceedings_metrics.get("documentation_mean")
+        ),
+        "dataset_mean": _to_metric_display(proceedings_metrics.get("dataset_mean")),
+        "code_mean": _to_metric_display(proceedings_metrics.get("code_mean")),
+        "percent_emperical": _to_percent_display(
+            proceedings_metrics.get("percent_emperical")
+        ),
+        "percent_industry": _to_percent_display(
+            proceedings_metrics.get("percent_industry")
+        ),
+    }
 
     raw_results = _store().list_results(conference, year)
     results: list[dict[str, object]] = []
@@ -151,6 +182,7 @@ def conference_results(conference: str, year: str) -> str:
         conference=conference_row,
         year=year,
         proceedings_url=proceedings_url,
+        metrics=metrics,
         results=results,
     )
 

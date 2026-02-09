@@ -15,6 +15,13 @@
         <tr>
           <th>Year</th>
           <th>Number of Papers</th>
+          <th>Global Mean</th>
+          <th>Global Median</th>
+          <th>Documentation Mean</th>
+          <th>Dataset Mean</th>
+          <th>Code Mean</th>
+          <th>Percent Emperical</th>
+          <th>Percent Industry</th>
           <th>Proceedings URL</th>
         </tr>
       </thead>
@@ -25,6 +32,25 @@
               <a href="{{ url_for('pages.conference_results', conference=conference.conference, year=row.year) }}">{{ row.year }}</a>
             </td>
             <td>{{ row.number_papers }}</td>
+            <td>{{ row.global_mean or "N/A" }}</td>
+            <td>{{ row.global_median or "N/A" }}</td>
+            <td>{{ row.documentation_mean or "N/A" }}</td>
+            <td>{{ row.dataset_mean or "N/A" }}</td>
+            <td>{{ row.code_mean or "N/A" }}</td>
+            <td>
+              {% if row.percent_emperical %}
+                {{ row.percent_emperical }}{% if not (row.percent_emperical|string|trim).endswith("%") %}%{% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td>
+              {% if row.percent_industry %}
+                {{ row.percent_industry }}{% if not (row.percent_industry|string|trim).endswith("%") %}%{% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
             <td>
               <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
                 <span aria-hidden="true">&#128196;</span>

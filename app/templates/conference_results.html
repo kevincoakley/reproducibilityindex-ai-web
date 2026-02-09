@@ -14,6 +14,33 @@
       {% endif %}
     </p>
 
+    <table>
+      <thead>
+        <tr>
+          <th>Number of Papers</th>
+          <th>Global Mean</th>
+          <th>Global Median</th>
+          <th>Documentation Mean</th>
+          <th>Dataset Mean</th>
+          <th>Code Mean</th>
+          <th>Percent Emperical</th>
+          <th>Percent Industry</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ metrics.number_papers }}</td>
+          <td>{{ metrics.global_mean }}</td>
+          <td>{{ metrics.global_median }}</td>
+          <td>{{ metrics.documentation_mean }}</td>
+          <td>{{ metrics.dataset_mean }}</td>
+          <td>{{ metrics.code_mean }}</td>
+          <td>{{ metrics.percent_emperical }}</td>
+          <td>{{ metrics.percent_industry }}</td>
+        </tr>
+      </tbody>
+    </table>
+
     <label for="paper-search" class="search-label">Search Papers</label>
     <input
       id="paper-search"

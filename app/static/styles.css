@@ -67,6 +67,11 @@ body {
   padding: 1rem;
 }
 
+.chart-wrap {
+  margin-top: 0.75rem;
+  height: 360px;
+}
+
 h2,
 h3 {
   margin-top: 0;
@@ -179,6 +184,10 @@ pre {
 }
 
 @media (max-width: 640px) {
+  .chart-wrap {
+    height: 300px;
+  }
+
   th,
   td {
     font-size: 0.88rem;

@@ -58,6 +58,9 @@ def test_home_page_lists_all_proceedings_table(
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
+    assert 'id="home-global-mean-chart"' in body
+    assert "cdn.jsdelivr.net/npm/chart.js" in body
+    assert "const homeChartDatasets =" in body
     assert 'id="home-proceedings-table"' in body
     assert 'class="table-scroll-10"' in body
     assert 'data-sort-key="globalMean"' in body

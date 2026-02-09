@@ -109,19 +109,36 @@ def _to_percent_display(value: object) -> str:
     return f"{text}%"
 
 
+def _to_float(value: object) -> float | None:
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value.strip())
+        except ValueError:
+            return None
+    return None
+
+
+def _to_int(value: object) -> int | None:
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value.strip())
+        except ValueError:
+            return None
+    return None
+
+
 @bp.route("/")
 def index() -> str:
     proceedings: list[dict[str, object]] = []
+    chart_points_by_conference: dict[str, list[dict[str, float]]] = {}
     for row in _store().list_all_proceedings():
         global_mean_raw = row.get("global_mean")
-        global_mean_sort = -1.0
-        if isinstance(global_mean_raw, (int, float)):
-            global_mean_sort = float(global_mean_raw)
-        elif isinstance(global_mean_raw, str):
-            try:
-                global_mean_sort = float(global_mean_raw.strip())
-            except ValueError:
-                global_mean_sort = -1.0
+        global_mean_value = _to_float(global_mean_raw)
+        global_mean_sort = global_mean_value if global_mean_value is not None else -1.0
 
         proceedings.append(
             {
@@ -140,7 +157,23 @@ def index() -> str:
             }
         )
 
-    return render_template("home.html", proceedings=proceedings)
+        conference = str(row.get("conference") or "").strip()
+        year_value = _to_int(row.get("year"))
+        if conference and year_value is not None and global_mean_value is not None:
+            chart_points_by_conference.setdefault(conference, []).append(
+                {"x": year_value, "y": global_mean_value}
+            )
+
+    home_chart_datasets = [
+        {"label": conference, "data": sorted(points, key=lambda point: point["x"])}
+        for conference, points in sorted(chart_points_by_conference.items())
+    ]
+
+    return render_template(
+        "home.html",
+        proceedings=proceedings,
+        home_chart_datasets=home_chart_datasets,
+    )
 
 
 @bp.route("/conferences/<conference>")

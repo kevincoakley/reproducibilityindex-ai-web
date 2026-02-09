@@ -51,6 +51,12 @@ With coverage:
 uv run pytest --cov=.
 ```
 
+## Format
+
+```bash
+uv run black .
+```
+
 ## Configuration
 
 - `SITE_TITLE` (default: `reproducibilityindex.ai`)

@@ -2,6 +2,14 @@
 
 {% block content %}
   <section class="card">
+    <h2>Global Mean Trend</h2>
+    <p>Proceedings metrics global mean by conference over time.</p>
+    <div class="chart-wrap">
+      <canvas id="home-global-mean-chart" aria-label="Global mean trend by conference and year"></canvas>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>All Proceedings</h2>
     <p>Browse reproducibility metrics across all conference proceedings.</p>
 
@@ -66,7 +74,57 @@
     </div>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
+    const homeChartDatasets = {{ home_chart_datasets|tojson }};
+    const homeChartCanvas = document.getElementById("home-global-mean-chart");
+
+    if (homeChartCanvas && window.Chart && homeChartDatasets.length > 0) {
+      new Chart(homeChartCanvas, {
+        type: "line",
+        data: {
+          datasets: homeChartDatasets.map((dataset) => ({
+            ...dataset,
+            parsing: false,
+            tension: 0.2,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 4,
+            spanGaps: true,
+          })),
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "linear",
+              title: {
+                display: true,
+                text: "Year",
+              },
+              ticks: {
+                precision: 0,
+                callback: (value) => String(Math.trunc(Number(value))),
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Global Mean",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+        },
+      });
+    }
+
     const homeTableBody = document.querySelector("#home-proceedings-table tbody");
     const homeTableRows = Array.from(document.querySelectorAll("#home-proceedings-table tbody tr"));
     const homeSortButtons = Array.from(document.querySelectorAll("#home-proceedings-table .sort-button"));

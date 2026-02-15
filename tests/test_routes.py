@@ -68,6 +68,8 @@ def test_home_page_lists_all_proceedings_table(
     assert ">Conference<" in body
     assert ">Year<" in body
     assert ">Global Mean<" in body
+    expected_conference_count = len(SQLiteDataStore(DB_PATH).list_conferences())
+    assert body.count('data-conference="') == expected_conference_count
 
 
 def test_conference_page(client, sample_data: dict[str, str]) -> None:

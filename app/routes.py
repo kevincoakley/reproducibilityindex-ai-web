@@ -133,14 +133,14 @@ def _to_int(value: object) -> int | None:
 
 @bp.route("/")
 def index() -> str:
-    proceedings: list[dict[str, object]] = []
+    all_proceedings_rows: list[dict[str, object]] = []
     chart_points_by_conference: dict[str, list[dict[str, float]]] = {}
     for row in _store().list_all_proceedings():
         global_mean_raw = row.get("global_mean")
         global_mean_value = _to_float(global_mean_raw)
         global_mean_sort = global_mean_value if global_mean_value is not None else -1.0
 
-        proceedings.append(
+        all_proceedings_rows.append(
             {
                 "conference": row.get("conference"),
                 "year": row.get("year"),
@@ -163,6 +163,15 @@ def index() -> str:
             chart_points_by_conference.setdefault(conference, []).append(
                 {"x": year_value, "y": global_mean_value}
             )
+
+    proceedings: list[dict[str, object]] = []
+    seen_conferences: set[str] = set()
+    for row in all_proceedings_rows:
+        conference = str(row.get("conference") or "")
+        if not conference or conference in seen_conferences:
+            continue
+        seen_conferences.add(conference)
+        proceedings.append(row)
 
     home_chart_datasets = [
         {"label": conference, "data": sorted(points, key=lambda point: point["x"])}

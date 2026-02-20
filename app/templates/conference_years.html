@@ -10,6 +10,11 @@
       </a>
     </p>
 
+    <h3>Global Mean Trend</h3>
+    <div class="chart-wrap">
+      <canvas id="conference-global-mean-chart" aria-label="Global mean trend by year"></canvas>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -61,4 +66,63 @@
       </tbody>
     </table>
   </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script>
+    const conferenceChartDataset = {{ conference_chart_dataset|tojson }};
+    const conferenceChartCanvas = document.getElementById("conference-global-mean-chart");
+
+    if (
+      conferenceChartCanvas &&
+      window.Chart &&
+      conferenceChartDataset &&
+      conferenceChartDataset.data.length > 0
+    ) {
+      new Chart(conferenceChartCanvas, {
+        type: "line",
+        data: {
+          datasets: [{
+            ...conferenceChartDataset,
+            parsing: false,
+            tension: 0.2,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 4,
+            spanGaps: true,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "linear",
+              title: {
+                display: true,
+                text: "Year",
+              },
+              ticks: {
+                precision: 0,
+                callback: (value) => String(Math.trunc(Number(value))),
+              },
+            },
+            y: {
+              min: 0,
+              max: 7,
+              title: {
+                display: true,
+                text: "Global Mean",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+        },
+      });
+    }
+  </script>
 {% endblock %}

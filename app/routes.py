@@ -192,10 +192,22 @@ def conference_years(conference: str) -> str:
         abort(404)
 
     proceedings = _store().list_proceedings(conference)
+    conference_chart_data: list[dict[str, float]] = []
+    for row in proceedings:
+        year_value = _to_int(row.get("year"))
+        global_mean_value = _to_float(row.get("global_mean"))
+        if year_value is None or global_mean_value is None:
+            continue
+        conference_chart_data.append({"x": year_value, "y": global_mean_value})
+    conference_chart_dataset = {
+        "label": str(conference_row.get("conference") or conference),
+        "data": sorted(conference_chart_data, key=lambda point: point["x"]),
+    }
     return render_template(
         "conference_years.html",
         conference=conference_row,
         proceedings=proceedings,
+        conference_chart_dataset=conference_chart_dataset,
     )
 
 

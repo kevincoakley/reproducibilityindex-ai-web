@@ -20,13 +20,69 @@
             <th><button type="button" class="sort-button" data-sort-key="conference">Conference</button></th>
             <th><button type="button" class="sort-button" data-sort-key="year">Year</button></th>
             <th><button type="button" class="sort-button" data-sort-key="numberPapers">Number of Papers</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="globalMean">Global Mean</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="globalMedian">Global Median</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="documentationMean">Documentation Mean</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="datasetMean">Dataset Mean</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="codeMean">Code Mean</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="percentEmperical">Percent Emperical</button></th>
-            <th><button type="button" class="sort-button" data-sort-key="percentIndustry">Percent Industry</button></th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="globalMean">Global Mean</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
+                  <span class="tooltip-text">Global mean is the average score over the seven reproducibility variables for emperical research papers.</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="globalMedian">Global Median</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Global Median definition">i</button>
+                  <span class="tooltip-text">Global median is the median score over the seven reproducibility variables for emperical research papers.</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="documentationMean">Documentation Mean</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
+                  <span class="tooltip-text">Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for emperical research papers.</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="datasetMean">Dataset Mean</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Dataset Mean definition">i</button>
+                  <span class="tooltip-text">Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for emperical research papers.</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="codeMean">Code Mean</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Code Mean definition">i</button>
+                  <span class="tooltip-text">Documentation mean is the average score over the Open Source Code reproducibility variables for emperical research papers.</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="percentEmperical">Percent Emperical</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Percent Emperical definition">i</button>
+                  <span class="tooltip-text">Percentage of papers that are Emperical research vs Theoretical research</span>
+                </span>
+              </div>
+            </th>
+            <th>
+              <div class="header-with-tooltip">
+                <button type="button" class="sort-button" data-sort-key="percentIndustry">Percent Industry</button>
+                <span class="tooltip-wrap">
+                  <button type="button" class="info-icon-button" aria-label="Percent Industry definition">i</button>
+                  <span class="tooltip-text">Percentage of emperical research papers with at least one author from Industry</span>
+                </span>
+              </div>
+            </th>
             <th>Website</th>
           </tr>
         </thead>

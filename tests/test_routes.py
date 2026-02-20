@@ -98,7 +98,7 @@ def test_conference_year_page(client, sample_data: dict[str, str]) -> None:
     assert response.status_code == 200
     body = response.get_data(as_text=True)
     assert 'id="paper-search"' in body
-    assert "Conference Proceedings:" in body
+    assert "Website:" in body
     assert 'placeholder="Filter by title"' in body
     assert ">Authors<" not in body
     assert ">PC<" in body

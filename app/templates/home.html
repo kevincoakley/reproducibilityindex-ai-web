@@ -13,10 +13,9 @@
     <h2>All Proceedings</h2>
     <p>Browse reproducibility metrics across all conference proceedings.</p>
 
-    <div class="table-scroll-10" role="region" aria-label="All proceedings metrics table">
-      <table id="home-proceedings-table">
-        <thead>
-          <tr>
+    <table id="home-proceedings-table">
+      <thead>
+        <tr>
             <th><button type="button" class="sort-button" data-sort-key="conference">Conference</button></th>
             <th><button type="button" class="sort-button" data-sort-key="year">Year</button></th>
             <th><button type="button" class="sort-button" data-sort-key="numberPapers">Number of Papers</button></th>
@@ -84,11 +83,11 @@
               </div>
             </th>
             <th>Website</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in proceedings %}
-            <tr
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in proceedings %}
+          <tr
               data-conference="{{ row.conference|lower }}"
               data-year="{{ row.year }}"
               data-number-papers="{{ row.number_papers if row.number_papers != 'N/A' else -1 }}"
@@ -123,11 +122,10 @@
                   N/A
                 {% endif %}
               </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>

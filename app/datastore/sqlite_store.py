@@ -60,6 +60,13 @@ class SQLiteDataStore(DataStore):
                 pm.code_mean,
                 pm.percent_emperical,
                 pm.percent_industry,
+                pm.percent_pseudocode,
+                pm.percent_open_source_code,
+                pm.percent_open_datasets,
+                pm.percent_dataset_splits,
+                pm.percent_hardware_specification,
+                pm.percent_software_dependencies,
+                pm.percent_experiment_setup,
                 p.url
             FROM proceedings AS p
             LEFT JOIN proceedings_metrics AS pm

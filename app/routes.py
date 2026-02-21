@@ -192,22 +192,38 @@ def conference_years(conference: str) -> str:
         abort(404)
 
     proceedings = _store().list_proceedings(conference)
-    conference_chart_data: list[dict[str, float]] = []
-    for row in proceedings:
-        year_value = _to_int(row.get("year"))
-        global_mean_value = _to_float(row.get("global_mean"))
-        if year_value is None or global_mean_value is None:
-            continue
-        conference_chart_data.append({"x": year_value, "y": global_mean_value})
-    conference_chart_dataset = {
-        "label": str(conference_row.get("conference") or conference),
-        "data": sorted(conference_chart_data, key=lambda point: point["x"]),
-    }
+    percentage_metric_fields = [
+        "percent_pseudocode",
+        "percent_open_source_code",
+        "percent_open_datasets",
+        "percent_dataset_splits",
+        "percent_hardware_specification",
+        "percent_software_dependencies",
+        "percent_experiment_setup",
+    ]
+    conference_chart_datasets: list[dict[str, object]] = []
+    for field in percentage_metric_fields:
+        metric_points: list[dict[str, float]] = []
+        for row in proceedings:
+            year_value = _to_int(row.get("year"))
+            percent_value = _to_float(row.get(field))
+            if year_value is None or percent_value is None:
+                continue
+            metric_points.append({"x": year_value, "y": percent_value})
+        label = " ".join(
+            word.capitalize() for word in field.removeprefix("percent_").split("_")
+        )
+        conference_chart_datasets.append(
+            {
+                "label": label,
+                "data": sorted(metric_points, key=lambda point: point["x"]),
+            }
+        )
     return render_template(
         "conference_years.html",
         conference=conference_row,
         proceedings=proceedings,
-        conference_chart_dataset=conference_chart_dataset,
+        conference_chart_datasets=conference_chart_datasets,
     )
 
 

@@ -10,7 +10,7 @@
       </a>
     </p>
 
-    <h3>Global Mean Trend</h3>
+    <h3>The Percentage of Empirical Papers Documenting Each Reproducibility Variable</h3>
     <div class="chart-wrap">
       <canvas id="conference-global-mean-chart" aria-label="Global mean trend by year"></canvas>
     </div>
@@ -125,27 +125,27 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
-    const conferenceChartDataset = {{ conference_chart_dataset|tojson }};
+    const conferenceChartDatasets = {{ conference_chart_datasets|tojson }};
     const conferenceChartCanvas = document.getElementById("conference-global-mean-chart");
 
     if (
       conferenceChartCanvas &&
       window.Chart &&
-      conferenceChartDataset &&
-      conferenceChartDataset.data.length > 0
+      conferenceChartDatasets &&
+      conferenceChartDatasets.some((dataset) => dataset.data.length > 0)
     ) {
       new Chart(conferenceChartCanvas, {
         type: "line",
         data: {
-          datasets: [{
-            ...conferenceChartDataset,
+          datasets: conferenceChartDatasets.map((dataset) => ({
+            ...dataset,
             parsing: false,
             tension: 0.2,
             borderWidth: 2,
             pointRadius: 3,
             pointHoverRadius: 4,
             spanGaps: true,
-          }],
+          })),
         },
         options: {
           responsive: true,
@@ -164,10 +164,14 @@
             },
             y: {
               min: 0,
-              max: 7,
+              max: 100,
               title: {
                 display: true,
-                text: "Global Mean",
+                text: "Percent",
+              },
+              ticks: {
+                stepSize: 10,
+                callback: (value) => `${Number(value)}%`,
               },
             },
           },
@@ -175,6 +179,11 @@
             legend: {
               display: true,
               position: "bottom",
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.dataset.label}: ${context.parsed.y}%`,
+              },
             },
           },
         },

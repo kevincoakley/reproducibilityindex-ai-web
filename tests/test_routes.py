@@ -77,7 +77,11 @@ def test_conference_page(client, sample_data: dict[str, str]) -> None:
     assert response.status_code == 200
     body = response.get_data(as_text=True)
     assert 'id="conference-global-mean-chart"' in body
-    assert "const conferenceChartDataset =" in body
+    assert "const conferenceChartDatasets =" in body
+    assert (
+        "The Percentage of Empirical Papers Documenting Each Reproducibility Variable"
+        in body
+    )
     assert f"/conferences/{sample_data['conference']}/{sample_data['year']}" in body
     assert ">Number of Papers<" in body
     assert ">Global Mean<" in body

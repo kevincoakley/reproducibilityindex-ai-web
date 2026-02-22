@@ -16,15 +16,15 @@ DB_PATH = PROJECT_ROOT / "results.sqlite"
 def sample_data() -> dict[str, str]:
     store = SQLiteDataStore(DB_PATH)
 
-    for conference in store.list_conferences():
-        conf = str(conference["conference"])
-        for proceeding in store.list_proceedings(conf):
-            year = str(proceeding["year"])
-            results = store.list_results(conf, year)
+    for venue in store.list_venues():
+        venue_code = str(venue["venue"])
+        for edition in store.list_editions(venue_code):
+            year = str(edition["year"])
+            results = store.list_results(venue_code, year)
             if results:
                 first_result = results[0]
                 return {
-                    "conference": conf,
+                    "venue": venue_code,
                     "year": year,
                     "paper_key": str(first_result["key"]),
                     "run": str(first_result["run"]),
@@ -51,7 +51,7 @@ def client(app):
     return app.test_client()
 
 
-def test_home_page_lists_all_proceedings_table(
+def test_home_page_lists_all_editions_table(
     client, sample_data: dict[str, str]
 ) -> None:
     response = client.get("/")
@@ -61,28 +61,28 @@ def test_home_page_lists_all_proceedings_table(
     assert 'id="home-global-mean-chart"' in body
     assert "cdn.jsdelivr.net/npm/chart.js" in body
     assert "const homeChartDatasets =" in body
-    assert 'id="home-proceedings-table"' in body
+    assert 'id="home-editions-table"' in body
     assert 'data-sort-key="globalMean"' in body
-    assert f"/conferences/{sample_data['conference']}" in body
-    assert ">Conference<" in body
+    assert f"/venues/{sample_data['venue']}" in body
+    assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Global Mean<" in body
-    expected_conference_count = len(SQLiteDataStore(DB_PATH).list_conferences())
-    assert body.count('data-conference="') == expected_conference_count
+    expected_venue_count = len(SQLiteDataStore(DB_PATH).list_venues())
+    assert body.count('data-venue="') == expected_venue_count
 
 
-def test_conference_page(client, sample_data: dict[str, str]) -> None:
-    response = client.get(f"/conferences/{sample_data['conference']}")
+def test_venue_page(client, sample_data: dict[str, str]) -> None:
+    response = client.get(f"/venues/{sample_data['venue']}")
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
-    assert 'id="conference-global-mean-chart"' in body
-    assert "const conferenceChartDatasets =" in body
+    assert 'id="venue-global-mean-chart"' in body
+    assert "const venueChartDatasets =" in body
     assert (
         "The Percentage of Empirical Papers Documenting Each Reproducibility Variable"
         in body
     )
-    assert f"/conferences/{sample_data['conference']}/{sample_data['year']}" in body
+    assert f"/venues/{sample_data['venue']}/{sample_data['year']}" in body
     assert ">Number of Papers<" in body
     assert ">Global Mean<" in body
     assert ">Global Median<" in body
@@ -93,10 +93,8 @@ def test_conference_page(client, sample_data: dict[str, str]) -> None:
     assert ">Percent Industry<" in body
 
 
-def test_conference_year_page(client, sample_data: dict[str, str]) -> None:
-    response = client.get(
-        f"/conferences/{sample_data['conference']}/{sample_data['year']}"
-    )
+def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
+    response = client.get(f"/venues/{sample_data['venue']}/{sample_data['year']}")
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
@@ -130,10 +128,10 @@ def test_paper_page(client, sample_data: dict[str, str]) -> None:
     assert response.status_code == 200
     body = response.get_data(as_text=True)
     assert f"/runs/{sample_data['run']}" in body
-    assert "Conference PDF" in body
+    assert "Venue PDF" in body
     assert (
         "https://object.cloud.sdsc.edu/v1/AUTH_da4962d3368042ac8337e2dfdd3e7bf3/"
-        f"ml-papers/{sample_data['conference']}/{sample_data['year']}/"
+        f"ml-papers/{sample_data['venue']}/{sample_data['year']}/"
         f"{sample_data['paper_key']}.pdf"
     ) in body
 
@@ -153,7 +151,7 @@ def test_run_page(client, sample_data: dict[str, str]) -> None:
 
 
 def test_dynamic_pages_404(client) -> None:
-    assert client.get("/conferences/DOES_NOT_EXIST").status_code == 404
+    assert client.get("/venues/DOES_NOT_EXIST").status_code == 404
     assert client.get("/paper/does-not-exist").status_code == 404
     assert client.get("/runs/does-not-exist").status_code == 404
 

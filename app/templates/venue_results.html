@@ -2,11 +2,11 @@
 
 {% block content %}
   <section class="card">
-    <h2>{{ conference.conference_name }} ({{ conference.conference }}) - {{ year }}</h2>
+    <h2>{{ venue.venue_name }} ({{ venue.venue }}) - {{ year }}</h2>
     <p>
       Website:
-      {% if proceedings_url %}
-        <a class="icon-link" href="{{ proceedings_url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
+      {% if edition_url %}
+        <a class="icon-link" href="{{ edition_url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">
           <span aria-hidden="true">&#128196;</span>
         </a>
       {% else %}

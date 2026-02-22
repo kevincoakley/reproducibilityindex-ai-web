@@ -29,28 +29,28 @@ class SQLiteDataStore(DataStore):
             row = connection.execute(query, params).fetchone()
         return dict(row) if row is not None else None
 
-    def list_conferences(self) -> list[Record]:
+    def list_venues(self) -> list[Record]:
         return self._fetch_all("""
-            SELECT venue AS conference, venue_name AS conference_name, url
+            SELECT venue, venue_name, url
             FROM venues
             ORDER BY venue ASC
             """)
 
-    def get_conference(self, conference: str) -> Record | None:
+    def get_venue(self, venue: str) -> Record | None:
         return self._fetch_one(
             """
-            SELECT venue AS conference, venue_name AS conference_name, url
+            SELECT venue, venue_name, url
             FROM venues
             WHERE venue = ?
             """,
-            (conference,),
+            (venue,),
         )
 
-    def list_proceedings(self, conference: str) -> list[Record]:
+    def list_editions(self, venue: str) -> list[Record]:
         return self._fetch_all(
             """
             SELECT
-                p.edition AS conference,
+                p.edition AS venue,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -74,13 +74,13 @@ class SQLiteDataStore(DataStore):
             WHERE p.edition = ?
             ORDER BY p.year DESC
             """,
-            (conference,),
+            (venue,),
         )
 
-    def list_all_proceedings(self) -> list[Record]:
+    def list_all_editions(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                p.edition AS conference,
+                p.edition AS venue,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -97,11 +97,13 @@ class SQLiteDataStore(DataStore):
             ORDER BY p.edition ASC, p.year DESC
             """)
 
-    def get_proceedings_metrics(self, conference: str, year: str) -> Record | None:
+    def get_edition_reproducibility_scores(
+        self, venue: str, year: str
+    ) -> Record | None:
         return self._fetch_one(
             """
             SELECT
-                venue AS conference,
+                venue,
                 year,
                 number_papers,
                 global_mean,
@@ -114,17 +116,17 @@ class SQLiteDataStore(DataStore):
             FROM editions_reproduciblity_scores
             WHERE venue = ? AND year = ?
             """,
-            (conference, year),
+            (venue, year),
         )
 
-    def list_results(self, conference: str, year: str) -> list[Record]:
+    def list_results(self, venue: str, year: str) -> list[Record]:
         return self._fetch_all(
             """
             SELECT
                 key,
                 title,
                 authors,
-                venue AS conference,
+                venue,
                 year,
                 run,
                 pdf_url,
@@ -150,7 +152,7 @@ class SQLiteDataStore(DataStore):
             WHERE venue = ? AND year = ?
             ORDER BY title ASC
             """,
-            (conference, year),
+            (venue, year),
         )
 
     def get_result(self, key: str) -> Record | None:
@@ -160,7 +162,7 @@ class SQLiteDataStore(DataStore):
                 key,
                 title,
                 authors,
-                venue AS conference,
+                venue,
                 year,
                 run,
                 pdf_url,

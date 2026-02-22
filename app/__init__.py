@@ -34,7 +34,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
         return {
             "site_title": app.config["SITE_TITLE"],
             "object_storage_url": app.config["OBJECT_STORAGE_URL"],
-            "conference_nav": app.extensions["data_store"].list_conferences(),
+            "venue_nav": app.extensions["data_store"].list_venues(),
         }
 
     app.register_blueprint(bp)

@@ -3,20 +3,20 @@
 {% block content %}
   <section class="card">
     <h2>Global Mean Trend</h2>
-    <p>Proceedings metrics global mean by conference over time.</p>
+    <p>Edition reproducibility metrics global mean by venue over time.</p>
     <div class="chart-wrap">
-      <canvas id="home-global-mean-chart" aria-label="Global mean trend by conference and year"></canvas>
+      <canvas id="home-global-mean-chart" aria-label="Global mean trend by venue and year"></canvas>
     </div>
   </section>
 
   <section class="card">
-    <h2>All Proceedings</h2>
-    <p>Browse reproducibility metrics across all conference proceedings.</p>
+    <h2>All Editions</h2>
+    <p>Browse reproducibility metrics across all venue editions.</p>
 
-    <table id="home-proceedings-table">
+    <table id="home-editions-table">
       <thead>
         <tr>
-            <th><button type="button" class="sort-button" data-sort-key="conference">Conference</button></th>
+            <th><button type="button" class="sort-button" data-sort-key="venue">Venue</button></th>
             <th><button type="button" class="sort-button" data-sort-key="year">Year</button></th>
             <th><button type="button" class="sort-button" data-sort-key="numberPapers">Number of Papers</button></th>
             <th>
@@ -86,9 +86,9 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in proceedings %}
+        {% for row in editions %}
           <tr
-              data-conference="{{ row.conference|lower }}"
+              data-venue="{{ row.venue|lower }}"
               data-year="{{ row.year }}"
               data-number-papers="{{ row.number_papers if row.number_papers != 'N/A' else -1 }}"
               data-global-mean="{{ row.global_mean_sort }}"
@@ -100,10 +100,10 @@
               data-percent-industry="{{ row.percent_industry|replace('%', '') if row.percent_industry != 'N/A' else -1 }}"
             >
               <td>
-                <a href="{{ url_for('pages.conference_years', conference=row.conference) }}">{{ row.conference }}</a>
+                <a href="{{ url_for('pages.venue_years', venue=row.venue) }}">{{ row.venue }}</a>
               </td>
               <td>
-                <a href="{{ url_for('pages.conference_results', conference=row.conference, year=row.year) }}">{{ row.year }}</a>
+                <a href="{{ url_for('pages.venue_results', venue=row.venue, year=row.year) }}">{{ row.year }}</a>
               </td>
               <td>{{ row.number_papers }}</td>
               <td>{{ row.global_mean }}</td>
@@ -115,7 +115,7 @@
               <td>{{ row.percent_industry }}</td>
               <td>
                 {% if row.url %}
-                  <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
+                  <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">
                     <span aria-hidden="true">&#128196;</span>
                   </a>
                 {% else %}
@@ -181,11 +181,11 @@
       });
     }
 
-    const homeTableBody = document.querySelector("#home-proceedings-table tbody");
-    const homeTableRows = Array.from(document.querySelectorAll("#home-proceedings-table tbody tr"));
-    const homeSortButtons = Array.from(document.querySelectorAll("#home-proceedings-table .sort-button"));
+    const homeTableBody = document.querySelector("#home-editions-table tbody");
+    const homeTableRows = Array.from(document.querySelectorAll("#home-editions-table tbody tr"));
+    const homeSortButtons = Array.from(document.querySelectorAll("#home-editions-table .sort-button"));
     const homeSortTypes = {
-      conference: "text",
+      venue: "text",
       year: "number",
       numberPapers: "number",
       globalMean: "number",

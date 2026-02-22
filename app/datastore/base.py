@@ -10,28 +10,30 @@ class DataStore(ABC):
     """Read-only interface for pulling website data from a backend."""
 
     @abstractmethod
-    def list_conferences(self) -> list[Record]:
-        """Return all conferences."""
+    def list_venues(self) -> list[Record]:
+        """Return all venues."""
 
     @abstractmethod
-    def get_conference(self, conference: str) -> Record | None:
-        """Return a conference by slug/code."""
+    def get_venue(self, venue: str) -> Record | None:
+        """Return a venue by slug/code."""
 
     @abstractmethod
-    def list_proceedings(self, conference: str) -> list[Record]:
-        """Return proceedings rows for a conference."""
+    def list_editions(self, venue: str) -> list[Record]:
+        """Return edition rows for a venue."""
 
     @abstractmethod
-    def list_all_proceedings(self) -> list[Record]:
-        """Return proceedings rows across all conferences."""
+    def list_all_editions(self) -> list[Record]:
+        """Return edition rows across all venues."""
 
     @abstractmethod
-    def get_proceedings_metrics(self, conference: str, year: str) -> Record | None:
-        """Return metrics for a conference proceeding year."""
+    def get_edition_reproducibility_scores(
+        self, venue: str, year: str
+    ) -> Record | None:
+        """Return reproducibility score metrics for a venue edition year."""
 
     @abstractmethod
-    def list_results(self, conference: str, year: str) -> list[Record]:
-        """Return paper results for a conference and year."""
+    def list_results(self, venue: str, year: str) -> list[Record]:
+        """Return paper results for a venue and year."""
 
     @abstractmethod
     def get_result(self, key: str) -> Record | None:

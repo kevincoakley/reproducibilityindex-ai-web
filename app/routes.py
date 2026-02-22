@@ -133,16 +133,16 @@ def _to_int(value: object) -> int | None:
 
 @bp.route("/")
 def index() -> str:
-    all_proceedings_rows: list[dict[str, object]] = []
-    chart_points_by_conference: dict[str, list[dict[str, float]]] = {}
-    for row in _store().list_all_proceedings():
+    all_edition_rows: list[dict[str, object]] = []
+    chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
+    for row in _store().list_all_editions():
         global_mean_raw = row.get("global_mean")
         global_mean_value = _to_float(global_mean_raw)
         global_mean_sort = global_mean_value if global_mean_value is not None else -1.0
 
-        all_proceedings_rows.append(
+        all_edition_rows.append(
             {
-                "conference": row.get("conference"),
+                "venue": row.get("venue"),
                 "year": row.get("year"),
                 "number_papers": _to_metric_display(row.get("number_papers")),
                 "global_mean": _to_metric_display(global_mean_raw),
@@ -157,41 +157,41 @@ def index() -> str:
             }
         )
 
-        conference = str(row.get("conference") or "").strip()
+        venue = str(row.get("venue") or "").strip()
         year_value = _to_int(row.get("year"))
-        if conference and year_value is not None and global_mean_value is not None:
-            chart_points_by_conference.setdefault(conference, []).append(
+        if venue and year_value is not None and global_mean_value is not None:
+            chart_points_by_venue.setdefault(venue, []).append(
                 {"x": year_value, "y": global_mean_value}
             )
 
-    proceedings: list[dict[str, object]] = []
-    seen_conferences: set[str] = set()
-    for row in all_proceedings_rows:
-        conference = str(row.get("conference") or "")
-        if not conference or conference in seen_conferences:
+    editions: list[dict[str, object]] = []
+    seen_venues: set[str] = set()
+    for row in all_edition_rows:
+        venue = str(row.get("venue") or "")
+        if not venue or venue in seen_venues:
             continue
-        seen_conferences.add(conference)
-        proceedings.append(row)
+        seen_venues.add(venue)
+        editions.append(row)
 
     home_chart_datasets = [
-        {"label": conference, "data": sorted(points, key=lambda point: point["x"])}
-        for conference, points in sorted(chart_points_by_conference.items())
+        {"label": venue, "data": sorted(points, key=lambda point: point["x"])}
+        for venue, points in sorted(chart_points_by_venue.items())
     ]
 
     return render_template(
         "home.html",
-        proceedings=proceedings,
+        editions=editions,
         home_chart_datasets=home_chart_datasets,
     )
 
 
-@bp.route("/conferences/<conference>")
-def conference_years(conference: str) -> str:
-    conference_row = _store().get_conference(conference)
-    if conference_row is None:
+@bp.route("/venues/<venue>")
+def venue_years(venue: str) -> str:
+    venue_row = _store().get_venue(venue)
+    if venue_row is None:
         abort(404)
 
-    proceedings = _store().list_proceedings(conference)
+    editions = _store().list_editions(venue)
     percentage_metric_fields = [
         "percent_pseudocode",
         "percent_open_source_code",
@@ -201,10 +201,10 @@ def conference_years(conference: str) -> str:
         "percent_software_dependencies",
         "percent_experiment_setup",
     ]
-    conference_chart_datasets: list[dict[str, object]] = []
+    venue_chart_datasets: list[dict[str, object]] = []
     for field in percentage_metric_fields:
         metric_points: list[dict[str, float]] = []
-        for row in proceedings:
+        for row in editions:
             year_value = _to_int(row.get("year"))
             percent_value = _to_float(row.get(field))
             if year_value is None or percent_value is None:
@@ -213,54 +213,58 @@ def conference_years(conference: str) -> str:
         label = " ".join(
             word.capitalize() for word in field.removeprefix("percent_").split("_")
         )
-        conference_chart_datasets.append(
+        venue_chart_datasets.append(
             {
                 "label": label,
                 "data": sorted(metric_points, key=lambda point: point["x"]),
             }
         )
     return render_template(
-        "conference_years.html",
-        conference=conference_row,
-        proceedings=proceedings,
-        conference_chart_datasets=conference_chart_datasets,
+        "venue_years.html",
+        venue=venue_row,
+        editions=editions,
+        venue_chart_datasets=venue_chart_datasets,
     )
 
 
-@bp.route("/conferences/<conference>/<year>")
-def conference_results(conference: str, year: str) -> str:
-    conference_row = _store().get_conference(conference)
-    if conference_row is None:
+@bp.route("/venues/<venue>/<year>")
+def venue_results(venue: str, year: str) -> str:
+    venue_row = _store().get_venue(venue)
+    if venue_row is None:
         abort(404)
 
-    proceedings = _store().list_proceedings(conference)
-    proceeding_row = next(
-        (row for row in proceedings if str(row.get("year")) == year), None
-    )
-    proceedings_url = (
-        str(proceeding_row.get("url"))
-        if proceeding_row is not None and proceeding_row.get("url")
+    editions = _store().list_editions(venue)
+    edition_row = next((row for row in editions if str(row.get("year")) == year), None)
+    edition_url = (
+        str(edition_row.get("url"))
+        if edition_row is not None and edition_row.get("url")
         else ""
     )
-    proceedings_metrics = _store().get_proceedings_metrics(conference, year) or {}
+    reproducibility_scores = (
+        _store().get_edition_reproducibility_scores(venue, year) or {}
+    )
     metrics = {
-        "number_papers": _to_metric_display(proceedings_metrics.get("number_papers")),
-        "global_mean": _to_metric_display(proceedings_metrics.get("global_mean")),
-        "global_median": _to_metric_display(proceedings_metrics.get("global_median")),
-        "documentation_mean": _to_metric_display(
-            proceedings_metrics.get("documentation_mean")
+        "number_papers": _to_metric_display(
+            reproducibility_scores.get("number_papers")
         ),
-        "dataset_mean": _to_metric_display(proceedings_metrics.get("dataset_mean")),
-        "code_mean": _to_metric_display(proceedings_metrics.get("code_mean")),
+        "global_mean": _to_metric_display(reproducibility_scores.get("global_mean")),
+        "global_median": _to_metric_display(
+            reproducibility_scores.get("global_median")
+        ),
+        "documentation_mean": _to_metric_display(
+            reproducibility_scores.get("documentation_mean")
+        ),
+        "dataset_mean": _to_metric_display(reproducibility_scores.get("dataset_mean")),
+        "code_mean": _to_metric_display(reproducibility_scores.get("code_mean")),
         "percent_emperical": _to_percent_display(
-            proceedings_metrics.get("percent_emperical")
+            reproducibility_scores.get("percent_emperical")
         ),
         "percent_industry": _to_percent_display(
-            proceedings_metrics.get("percent_industry")
+            reproducibility_scores.get("percent_industry")
         ),
     }
 
-    raw_results = _store().list_results(conference, year)
+    raw_results = _store().list_results(venue, year)
     results: list[dict[str, object]] = []
     for row in raw_results:
         normalized = dict(row)
@@ -277,10 +281,10 @@ def conference_results(conference: str, year: str) -> str:
         results.append(normalized)
 
     return render_template(
-        "conference_results.html",
-        conference=conference_row,
+        "venue_results.html",
+        venue=venue_row,
         year=year,
-        proceedings_url=proceedings_url,
+        edition_url=edition_url,
         metrics=metrics,
         results=results,
     )

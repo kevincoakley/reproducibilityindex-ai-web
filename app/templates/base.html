@@ -12,8 +12,8 @@
         <h1 class="site-title"><a href="{{ url_for('pages.index') }}">{{ site_title }}</a></h1>
         <nav class="site-nav" aria-label="Main navigation">
           <a href="{{ url_for('pages.index') }}">Home</a>
-          {% for conf in conference_nav %}
-            <a href="{{ url_for('pages.conference_years', conference=conf.conference) }}">{{ conf.conference }}</a>
+          {% for venue in venue_nav %}
+            <a href="{{ url_for('pages.venue_years', venue=venue.venue) }}">{{ venue.venue }}</a>
           {% endfor %}
         </nav>
       </div>

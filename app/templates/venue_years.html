@@ -2,17 +2,17 @@
 
 {% block content %}
   <section class="card">
-    <h2>{{ conference.conference_name }} ({{ conference.conference }})</h2>
+    <h2>{{ venue.venue_name }} ({{ venue.venue }})</h2>
     <p>
-      Conference URL:
-      <a class="icon-link" href="{{ conference.url }}" target="_blank" rel="noopener noreferrer" title="Conference website">
+      Venue URL:
+      <a class="icon-link" href="{{ venue.url }}" target="_blank" rel="noopener noreferrer" title="Venue website">
         <span aria-hidden="true">&#128279;</span>
       </a>
     </p>
 
     <h3>The Percentage of Empirical Papers Documenting Each Reproducibility Variable</h3>
     <div class="chart-wrap">
-      <canvas id="conference-global-mean-chart" aria-label="Global mean trend by year"></canvas>
+      <canvas id="venue-global-mean-chart" aria-label="Global mean trend by year"></canvas>
     </div>
 
     <table>
@@ -87,10 +87,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in proceedings %}
+        {% for row in editions %}
           <tr>
             <td>
-              <a href="{{ url_for('pages.conference_results', conference=conference.conference, year=row.year) }}">{{ row.year }}</a>
+              <a href="{{ url_for('pages.venue_results', venue=venue.venue, year=row.year) }}">{{ row.year }}</a>
             </td>
             <td>{{ row.number_papers }}</td>
             <td>{{ row.global_mean or "N/A" }}</td>
@@ -113,7 +113,7 @@
               {% endif %}
             </td>
             <td>
-              <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Proceedings URL">
+              <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">
                 <span aria-hidden="true">&#128196;</span>
               </a>
             </td>
@@ -125,19 +125,19 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
-    const conferenceChartDatasets = {{ conference_chart_datasets|tojson }};
-    const conferenceChartCanvas = document.getElementById("conference-global-mean-chart");
+    const venueChartDatasets = {{ venue_chart_datasets|tojson }};
+    const venueChartCanvas = document.getElementById("venue-global-mean-chart");
 
     if (
-      conferenceChartCanvas &&
+      venueChartCanvas &&
       window.Chart &&
-      conferenceChartDatasets &&
-      conferenceChartDatasets.some((dataset) => dataset.data.length > 0)
+      venueChartDatasets &&
+      venueChartDatasets.some((dataset) => dataset.data.length > 0)
     ) {
-      new Chart(conferenceChartCanvas, {
+      new Chart(venueChartCanvas, {
         type: "line",
         data: {
-          datasets: conferenceChartDatasets.map((dataset) => ({
+          datasets: venueChartDatasets.map((dataset) => ({
             ...dataset,
             parsing: false,
             tension: 0.2,

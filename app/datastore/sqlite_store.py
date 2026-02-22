@@ -31,17 +31,17 @@ class SQLiteDataStore(DataStore):
 
     def list_conferences(self) -> list[Record]:
         return self._fetch_all("""
-            SELECT conference, conference_name, url
-            FROM conferences
-            ORDER BY conference ASC
+            SELECT venue AS conference, venue_name AS conference_name, url
+            FROM venues
+            ORDER BY venue ASC
             """)
 
     def get_conference(self, conference: str) -> Record | None:
         return self._fetch_one(
             """
-            SELECT conference, conference_name, url
-            FROM conferences
-            WHERE conference = ?
+            SELECT venue AS conference, venue_name AS conference_name, url
+            FROM venues
+            WHERE venue = ?
             """,
             (conference,),
         )
@@ -50,7 +50,7 @@ class SQLiteDataStore(DataStore):
         return self._fetch_all(
             """
             SELECT
-                p.conference,
+                p.edition AS conference,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -68,10 +68,10 @@ class SQLiteDataStore(DataStore):
                 pm.percent_software_dependencies,
                 pm.percent_experiment_setup,
                 p.url
-            FROM proceedings AS p
-            LEFT JOIN proceedings_metrics AS pm
-              ON p.conference = pm.conference AND p.year = pm.year
-            WHERE p.conference = ?
+            FROM editions AS p
+            LEFT JOIN editions_reproduciblity_scores AS pm
+              ON p.edition = pm.venue AND p.year = pm.year
+            WHERE p.edition = ?
             ORDER BY p.year DESC
             """,
             (conference,),
@@ -80,7 +80,7 @@ class SQLiteDataStore(DataStore):
     def list_all_proceedings(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                p.conference,
+                p.edition AS conference,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -91,17 +91,17 @@ class SQLiteDataStore(DataStore):
                 pm.percent_emperical,
                 pm.percent_industry,
                 p.url
-            FROM proceedings AS p
-            LEFT JOIN proceedings_metrics AS pm
-              ON p.conference = pm.conference AND p.year = pm.year
-            ORDER BY p.conference ASC, p.year DESC
+            FROM editions AS p
+            LEFT JOIN editions_reproduciblity_scores AS pm
+              ON p.edition = pm.venue AND p.year = pm.year
+            ORDER BY p.edition ASC, p.year DESC
             """)
 
     def get_proceedings_metrics(self, conference: str, year: str) -> Record | None:
         return self._fetch_one(
             """
             SELECT
-                conference,
+                venue AS conference,
                 year,
                 number_papers,
                 global_mean,
@@ -111,8 +111,8 @@ class SQLiteDataStore(DataStore):
                 code_mean,
                 percent_emperical,
                 percent_industry
-            FROM proceedings_metrics
-            WHERE conference = ? AND year = ?
+            FROM editions_reproduciblity_scores
+            WHERE venue = ? AND year = ?
             """,
             (conference, year),
         )
@@ -124,7 +124,7 @@ class SQLiteDataStore(DataStore):
                 key,
                 title,
                 authors,
-                conference,
+                venue AS conference,
                 year,
                 run,
                 pdf_url,
@@ -147,7 +147,7 @@ class SQLiteDataStore(DataStore):
                 experiment_setup_result,
                 experiment_setup_paper_text
             FROM results
-            WHERE conference = ? AND year = ?
+            WHERE venue = ? AND year = ?
             ORDER BY title ASC
             """,
             (conference, year),
@@ -160,7 +160,7 @@ class SQLiteDataStore(DataStore):
                 key,
                 title,
                 authors,
-                conference,
+                venue AS conference,
                 year,
                 run,
                 pdf_url,

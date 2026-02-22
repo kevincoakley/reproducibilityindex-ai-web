@@ -99,20 +99,25 @@ Always use `uv` for package management and script execution.
   - Simple Iconography: It utilizes standard icons (like the GitHub "octocat" and paper icons) for quick navigation to code, data, and publications.
   - Functional Layout: There is very little "fluff" or decorative imagery; every element serves a direct purpose, such as providing introduction text, a changelog, or model rankings.
   - Bootstrap-inspired Aesthetic: The buttons, spacing, and overall responsiveness are reminiscent of modern web frameworks like Bootstrap or Tailwind, which are commonly used for scientific and open-source project pages.
+- Always use Chart.js (https://www.chartjs.org) for any charts or visualizations on the website.
 - The title of the website should be: reproducibilityindex.ai . However, this should be a varaible and not hard coded.
 
 ### 6. Database
 - The database will only read data from the database never write to the database
 - The database is at results.sqlite, please read the database if you have any questions about the format:
-  - conferences -> a list of the conferences to be displayed.
-  - proceedings -> a list of the proceedings for each of the conferences.
-  - proceedings_metrics -> the metrics for each of the proceedings.
+  - authors_list -> the authors for each paper.
+  - countries -> a list of the countries to be displayed.
+  - venues -> a list of the venues to be displayed.
+  - editions -> a list of the editions for each of the venues.
+  - editions_reproduciblity_scores -> the reproducibility scores for each of the editions.
   - results -> the results of our analysis of the papers. 
   - runs -> details about how the results were found.
 - Database table links:
-  - conferences.conference = proceedings.conference = proceedings_metrics.conference = results.conference
-  - proceedings.year = proceedings_metrics.year = results.year
-  - results.run = runs.run
+  - authors_list.venue = editions.venue = editions_reproduciblity_scores.venue = results.venue = venues.venue
+  - authors_list.year = editions.year = editions_reproduciblity_scores.year = results.year
+  - authors_list.run = results.run = runs.run
+  - authors_list.key = results.key
+  - authors_list.country = countries.country
 
 ### 7. Deployment
 - The website will be deployed using Docker in production.

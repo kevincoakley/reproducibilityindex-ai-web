@@ -50,21 +50,73 @@
       autocomplete="off"
     />
 
-    <p class="table-key">
-      Key: PC - Pseudocode, OSC - Open Source Code, OSD - Open Datasets, DS - Dataset Splits, HS - Hardware Specification, SD - Software Dependencies, ES - Experiment Setup
-    </p>
-
     <table id="papers-table">
       <thead>
         <tr>
           <th><button type="button" class="sort-button" data-sort-key="title">Title</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="pc">PC</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="osc">OSC</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="ods">ODS</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="ds">DS</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="hs">HS</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="sd">SD</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="es">ES</button></th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="pc">PC</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="PC definition">i</button>
+                <span class="tooltip-text">Pseudocode</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="osc">OSC</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="OSC definition">i</button>
+                <span class="tooltip-text">Open Source Code</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="ods">ODS</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="ODS definition">i</button>
+                <span class="tooltip-text">Open Datasets</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="ds">DS</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="DS definition">i</button>
+                <span class="tooltip-text">Dataset Splits</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="hs">HS</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="HS definition">i</button>
+                <span class="tooltip-text">Hardware Specification</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="sd">SD</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="SD definition">i</button>
+                <span class="tooltip-text">Software Dependencies</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="es">ES</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="ES definition">i</button>
+                <span class="tooltip-text">Experiment Setup</span>
+              </span>
+            </div>
+          </th>
           <th><button type="button" class="sort-button" data-sort-key="total">Total</button></th>
         </tr>
       </thead>

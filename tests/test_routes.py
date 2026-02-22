@@ -110,7 +110,8 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">SD<" in body
     assert ">ES<" in body
     assert 'data-sort-key="total"' in body
-    assert "Key: PC - Pseudocode" in body
+    assert "Key: PC - Pseudocode" not in body
+    assert "aria-label=\"PC definition\"" in body
     assert f"/papers/{sample_data['paper_key']}" in body
     assert ">Number of Papers<" in body
     assert ">Global Mean<" in body

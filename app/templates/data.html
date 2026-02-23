@@ -8,6 +8,35 @@
     <div class="chart-wrap">
       <canvas id="data-papers-chart" aria-label="Stacked area chart of paper counts by venue and year"></canvas>
     </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Venue</th>
+          <th>Year</th>
+          <th>Number of Papers</th>
+          <th>LLM Run</th>
+          <th>Website</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data_rows %}
+          <tr>
+            <td><a href="{{ url_for('pages.venue_years', venue=row.venue) }}">{{ row.venue }}</a></td>
+            <td>
+              <a href="{{ url_for('pages.venue_results', venue=row.venue, year=row.year) }}">{{ row.year }}</a>
+            </td>
+            <td>{{ row.number_papers }}</td>
+            <td><a href="{{ url_for('pages.run_detail', run=row.run) }}">{{ row.run }}</a></td>
+            <td>
+              <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">
+                <span aria-hidden="true">&#128196;</span>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>

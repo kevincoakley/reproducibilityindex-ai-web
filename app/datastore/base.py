@@ -30,6 +30,10 @@ class DataStore(ABC):
         """Return paper counts grouped by venue and year."""
 
     @abstractmethod
+    def list_data_rows(self) -> list[Record]:
+        """Return /data table rows with run, venue, year, counts, and URL."""
+
+    @abstractmethod
     def list_country_reproducibility_scores(self) -> list[Record]:
         """Return joined country reproducibility score rows."""
 

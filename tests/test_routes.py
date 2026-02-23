@@ -105,6 +105,13 @@ def test_data_page_lists_stacked_area_chart(client) -> None:
     assert "const dataChartDatasets =" in body
     assert 'stack: "papers"' in body
     assert "Number of papers by venue and edition year." in body
+    assert ">Venue<" in body
+    assert ">Year<" in body
+    assert ">Number of Papers<" in body
+    assert ">LLM Runs<" in body
+    assert ">Website<" in body
+    assert "/runs/" in body
+    assert "sort-button" not in body
 
 
 def test_venue_page(client, sample_data: dict[str, str]) -> None:

@@ -279,7 +279,19 @@ def data() -> str:
         {"label": venue, "data": sorted(points, key=lambda point: point["x"])}
         for venue, points in sorted(chart_points_by_venue.items())
     ]
-    return render_template("data.html", data_chart_datasets=data_chart_datasets)
+    data_rows = [
+        {
+            "venue": row.get("venue"),
+            "year": row.get("year"),
+            "number_papers": _to_metric_display(row.get("number_papers")),
+            "run": _to_metric_display(row.get("run")),
+            "url": row.get("url"),
+        }
+        for row in _store().list_data_rows()
+    ]
+    return render_template(
+        "data.html", data_chart_datasets=data_chart_datasets, data_rows=data_rows
+    )
 
 
 @bp.route("/venues/<venue>")

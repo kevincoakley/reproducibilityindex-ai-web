@@ -110,6 +110,29 @@ class SQLiteDataStore(DataStore):
             ORDER BY e.year ASC, e.venue ASC
             """)
 
+    def list_data_rows(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT DISTINCT
+                r.venue,
+                r.year,
+                r.run,
+                e.url,
+                paper_counts.number_papers
+            FROM results AS r
+            LEFT JOIN editions AS e
+              ON e.venue = r.venue AND e.year = r.year
+            LEFT JOIN (
+                SELECT
+                    venue,
+                    year,
+                    COUNT(key) AS number_papers
+                FROM results
+                GROUP BY venue, year
+            ) AS paper_counts
+              ON paper_counts.venue = r.venue AND paper_counts.year = r.year
+            ORDER BY r.run DESC, r.year DESC, r.venue ASC
+            """)
+
     def list_country_reproducibility_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT

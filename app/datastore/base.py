@@ -26,6 +26,10 @@ class DataStore(ABC):
         """Return edition rows across all venues."""
 
     @abstractmethod
+    def list_paper_counts_by_venue_and_year(self) -> list[Record]:
+        """Return paper counts grouped by venue and year."""
+
+    @abstractmethod
     def list_country_reproducibility_scores(self) -> list[Record]:
         """Return joined country reproducibility score rows."""
 

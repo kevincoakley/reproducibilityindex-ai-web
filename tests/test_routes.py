@@ -96,6 +96,17 @@ def test_countries_page_lists_chart_and_table(client) -> None:
     )
 
 
+def test_data_page_lists_stacked_area_chart(client) -> None:
+    response = client.get("/data/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="data-papers-chart"' in body
+    assert "const dataChartDatasets =" in body
+    assert 'stack: "papers"' in body
+    assert "Number of papers by venue and edition year." in body
+
+
 def test_venue_page(client, sample_data: dict[str, str]) -> None:
     response = client.get(f"/venues/{sample_data['venue']}")
 

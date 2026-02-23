@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>Data</h2>
+    <p>Number of papers by venue and edition year.</p>
+
+    <div class="chart-wrap">
+      <canvas id="data-papers-chart" aria-label="Stacked area chart of paper counts by venue and year"></canvas>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script>
+    const dataChartDatasets = {{ data_chart_datasets|tojson }};
+    const dataChartCanvas = document.getElementById("data-papers-chart");
+
+    if (
+      dataChartCanvas &&
+      window.Chart &&
+      dataChartDatasets &&
+      dataChartDatasets.some((dataset) => dataset.data.length > 0)
+    ) {
+      const allYears = new Set();
+      for (const dataset of dataChartDatasets) {
+        for (const point of dataset.data) {
+          allYears.add(Number(point.x));
+        }
+      }
+      const yearLabels = Array.from(allYears).sort((a, b) => a - b);
+
+      new Chart(dataChartCanvas, {
+        type: "line",
+        data: {
+          labels: yearLabels,
+          datasets: dataChartDatasets.map((dataset, index) => {
+            const hue = Math.round((index * 137.508) % 360);
+            const pointLookup = new Map(
+              dataset.data.map((point) => [Number(point.x), Number(point.y)])
+            );
+            return {
+              label: dataset.label,
+              data: yearLabels.map((year) => pointLookup.get(year) ?? 0),
+              fill: true,
+              stack: "papers",
+              tension: 0.2,
+              borderWidth: 1.5,
+              pointRadius: 1.5,
+              pointHoverRadius: 3,
+              borderColor: `hsl(${hue}, 65%, 42%)`,
+              backgroundColor: `hsla(${hue}, 65%, 42%, 0.28)`,
+            };
+          }),
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Year",
+              },
+              ticks: {
+                callback: (value) => String(yearLabels[value]),
+              },
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Number of Papers",
+              },
+              ticks: {
+                precision: 0,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.dataset.label}: ${context.parsed.y}`,
+              },
+            },
+          },
+        },
+      });
+    }
+  </script>
+{% endblock %}

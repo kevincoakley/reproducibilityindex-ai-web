@@ -261,6 +261,27 @@ def countries() -> str:
     )
 
 
+@bp.route("/data/")
+def data() -> str:
+    rows = _store().list_paper_counts_by_venue_and_year()
+    chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
+    for row in rows:
+        venue = str(row.get("venue") or "").strip()
+        year_value = _to_int(row.get("year"))
+        paper_count_value = _to_int(row.get("number_papers"))
+        if not venue or year_value is None or paper_count_value is None:
+            continue
+        chart_points_by_venue.setdefault(venue, []).append(
+            {"x": year_value, "y": paper_count_value}
+        )
+
+    data_chart_datasets = [
+        {"label": venue, "data": sorted(points, key=lambda point: point["x"])}
+        for venue, points in sorted(chart_points_by_venue.items())
+    ]
+    return render_template("data.html", data_chart_datasets=data_chart_datasets)
+
+
 @bp.route("/venues/<venue>")
 def venue_years(venue: str) -> str:
     venue_row = _store().get_venue(venue)

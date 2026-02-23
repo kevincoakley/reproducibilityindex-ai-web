@@ -107,6 +107,7 @@ Always use `uv` for package management and script execution.
 - The database is at results.sqlite, please read the database if you have any questions about the format:
   - authors_list -> the authors for each paper.
   - countries -> a list of the countries to be displayed.
+  - countries_reproduciblity_scores -> the reproducibility scores for each of the countries.
   - venues -> a list of the venues to be displayed.
   - editions -> a list of the editions for each of the venues.
   - editions_reproduciblity_scores -> the reproducibility scores for each of the editions.
@@ -118,6 +119,7 @@ Always use `uv` for package management and script execution.
   - authors_list.run = results.run = runs.run
   - authors_list.key = results.key
   - authors_list.country = countries.country
+  - countries_reproduciblity_scores.country = countries.country
 
 ### 7. Deployment
 - The website will be deployed using Docker in production.

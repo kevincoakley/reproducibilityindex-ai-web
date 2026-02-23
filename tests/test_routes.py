@@ -71,6 +71,31 @@ def test_home_page_lists_all_editions_table(
     assert body.count('data-venue="') == expected_venue_count
 
 
+def test_countries_page_lists_chart_and_table(client) -> None:
+    response = client.get("/countries/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="countries-score-chart"' in body
+    assert "chartjs-chart-error-bars" in body
+    assert "const countriesChartData =" in body
+    assert 'id="countries-table"' in body
+    assert 'data-sort-key="meanFractionalReproducibilityScore"' in body
+    assert ">Country<" in body
+    assert ">Total Fractional Reproducibility Score<" in body
+    assert ">Fractional Paper Count<" in body
+    assert ">Mean Fractional Reproducibility Score<" in body
+    assert ">Standard Error<" in body
+    assert ">Contributing Papers<" in body
+    expected_country_count = len(
+        SQLiteDataStore(DB_PATH).list_country_reproducibility_scores()
+    )
+    assert (
+        body.count('data-mean-fractional-reproducibility-score="')
+        == expected_country_count
+    )
+
+
 def test_venue_page(client, sample_data: dict[str, str]) -> None:
     response = client.get(f"/venues/{sample_data['venue']}")
 
@@ -111,7 +136,7 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">ES<" in body
     assert 'data-sort-key="total"' in body
     assert "Key: PC - Pseudocode" not in body
-    assert "aria-label=\"PC definition\"" in body
+    assert 'aria-label="PC definition"' in body
     assert f"/papers/{sample_data['paper_key']}" in body
     assert ">Number of Papers<" in body
     assert ">Global Mean<" in body

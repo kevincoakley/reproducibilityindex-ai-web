@@ -185,6 +185,82 @@ def index() -> str:
     )
 
 
+@bp.route("/countries/")
+def countries() -> str:
+    rows = _store().list_country_reproducibility_scores()
+    countries_rows: list[dict[str, object]] = []
+    countries_chart_labels: list[str] = []
+    countries_chart_data: list[dict[str, object]] = []
+
+    for row in rows:
+        mean_value = _to_float(row.get("mean_fractional_reproducibility_score"))
+        ci95_lower_value = _to_float(row.get("ci95_lower"))
+        ci95_upper_value = _to_float(row.get("ci95_upper"))
+        total_value = _to_float(row.get("total_fractional_reproducibility_score"))
+        fractional_paper_count_value = _to_float(row.get("fractional_paper_count"))
+        standard_error_value = _to_float(row.get("standard_error"))
+        contributing_papers_value = _to_float(row.get("contributing_papers"))
+        mean_sort = mean_value if mean_value is not None else -1.0
+        flag = str(row.get("flag") or "").strip()
+
+        country_row = {
+            "name": _to_metric_display(row.get("name")),
+            "country": _to_metric_display(row.get("country")),
+            "flag": flag if flag else "N/A",
+            "total_fractional_reproducibility_score": _to_metric_display(
+                row.get("total_fractional_reproducibility_score")
+            ),
+            "fractional_paper_count": _to_metric_display(
+                row.get("fractional_paper_count")
+            ),
+            "mean_fractional_reproducibility_score": _to_metric_display(
+                row.get("mean_fractional_reproducibility_score")
+            ),
+            "standard_error": _to_metric_display(row.get("standard_error")),
+            "contributing_papers": _to_metric_display(row.get("contributing_papers")),
+            "mean_sort": mean_sort,
+            "total_sort": total_value if total_value is not None else -1.0,
+            "fractional_paper_count_sort": (
+                fractional_paper_count_value
+                if fractional_paper_count_value is not None
+                else -1.0
+            ),
+            "standard_error_sort": (
+                standard_error_value if standard_error_value is not None else -1.0
+            ),
+            "contributing_papers_sort": (
+                contributing_papers_value
+                if contributing_papers_value is not None
+                else -1.0
+            ),
+        }
+        countries_rows.append(country_row)
+
+        if mean_value is None:
+            continue
+
+        lower_bound = ci95_lower_value if ci95_lower_value is not None else mean_value
+        upper_bound = ci95_upper_value if ci95_upper_value is not None else mean_value
+        countries_chart_labels.append(flag if flag else country_row["name"])
+        countries_chart_data.append(
+            {
+                "x": mean_value,
+                "xMin": lower_bound,
+                "xMax": upper_bound,
+                "countryName": country_row["name"],
+            }
+        )
+
+    countries_chart_height = max(420, min(2200, len(countries_chart_data) * 33))
+    return render_template(
+        "countries.html",
+        countries_rows=countries_rows,
+        countries_chart_labels=countries_chart_labels,
+        countries_chart_data=countries_chart_data,
+        countries_chart_height=countries_chart_height,
+    )
+
+
 @bp.route("/venues/<venue>")
 def venue_years(venue: str) -> str:
     venue_row = _store().get_venue(venue)

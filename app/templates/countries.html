@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>Country Reproducibility Scores</h2>
+    <p>
+      Mean fractional reproducibility score by country (25+ contributing papers), with 95% confidence interval error bars.
+    </p>
+    <div class="chart-wrap" style="height: {{ countries_chart_height }}px;">
+      <canvas
+        id="countries-score-chart"
+        aria-label="Country reproducibility score chart"
+      ></canvas>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>All Countries</h2>
+    <table id="countries-table">
+      <thead>
+        <tr>
+          <th><button type="button" class="sort-button" data-sort-key="name">Country</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="totalFractionalReproducibilityScore">Total Fractional Reproducibility Score</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="fractionalPaperCount">Fractional Paper Count</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="meanFractionalReproducibilityScore">Mean Fractional Reproducibility Score</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="standardError">Standard Error</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="contributingPapers">Contributing Papers</button></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in countries_rows %}
+          <tr
+            data-name="{{ row.name|lower }}"
+            data-total-fractional-reproducibility-score="{{ row.total_sort }}"
+            data-fractional-paper-count="{{ row.fractional_paper_count_sort }}"
+            data-mean-fractional-reproducibility-score="{{ row.mean_sort }}"
+            data-standard-error="{{ row.standard_error_sort }}"
+            data-contributing-papers="{{ row.contributing_papers_sort }}"
+          >
+            <td>{{ row.name }}</td>
+            <td>{{ row.total_fractional_reproducibility_score }}</td>
+            <td>{{ row.fractional_paper_count }}</td>
+            <td>{{ row.mean_fractional_reproducibility_score }}</td>
+            <td>{{ row.standard_error }}</td>
+            <td>{{ row.contributing_papers }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-error-bars/build/index.umd.js"></script>
+  <script>
+    const countriesChartLabels = {{ countries_chart_labels|tojson }};
+    const countriesChartData = {{ countries_chart_data|tojson }};
+    const countriesChartCanvas = document.getElementById("countries-score-chart");
+
+    const chartErrorBars =
+      window["chartjs-chart-error-bars"] || window.ChartErrorBars || null;
+
+    if (window.Chart && chartErrorBars) {
+      [
+        "BarWithErrorBarsController",
+        "BarWithErrorBars",
+        "PointWithErrorBar",
+      ].forEach((key) => {
+        if (chartErrorBars[key]) {
+          Chart.register(chartErrorBars[key]);
+        }
+      });
+    }
+
+    if (countriesChartCanvas && window.Chart && countriesChartData.length > 0) {
+      try {
+        new Chart(countriesChartCanvas, {
+          type: "barWithErrorBars",
+          data: {
+            labels: countriesChartLabels,
+            datasets: [
+              {
+                label: "Mean Fractional Reproducibility Score",
+                data: countriesChartData,
+                backgroundColor: "#8bb7de",
+                borderColor: "#163a5c",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                min: 0,
+                max: 7,
+                title: {
+                  display: true,
+                  text: "Mean Fractional Reproducibility Score",
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Country of Authors",
+                },
+                ticks: {
+                  font: {
+                    size: 22,
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: (context) => {
+                    const raw = context.raw || {};
+                    const score = Number(context.parsed.x);
+                    const lower = Number(raw.xMin);
+                    const upper = Number(raw.xMax);
+                    const country = String(raw.countryName || "");
+                    return `${country}: ${score.toFixed(2)} (95% CI: ${lower.toFixed(2)} - ${upper.toFixed(2)})`;
+                  },
+                },
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.error("Unable to render country error-bar chart.", error);
+      }
+    }
+
+    const countriesTableBody = document.querySelector("#countries-table tbody");
+    const countriesTableRows = Array.from(
+      document.querySelectorAll("#countries-table tbody tr")
+    );
+    const countriesSortButtons = Array.from(
+      document.querySelectorAll("#countries-table .sort-button")
+    );
+    const countriesSortTypes = {
+      name: "text",
+      totalFractionalReproducibilityScore: "number",
+      fractionalPaperCount: "number",
+      meanFractionalReproducibilityScore: "number",
+      standardError: "number",
+      contributingPapers: "number",
+    };
+    let countriesSortKey = "meanFractionalReproducibilityScore";
+    let countriesSortDirection = "desc";
+
+    const sortCountryRows = () => {
+      const rows = [...countriesTableRows];
+      rows.sort((left, right) => {
+        const leftValue = left.dataset[countriesSortKey] ?? "";
+        const rightValue = right.dataset[countriesSortKey] ?? "";
+        if (countriesSortTypes[countriesSortKey] === "number") {
+          return countriesSortDirection === "asc"
+            ? Number(leftValue) - Number(rightValue)
+            : Number(rightValue) - Number(leftValue);
+        }
+        return countriesSortDirection === "asc"
+          ? leftValue.localeCompare(rightValue)
+          : rightValue.localeCompare(leftValue);
+      });
+
+      rows.forEach((row) => {
+        countriesTableBody.appendChild(row);
+      });
+    };
+
+    countriesSortButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextKey = button.dataset.sortKey;
+        if (!nextKey) {
+          return;
+        }
+        if (countriesSortKey === nextKey) {
+          countriesSortDirection = countriesSortDirection === "asc" ? "desc" : "asc";
+        } else {
+          countriesSortKey = nextKey;
+          countriesSortDirection = "asc";
+        }
+        sortCountryRows();
+      });
+    });
+
+    sortCountryRows();
+  </script>
+{% endblock %}

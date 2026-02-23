@@ -16,6 +16,10 @@ uv run flask --app run.py --debug run
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
+Key pages:
+- `/` home
+- `/countries/` country-level reproducibility chart and table
+
 ## Run (production-style)
 
 ```bash

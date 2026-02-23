@@ -50,7 +50,7 @@ class SQLiteDataStore(DataStore):
         return self._fetch_all(
             """
             SELECT
-                p.edition AS venue,
+                p.venue,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -70,8 +70,8 @@ class SQLiteDataStore(DataStore):
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproduciblity_scores AS pm
-              ON p.edition = pm.venue AND p.year = pm.year
-            WHERE p.edition = ?
+              ON p.venue = pm.venue AND p.year = pm.year
+            WHERE p.venue = ?
             ORDER BY p.year DESC
             """,
             (venue,),
@@ -80,7 +80,7 @@ class SQLiteDataStore(DataStore):
     def list_all_editions(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                p.edition AS venue,
+                p.venue,
                 p.year,
                 pm.number_papers,
                 pm.global_mean,
@@ -93,21 +93,21 @@ class SQLiteDataStore(DataStore):
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproduciblity_scores AS pm
-              ON p.edition = pm.venue AND p.year = pm.year
-            ORDER BY p.edition ASC, p.year DESC
+              ON p.venue = pm.venue AND p.year = pm.year
+            ORDER BY p.venue ASC, p.year DESC
             """)
 
     def list_paper_counts_by_venue_and_year(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                e.edition AS venue,
+                e.venue,
                 e.year,
                 COUNT(r.key) AS number_papers
             FROM editions AS e
             LEFT JOIN results AS r
-              ON e.edition = r.venue AND e.year = r.year
-            GROUP BY e.edition, e.year
-            ORDER BY e.year ASC, e.edition ASC
+              ON e.venue = r.venue AND e.year = r.year
+            GROUP BY e.venue, e.year
+            ORDER BY e.year ASC, e.venue ASC
             """)
 
     def list_country_reproducibility_scores(self) -> list[Record]:

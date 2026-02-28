@@ -136,21 +136,35 @@ def index() -> str:
     all_edition_rows: list[dict[str, object]] = []
     chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
     for row in _store().list_all_editions():
-        global_mean_raw = row.get("global_mean")
-        global_mean_value = _to_float(global_mean_raw)
-        global_mean_sort = global_mean_value if global_mean_value is not None else -1.0
+        documentation_global_mean_raw = row.get("documentation_global_mean")
+        documentation_global_mean_value = _to_float(documentation_global_mean_raw)
+        documentation_global_mean_sort = (
+            documentation_global_mean_value
+            if documentation_global_mean_value is not None
+            else -1.0
+        )
 
         all_edition_rows.append(
             {
                 "venue": row.get("venue"),
                 "year": row.get("year"),
                 "number_papers": _to_metric_display(row.get("number_papers")),
-                "global_mean": _to_metric_display(global_mean_raw),
-                "global_mean_sort": global_mean_sort,
-                "global_median": _to_metric_display(row.get("global_median")),
-                "documentation_mean": _to_metric_display(row.get("documentation_mean")),
-                "dataset_mean": _to_metric_display(row.get("dataset_mean")),
-                "code_mean": _to_metric_display(row.get("code_mean")),
+                "documentation_global_mean": _to_metric_display(
+                    documentation_global_mean_raw
+                ),
+                "documentation_global_mean_sort": documentation_global_mean_sort,
+                "documentation_global_median": _to_metric_display(
+                    row.get("documentation_global_median")
+                ),
+                "documentation_other_mean": _to_metric_display(
+                    row.get("documentation_other_mean")
+                ),
+                "documentation_dataset_mean": _to_metric_display(
+                    row.get("documentation_dataset_mean")
+                ),
+                "documentation_code_mean": _to_metric_display(
+                    row.get("documentation_code_mean")
+                ),
                 "percent_emperical": _to_percent_display(row.get("percent_emperical")),
                 "percent_industry": _to_percent_display(row.get("percent_industry")),
                 "url": row.get("url"),
@@ -159,9 +173,13 @@ def index() -> str:
 
         venue = str(row.get("venue") or "").strip()
         year_value = _to_int(row.get("year"))
-        if venue and year_value is not None and global_mean_value is not None:
+        if (
+            venue
+            and year_value is not None
+            and documentation_global_mean_value is not None
+        ):
             chart_points_by_venue.setdefault(venue, []).append(
-                {"x": year_value, "y": global_mean_value}
+                {"x": year_value, "y": documentation_global_mean_value}
             )
 
     editions: list[dict[str, object]] = []
@@ -356,15 +374,21 @@ def venue_results(venue: str, year: str) -> str:
         "number_papers": _to_metric_display(
             reproducibility_scores.get("number_papers")
         ),
-        "global_mean": _to_metric_display(reproducibility_scores.get("global_mean")),
-        "global_median": _to_metric_display(
-            reproducibility_scores.get("global_median")
+        "documentation_global_mean": _to_metric_display(
+            reproducibility_scores.get("documentation_global_mean")
         ),
-        "documentation_mean": _to_metric_display(
-            reproducibility_scores.get("documentation_mean")
+        "documentation_global_median": _to_metric_display(
+            reproducibility_scores.get("documentation_global_median")
         ),
-        "dataset_mean": _to_metric_display(reproducibility_scores.get("dataset_mean")),
-        "code_mean": _to_metric_display(reproducibility_scores.get("code_mean")),
+        "documentation_other_mean": _to_metric_display(
+            reproducibility_scores.get("documentation_other_mean")
+        ),
+        "documentation_dataset_mean": _to_metric_display(
+            reproducibility_scores.get("documentation_dataset_mean")
+        ),
+        "documentation_code_mean": _to_metric_display(
+            reproducibility_scores.get("documentation_code_mean")
+        ),
         "percent_emperical": _to_percent_display(
             reproducibility_scores.get("percent_emperical")
         ),

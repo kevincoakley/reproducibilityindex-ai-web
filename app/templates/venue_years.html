@@ -93,11 +93,11 @@
               <a href="{{ url_for('pages.venue_results', venue=venue.venue, year=row.year) }}">{{ row.year }}</a>
             </td>
             <td>{{ row.number_papers }}</td>
-            <td>{{ row.global_mean or "N/A" }}</td>
-            <td>{{ row.global_median or "N/A" }}</td>
-            <td>{{ row.documentation_mean or "N/A" }}</td>
-            <td>{{ row.dataset_mean or "N/A" }}</td>
-            <td>{{ row.code_mean or "N/A" }}</td>
+            <td>{{ row.documentation_global_mean or "N/A" }}</td>
+            <td>{{ row.documentation_global_median or "N/A" }}</td>
+            <td>{{ row.documentation_other_mean or "N/A" }}</td>
+            <td>{{ row.documentation_dataset_mean or "N/A" }}</td>
+            <td>{{ row.documentation_code_mean or "N/A" }}</td>
             <td>
               {% if row.percent_emperical %}
                 {{ row.percent_emperical }}{% if not (row.percent_emperical|string|trim).endswith("%") %}%{% endif %}

@@ -149,6 +149,9 @@ def index() -> str:
                 "venue": row.get("venue"),
                 "year": row.get("year"),
                 "number_papers": _to_metric_display(row.get("number_papers")),
+                "reproducibility_score": _to_metric_display(
+                    row.get("reproducibility_score")
+                ),
                 "documentation_global_mean": _to_metric_display(
                     documentation_global_mean_raw
                 ),
@@ -373,6 +376,9 @@ def venue_results(venue: str, year: str) -> str:
     metrics = {
         "number_papers": _to_metric_display(
             reproducibility_scores.get("number_papers")
+        ),
+        "reproducibility_score": _to_metric_display(
+            reproducibility_scores.get("reproducibility_score")
         ),
         "documentation_global_mean": _to_metric_display(
             reproducibility_scores.get("documentation_global_mean")

@@ -22,6 +22,15 @@
           <th>Number of Papers</th>
           <th>
             <div class="header-with-tooltip">
+              <span>Reproducibility Score</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
+                <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
               <span>Global Mean</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
@@ -93,6 +102,7 @@
               <a href="{{ url_for('pages.venue_results', venue=venue.venue, year=row.year) }}">{{ row.year }}</a>
             </td>
             <td>{{ row.number_papers }}</td>
+            <td>{{ row.reproducibility_score or "N/A" }}</td>
             <td>{{ row.documentation_global_mean or "N/A" }}</td>
             <td>{{ row.documentation_global_median or "N/A" }}</td>
             <td>{{ row.documentation_other_mean or "N/A" }}</td>

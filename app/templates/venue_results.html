@@ -18,6 +18,15 @@
       <thead>
         <tr>
           <th>Number of Papers</th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>Reproducibility Score</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
+                <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
+              </span>
+            </div>
+          </th>
           <th>Global Mean</th>
           <th>Global Median</th>
           <th>Documentation Mean</th>
@@ -30,6 +39,7 @@
       <tbody>
         <tr>
           <td>{{ metrics.number_papers }}</td>
+          <td>{{ metrics.reproducibility_score }}</td>
           <td>{{ metrics.documentation_global_mean }}</td>
           <td>{{ metrics.documentation_global_median }}</td>
           <td>{{ metrics.documentation_other_mean }}</td>

@@ -63,9 +63,12 @@ def test_home_page_lists_all_editions_table(
     assert "const homeChartDatasets =" in body
     assert 'id="home-editions-table"' in body
     assert 'data-sort-key="globalMean"' in body
+    assert 'data-sort-key="reproducibilityScore"' in body
+    assert 'aria-label="Reproducibility Score definition"' in body
     assert f"/venues/{sample_data['venue']}" in body
     assert ">Venue<" in body
     assert ">Year<" in body
+    assert ">Reproducibility Score<" in body
     assert ">Global Mean<" in body
     expected_venue_count = len(SQLiteDataStore(DB_PATH).list_venues())
     assert body.count('data-venue="') == expected_venue_count
@@ -127,6 +130,7 @@ def test_venue_page(client, sample_data: dict[str, str]) -> None:
     )
     assert f"/venues/{sample_data['venue']}/{sample_data['year']}" in body
     assert ">Number of Papers<" in body
+    assert ">Reproducibility Score<" in body
     assert ">Global Mean<" in body
     assert ">Global Median<" in body
     assert ">Documentation Mean<" in body
@@ -155,8 +159,10 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert 'data-sort-key="total"' in body
     assert "Key: PC - Pseudocode" not in body
     assert 'aria-label="PC definition"' in body
+    assert 'aria-label="Reproducibility Score definition"' in body
     assert f"/papers/{sample_data['paper_key']}" in body
     assert ">Number of Papers<" in body
+    assert ">Reproducibility Score<" in body
     assert ">Global Mean<" in body
     assert ">Global Median<" in body
     assert ">Documentation Mean<" in body

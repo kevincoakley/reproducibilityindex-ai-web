@@ -105,8 +105,15 @@ def test_data_page_lists_stacked_area_chart(client) -> None:
     assert response.status_code == 200
     body = response.get_data(as_text=True)
     assert 'id="data-papers-chart"' in body
+    assert 'id="venue-total-pie-chart"' in body
+    assert 'id="year-total-pie-chart"' in body
     assert "const dataChartDatasets =" in body
+    assert "const venueStatsLabels =" in body
+    assert "const yearStatsLabels =" in body
     assert 'stack: "papers"' in body
+    assert 'type: "pie"' in body
+    expected_total_papers = SQLiteDataStore(DB_PATH).get_total_papers_count()
+    assert f"Total number of papers: {expected_total_papers}" in body
     assert "Number of papers by venue and edition year." in body
     assert ">Venue<" in body
     assert ">Year<" in body

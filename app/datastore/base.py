@@ -34,6 +34,18 @@ class DataStore(ABC):
         """Return /data table rows with run, venue, year, counts, and URL."""
 
     @abstractmethod
+    def list_venue_stats(self) -> list[Record]:
+        """Return venue totals from venue_stats."""
+
+    @abstractmethod
+    def list_year_stats(self) -> list[Record]:
+        """Return year totals from year_stats."""
+
+    @abstractmethod
+    def get_total_papers_count(self) -> int:
+        """Return the total number of papers in results."""
+
+    @abstractmethod
     def list_country_reproducibility_scores(self) -> list[Record]:
         """Return joined country reproducibility score rows."""
 

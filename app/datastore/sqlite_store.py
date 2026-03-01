@@ -135,6 +135,34 @@ class SQLiteDataStore(DataStore):
             ORDER BY r.run DESC, r.year DESC, r.venue ASC
             """)
 
+    def list_venue_stats(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT venue, total
+            FROM venue_stats
+            ORDER BY CAST(total AS INTEGER) DESC, venue ASC
+            """)
+
+    def list_year_stats(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT year, total
+            FROM year_stats
+            ORDER BY CAST(year AS INTEGER) ASC
+            """)
+
+    def get_total_papers_count(self) -> int:
+        row = self._fetch_one("""
+            SELECT COUNT(key) AS total_papers
+            FROM results
+            """)
+        if row is None:
+            return 0
+        total = row.get("total_papers")
+        if isinstance(total, int):
+            return total
+        if isinstance(total, str):
+            return int(total)
+        return 0
+
     def list_country_reproducibility_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT

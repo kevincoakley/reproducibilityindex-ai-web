@@ -108,14 +108,16 @@ Always use `uv` for package management and script execution.
   - authors_list -> the authors for each paper.
   - countries -> a list of the countries to be displayed.
   - countries_reproduciblity_scores -> the reproducibility scores for each of the countries.
-  - venues -> a list of the venues to be displayed.
   - editions -> a list of the editions for each of the venues.
   - editions_reproduciblity_scores -> the reproducibility scores for each of the editions.
   - results -> the results of our analysis of the papers. 
   - runs -> details about how the results were found.
+  - venue_stats -> the statistics for each of the venues.
+  - venues -> a list of the venues to be displayed.
+  - year_stats -> the statistics for each of the years.
 - Database table links:
-  - authors_list.venue = editions.venue = editions_reproduciblity_scores.venue = results.venue = venues.venue
-  - authors_list.year = editions.year = editions_reproduciblity_scores.year = results.year
+  - authors_list.venue = editions.venue = editions_reproduciblity_scores.venue = results.venue = venues.venue = venue_stats.venue
+  - authors_list.year = editions.year = editions_reproduciblity_scores.year = results.year = year_stats.year
   - authors_list.run = results.run = runs.run
   - authors_list.key = results.key
   - authors_list.country = countries.country

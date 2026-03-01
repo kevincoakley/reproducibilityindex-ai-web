@@ -3,10 +3,20 @@
 {% block content %}
   <section class="card">
     <h2>Data</h2>
+    <p>Total number of papers: {{ total_papers }}</p>
     <p>Number of papers by venue and edition year.</p>
 
     <div class="chart-wrap">
       <canvas id="data-papers-chart" aria-label="Stacked area chart of paper counts by venue and year"></canvas>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-wrap chart-wrap-half">
+        <canvas id="venue-total-pie-chart" aria-label="Pie chart of total papers by venue"></canvas>
+      </div>
+      <div class="chart-wrap chart-wrap-half">
+        <canvas id="year-total-pie-chart" aria-label="Pie chart of total papers by year"></canvas>
+      </div>
     </div>
 
     <table>
@@ -43,6 +53,12 @@
   <script>
     const dataChartDatasets = {{ data_chart_datasets|tojson }};
     const dataChartCanvas = document.getElementById("data-papers-chart");
+    const venueStatsLabels = {{ venue_stats_labels|tojson }};
+    const venueStatsTotals = {{ venue_stats_totals|tojson }};
+    const yearStatsLabels = {{ year_stats_labels|tojson }};
+    const yearStatsTotals = {{ year_stats_totals|tojson }};
+    const venueTotalPieCanvas = document.getElementById("venue-total-pie-chart");
+    const yearTotalPieCanvas = document.getElementById("year-total-pie-chart");
 
     if (
       dataChartCanvas &&
@@ -119,6 +135,72 @@
               callbacks: {
                 label: (context) => `${context.dataset.label}: ${context.parsed.y}`,
               },
+            },
+          },
+        },
+      });
+    }
+
+    if (
+      venueTotalPieCanvas &&
+      window.Chart &&
+      venueStatsLabels.length > 0 &&
+      venueStatsTotals.length > 0
+    ) {
+      new Chart(venueTotalPieCanvas, {
+        type: "pie",
+        data: {
+          labels: venueStatsLabels,
+          datasets: [
+            {
+              data: venueStatsTotals,
+              backgroundColor: venueStatsLabels.map((_, index) => {
+                const hue = Math.round((index * 137.508) % 360);
+                return `hsl(${hue}, 60%, 52%)`;
+              }),
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+        },
+      });
+    }
+
+    if (
+      yearTotalPieCanvas &&
+      window.Chart &&
+      yearStatsLabels.length > 0 &&
+      yearStatsTotals.length > 0
+    ) {
+      new Chart(yearTotalPieCanvas, {
+        type: "pie",
+        data: {
+          labels: yearStatsLabels,
+          datasets: [
+            {
+              data: yearStatsTotals,
+              backgroundColor: yearStatsLabels.map((_, index) => {
+                const hue = Math.round((index * 137.508) % 360);
+                return `hsl(${hue}, 60%, 52%)`;
+              }),
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
             },
           },
         },

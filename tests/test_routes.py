@@ -58,9 +58,11 @@ def test_home_page_lists_all_editions_table(
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
+    assert 'id="home-repro-score-chart"' in body
     assert 'id="home-global-mean-chart"' in body
     assert "cdn.jsdelivr.net/npm/chart.js" in body
-    assert "const homeChartDatasets =" in body
+    assert "const homeReproScoreChartDatasets =" in body
+    assert "const homeDocMeanChartDatasets =" in body
     assert 'id="home-editions-table"' in body
     assert 'data-sort-key="docMean"' in body
     assert 'data-sort-key="reproScore"' in body

@@ -2,7 +2,15 @@
 
 {% block content %}
   <section class="card">
-    <h2>Global Mean Trend</h2>
+    <h2>Reproducibility Score Trend</h2>
+    <p>Edition reproducibility score by venue over time.</p>
+    <div class="chart-wrap">
+      <canvas id="home-repro-score-chart" aria-label="Reproducibility score trend by venue and year"></canvas>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Global Documentation Mean Trend</h2>
     <p>Edition reproducibility metrics global mean by venue over time.</p>
     <div class="chart-wrap">
       <canvas id="home-global-mean-chart" aria-label="Global mean trend by venue and year"></canvas>
@@ -10,8 +18,8 @@
   </section>
 
   <section class="card">
-    <h2>All Editions</h2>
-    <p>Browse reproducibility metrics across all venue editions.</p>
+    <h2>Latest Editions</h2>
+    <p>Browse reproducibility metrics across the latest editions of each venue.</p>
 
     <table id="home-editions-table">
       <thead>
@@ -141,14 +149,69 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
-    const homeChartDatasets = {{ home_chart_datasets|tojson }};
-    const homeChartCanvas = document.getElementById("home-global-mean-chart");
+    const homeReproScoreChartDatasets = {{ home_repro_score_chart_datasets|tojson }};
+    const homeReproScoreChartCanvas = document.getElementById("home-repro-score-chart");
 
-    if (homeChartCanvas && window.Chart && homeChartDatasets.length > 0) {
-      new Chart(homeChartCanvas, {
+    if (
+      homeReproScoreChartCanvas &&
+      window.Chart &&
+      homeReproScoreChartDatasets.length > 0
+    ) {
+      new Chart(homeReproScoreChartCanvas, {
         type: "line",
         data: {
-          datasets: homeChartDatasets.map((dataset) => ({
+          datasets: homeReproScoreChartDatasets.map((dataset) => ({
+            ...dataset,
+            parsing: false,
+            tension: 0.2,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 4,
+            spanGaps: true,
+          })),
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "linear",
+              title: {
+                display: true,
+                text: "Year",
+              },
+              ticks: {
+                precision: 0,
+                callback: (value) => String(Math.trunc(Number(value))),
+              },
+            },
+            y: {
+              min: 0,
+              max: 1,
+              title: {
+                display: true,
+                text: "Reproducibility Score",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+        },
+      });
+    }
+
+    const homeDocMeanChartDatasets = {{ home_doc_mean_chart_datasets|tojson }};
+    const homeDocMeanChartCanvas = document.getElementById("home-global-mean-chart");
+
+    if (homeDocMeanChartCanvas && window.Chart && homeDocMeanChartDatasets.length > 0) {
+      new Chart(homeDocMeanChartCanvas, {
+        type: "line",
+        data: {
+          datasets: homeDocMeanChartDatasets.map((dataset) => ({
             ...dataset,
             parsing: false,
             tension: 0.2,
@@ -208,7 +271,7 @@
       percentEmpirical: "number",
       percentIndustry: "number",
     };
-    let homeSortKey = "docMean";
+    let homeSortKey = "reproScore";
     let homeSortDirection = "desc";
 
     const sortHomeRows = () => {

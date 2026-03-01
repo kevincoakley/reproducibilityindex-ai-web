@@ -134,10 +134,12 @@ def _to_int(value: object) -> int | None:
 @bp.route("/")
 def index() -> str:
     all_edition_rows: list[dict[str, object]] = []
-    chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
+    doc_mean_chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
+    repro_score_chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
     for row in _store().list_all_editions():
         documentation_global_mean_raw = row.get("documentation_global_mean")
         documentation_global_mean_value = _to_float(documentation_global_mean_raw)
+        reproducibility_score_value = _to_float(row.get("reproducibility_score"))
         documentation_global_mean_sort = (
             documentation_global_mean_value
             if documentation_global_mean_value is not None
@@ -181,8 +183,12 @@ def index() -> str:
             and year_value is not None
             and documentation_global_mean_value is not None
         ):
-            chart_points_by_venue.setdefault(venue, []).append(
+            doc_mean_chart_points_by_venue.setdefault(venue, []).append(
                 {"x": year_value, "y": documentation_global_mean_value}
+            )
+        if venue and year_value is not None and reproducibility_score_value is not None:
+            repro_score_chart_points_by_venue.setdefault(venue, []).append(
+                {"x": year_value, "y": reproducibility_score_value}
             )
 
     editions: list[dict[str, object]] = []
@@ -194,15 +200,20 @@ def index() -> str:
         seen_venues.add(venue)
         editions.append(row)
 
-    home_chart_datasets = [
+    home_doc_mean_chart_datasets = [
         {"label": venue, "data": sorted(points, key=lambda point: point["x"])}
-        for venue, points in sorted(chart_points_by_venue.items())
+        for venue, points in sorted(doc_mean_chart_points_by_venue.items())
+    ]
+    home_repro_score_chart_datasets = [
+        {"label": venue, "data": sorted(points, key=lambda point: point["x"])}
+        for venue, points in sorted(repro_score_chart_points_by_venue.items())
     ]
 
     return render_template(
         "home.html",
         editions=editions,
-        home_chart_datasets=home_chart_datasets,
+        home_doc_mean_chart_datasets=home_doc_mean_chart_datasets,
+        home_repro_score_chart_datasets=home_repro_score_chart_datasets,
     )
 
 

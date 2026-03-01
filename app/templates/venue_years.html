@@ -18,11 +18,12 @@
     <table>
       <thead>
         <tr>
+          <th>Venue</th>
           <th>Year</th>
-          <th>Number of Papers</th>
+          <th>Papers</th>
           <th>
             <div class="header-with-tooltip">
-              <span>Reproducibility Score</span>
+              <span>Repro. Score</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
                 <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
@@ -31,7 +32,7 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Global Mean</span>
+              <span>Doc. Mean</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
                 <span class="tooltip-text">Global mean is the average score over the seven reproducibility variables for emperical research papers.</span>
@@ -40,7 +41,7 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Global Median</span>
+              <span>Doc. Median</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Global Median definition">i</button>
                 <span class="tooltip-text">Global median is the median score over the seven reproducibility variables for emperical research papers.</span>
@@ -49,16 +50,7 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Documentation Mean</span>
-              <span class="tooltip-wrap">
-                <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
-                <span class="tooltip-text">Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for emperical research papers.</span>
-              </span>
-            </div>
-          </th>
-          <th>
-            <div class="header-with-tooltip">
-              <span>Dataset Mean</span>
+              <span>Dataset Doc.</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Dataset Mean definition">i</button>
                 <span class="tooltip-text">Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for emperical research papers.</span>
@@ -67,7 +59,7 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Code Mean</span>
+              <span>Code Doc.</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Code Mean definition">i</button>
                 <span class="tooltip-text">Documentation mean is the average score over the Open Source Code reproducibility variables for emperical research papers.</span>
@@ -76,7 +68,16 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Percent Emperical</span>
+              <span>Other Doc.</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
+                <span class="tooltip-text">Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for emperical research papers.</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>% Empirical</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Percent Emperical definition">i</button>
                 <span class="tooltip-text">Percentage of papers that are Emperical research vs Theoretical research</span>
@@ -85,7 +86,7 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>Percent Industry</span>
+              <span>% Industry</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Percent Industry definition">i</button>
                 <span class="tooltip-text">Percentage of emperical research papers with at least one author from Industry</span>
@@ -99,15 +100,18 @@
         {% for row in editions %}
           <tr>
             <td>
+              <a href="{{ url_for('pages.venue_years', venue=venue.venue) }}">{{ venue.venue }}</a>
+            </td>
+            <td>
               <a href="{{ url_for('pages.venue_results', venue=venue.venue, year=row.year) }}">{{ row.year }}</a>
             </td>
             <td>{{ row.number_papers }}</td>
             <td>{{ row.reproducibility_score or "N/A" }}</td>
             <td>{{ row.documentation_global_mean or "N/A" }}</td>
             <td>{{ row.documentation_global_median or "N/A" }}</td>
-            <td>{{ row.documentation_other_mean or "N/A" }}</td>
             <td>{{ row.documentation_dataset_mean or "N/A" }}</td>
             <td>{{ row.documentation_code_mean or "N/A" }}</td>
+            <td>{{ row.documentation_other_mean or "N/A" }}</td>
             <td>
               {% if row.percent_emperical %}
                 {{ row.percent_emperical }}{% if not (row.percent_emperical|string|trim).endswith("%") %}%{% endif %}

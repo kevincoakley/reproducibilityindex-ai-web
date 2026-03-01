@@ -17,36 +17,52 @@
     <table>
       <thead>
         <tr>
-          <th>Number of Papers</th>
+          <th>Venue</th>
+          <th>Year</th>
+          <th>Papers</th>
           <th>
             <div class="header-with-tooltip">
-              <span>Reproducibility Score</span>
+              <span>Repro. Score</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
                 <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
               </span>
             </div>
           </th>
-          <th>Global Mean</th>
-          <th>Global Median</th>
-          <th>Documentation Mean</th>
-          <th>Dataset Mean</th>
-          <th>Code Mean</th>
-          <th>Percent Emperical</th>
-          <th>Percent Industry</th>
+          <th>Doc. Mean</th>
+          <th>Doc. Median</th>
+          <th>Dataset Doc.</th>
+          <th>Code Doc.</th>
+          <th>Other Doc.</th>
+          <th>% Empirical</th>
+          <th>% Industry</th>
+          <th>Website</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td>
+            <a href="{{ url_for('pages.venue_years', venue=venue.venue) }}">{{ venue.venue }}</a>
+          </td>
+          <td>{{ year }}</td>
           <td>{{ metrics.number_papers }}</td>
           <td>{{ metrics.reproducibility_score }}</td>
           <td>{{ metrics.documentation_global_mean }}</td>
           <td>{{ metrics.documentation_global_median }}</td>
-          <td>{{ metrics.documentation_other_mean }}</td>
           <td>{{ metrics.documentation_dataset_mean }}</td>
           <td>{{ metrics.documentation_code_mean }}</td>
+          <td>{{ metrics.documentation_other_mean }}</td>
           <td>{{ metrics.percent_emperical }}</td>
           <td>{{ metrics.percent_industry }}</td>
+          <td>
+            {% if edition_url %}
+              <a class="icon-link" href="{{ edition_url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">
+                <span aria-hidden="true">&#128196;</span>
+              </a>
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
         </tr>
       </tbody>
     </table>

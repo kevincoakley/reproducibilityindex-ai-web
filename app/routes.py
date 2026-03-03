@@ -219,16 +219,16 @@ def index() -> str:
 
 @bp.route("/countries/")
 def countries() -> str:
-    rows = _store().list_country_reproducibility_scores()
+    rows = _store().list_country_documentation_scores()
     countries_rows: list[dict[str, object]] = []
     countries_chart_labels: list[str] = []
     countries_chart_data: list[dict[str, object]] = []
 
     for row in rows:
-        mean_value = _to_float(row.get("mean_fractional_reproducibility_score"))
+        mean_value = _to_float(row.get("mean_fractional_documentation_score"))
         ci95_lower_value = _to_float(row.get("ci95_lower"))
         ci95_upper_value = _to_float(row.get("ci95_upper"))
-        total_value = _to_float(row.get("total_fractional_reproducibility_score"))
+        total_value = _to_float(row.get("total_fractional_documentation_score"))
         fractional_paper_count_value = _to_float(row.get("fractional_paper_count"))
         standard_error_value = _to_float(row.get("standard_error"))
         contributing_papers_value = _to_float(row.get("contributing_papers"))
@@ -239,14 +239,14 @@ def countries() -> str:
             "name": _to_metric_display(row.get("name")),
             "country": _to_metric_display(row.get("country")),
             "flag": flag if flag else "N/A",
-            "total_fractional_reproducibility_score": _to_metric_display(
-                row.get("total_fractional_reproducibility_score")
+            "total_fractional_documentation_score": _to_metric_display(
+                row.get("total_fractional_documentation_score")
             ),
             "fractional_paper_count": _to_metric_display(
                 row.get("fractional_paper_count")
             ),
-            "mean_fractional_reproducibility_score": _to_metric_display(
-                row.get("mean_fractional_reproducibility_score")
+            "mean_fractional_documentation_score": _to_metric_display(
+                row.get("mean_fractional_documentation_score")
             ),
             "standard_error": _to_metric_display(row.get("standard_error")),
             "contributing_papers": _to_metric_display(row.get("contributing_papers")),

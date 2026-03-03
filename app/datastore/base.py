@@ -46,8 +46,8 @@ class DataStore(ABC):
         """Return the total number of papers in results."""
 
     @abstractmethod
-    def list_country_reproducibility_scores(self) -> list[Record]:
-        """Return joined country reproducibility score rows."""
+    def list_country_documentation_scores(self) -> list[Record]:
+        """Return joined country documentation score rows."""
 
     @abstractmethod
     def get_edition_reproducibility_scores(

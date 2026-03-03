@@ -92,18 +92,18 @@ def test_countries_page_lists_chart_and_table(client) -> None:
     assert "chartjs-chart-error-bars" in body
     assert "const countriesChartData =" in body
     assert 'id="countries-table"' in body
-    assert 'data-sort-key="meanFractionalReproducibilityScore"' in body
+    assert 'data-sort-key="meanFractionalDocumentationScore"' in body
     assert ">Country<" in body
-    assert ">Total Fractional Reproducibility Score<" in body
+    assert ">Total Fractional Documentation Score<" in body
     assert ">Fractional Paper Count<" in body
-    assert ">Mean Fractional Reproducibility Score<" in body
+    assert ">Mean Fractional Documentation Score<" in body
     assert ">Standard Error<" in body
     assert ">Contributing Papers<" in body
     expected_country_count = len(
-        SQLiteDataStore(DB_PATH).list_country_reproducibility_scores()
+        SQLiteDataStore(DB_PATH).list_country_documentation_scores()
     )
     assert (
-        body.count('data-mean-fractional-reproducibility-score="')
+        body.count('data-mean-fractional-documentation-score="')
         == expected_country_count
     )
 

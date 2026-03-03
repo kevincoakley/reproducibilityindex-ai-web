@@ -2,9 +2,9 @@
 
 {% block content %}
   <section class="card">
-    <h2>Country Reproducibility Scores</h2>
+    <h2>Country Documentation Scores</h2>
     <p>
-      Mean fractional reproducibility score by country (25+ contributing papers), with 95% confidence interval error bars.
+      Mean fractional documentation score by country (25+ contributing papers), with 95% confidence interval error bars.
     </p>
     <div class="chart-wrap" style="height: {{ countries_chart_height }}px;">
       <canvas
@@ -20,9 +20,9 @@
       <thead>
         <tr>
           <th><button type="button" class="sort-button" data-sort-key="name">Country</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="totalFractionalReproducibilityScore">Total Fractional Reproducibility Score</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="totalFractionalDocumentationScore">Total Fractional Documentation Score</button></th>
           <th><button type="button" class="sort-button" data-sort-key="fractionalPaperCount">Fractional Paper Count</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="meanFractionalReproducibilityScore">Mean Fractional Reproducibility Score</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="meanFractionalDocumentationScore">Mean Fractional Documentation Score</button></th>
           <th><button type="button" class="sort-button" data-sort-key="standardError">Standard Error</button></th>
           <th><button type="button" class="sort-button" data-sort-key="contributingPapers">Contributing Papers</button></th>
         </tr>
@@ -31,16 +31,16 @@
         {% for row in countries_rows %}
           <tr
             data-name="{{ row.name|lower }}"
-            data-total-fractional-reproducibility-score="{{ row.total_sort }}"
+            data-total-fractional-documentation-score="{{ row.total_sort }}"
             data-fractional-paper-count="{{ row.fractional_paper_count_sort }}"
-            data-mean-fractional-reproducibility-score="{{ row.mean_sort }}"
+            data-mean-fractional-documentation-score="{{ row.mean_sort }}"
             data-standard-error="{{ row.standard_error_sort }}"
             data-contributing-papers="{{ row.contributing_papers_sort }}"
           >
             <td>{{ row.name }}</td>
-            <td>{{ row.total_fractional_reproducibility_score }}</td>
+            <td>{{ row.total_fractional_documentation_score }}</td>
             <td>{{ row.fractional_paper_count }}</td>
-            <td>{{ row.mean_fractional_reproducibility_score }}</td>
+            <td>{{ row.mean_fractional_documentation_score }}</td>
             <td>{{ row.standard_error }}</td>
             <td>{{ row.contributing_papers }}</td>
           </tr>
@@ -79,7 +79,7 @@
             labels: countriesChartLabels,
             datasets: [
               {
-                label: "Mean Fractional Reproducibility Score",
+                label: "Mean Fractional Documentation Score",
                 data: countriesChartData,
                 backgroundColor: "#8bb7de",
                 borderColor: "#163a5c",
@@ -97,7 +97,7 @@
                 max: 7,
                 title: {
                   display: true,
-                  text: "Mean Fractional Reproducibility Score",
+                  text: "Mean Fractional Documentation Score",
                 },
               },
               y: {
@@ -145,13 +145,13 @@
     );
     const countriesSortTypes = {
       name: "text",
-      totalFractionalReproducibilityScore: "number",
+      totalFractionalDocumentationScore: "number",
       fractionalPaperCount: "number",
-      meanFractionalReproducibilityScore: "number",
+      meanFractionalDocumentationScore: "number",
       standardError: "number",
       contributingPapers: "number",
     };
-    let countriesSortKey = "meanFractionalReproducibilityScore";
+    let countriesSortKey = "meanFractionalDocumentationScore";
     let countriesSortDirection = "desc";
 
     const sortCountryRows = () => {

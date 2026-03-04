@@ -205,6 +205,40 @@ class SQLiteDataStore(DataStore):
               c.name ASC
             """)
 
+    def list_institution_documentation_scores(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT
+                institution,
+                total_fractional_documentation_score,
+                fractional_paper_count,
+                mean_fractional_documentation_score,
+                standard_error,
+                ci95_lower,
+                ci95_upper,
+                contributing_papers
+            FROM institutions_documentation_scores
+            ORDER BY
+              CAST(mean_fractional_documentation_score AS REAL) DESC,
+              institution ASC
+            """)
+
+    def list_institution_reproducibility_scores(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT
+                institution,
+                total_fractional_reproducibility_score,
+                fractional_paper_count,
+                mean_fractional_reproducibility_score,
+                standard_error,
+                ci95_lower,
+                ci95_upper,
+                contributing_papers
+            FROM institutions_reproducibility_scores
+            ORDER BY
+              CAST(mean_fractional_reproducibility_score AS REAL) DESC,
+              institution ASC
+            """)
+
     def get_edition_reproducibility_scores(
         self, venue: str, year: str
     ) -> Record | None:

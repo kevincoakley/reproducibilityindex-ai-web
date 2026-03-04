@@ -111,6 +111,8 @@ Always use `uv` for package management and script execution.
   - countries_reproducibility_scores -> the reproducibility scores for each of the countries.
   - editions -> a list of the editions for each of the venues.
   - editions_reproducibility_scores -> the reproducibility scores for each of the editions.
+  - institutions_documentation_scores -> the documentation scores for each of the institutions.
+  - institutions_reproducibility_scores -> the reproducibility scores for each of the institutions.
   - results -> the results of our analysis of the papers. 
   - runs -> details about how the results were found.
   - venue_stats -> the statistics for each of the venues.

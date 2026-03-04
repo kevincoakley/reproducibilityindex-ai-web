@@ -54,6 +54,14 @@ class DataStore(ABC):
         """Return joined country reproducibility score rows."""
 
     @abstractmethod
+    def list_institution_documentation_scores(self) -> list[Record]:
+        """Return institution documentation score rows."""
+
+    @abstractmethod
+    def list_institution_reproducibility_scores(self) -> list[Record]:
+        """Return institution reproducibility score rows."""
+
+    @abstractmethod
     def get_edition_reproducibility_scores(
         self, venue: str, year: str
     ) -> Record | None:

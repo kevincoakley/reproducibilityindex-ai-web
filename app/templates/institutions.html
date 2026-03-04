@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="card">
+    <h2>Institution Scores</h2>
+    <p>
+      Horizontal bar charts with 95% confidence interval error bars. Left:
+      reproducibility scores. Right: documentation scores.
+    </p>
+    <div class="chart-grid">
+      <div>
+        <h3>Reproducibility Score</h3>
+        <div class="chart-wrap" style="height: {{ institutions_chart_height }}px;">
+          <canvas
+            id="institutions-repro-score-chart"
+            aria-label="Institution reproducibility score chart"
+          ></canvas>
+        </div>
+      </div>
+      <div>
+        <h3>Documentation Score</h3>
+        <div class="chart-wrap" style="height: {{ institutions_chart_height }}px;">
+          <canvas
+            id="institutions-doc-score-chart"
+            aria-label="Institution documentation score chart"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>All Institutions</h2>
+    <table id="institutions-table">
+      <thead>
+        <tr>
+          <th><button type="button" class="sort-button" data-sort-key="institution">Institution</button></th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="meanFractionalReproducibilityScore">Mean Fractional Reproducibility Score</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Mean Fractional Reproducibility Score definition">i</button>
+                <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="meanFractionalDocumentationScore">Mean Fractional Documentation Score</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Mean Fractional Documentation Score definition">i</button>
+                <span class="tooltip-text">The average documenation score over the seven reproducibility variables for emperical research papers.</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="fractionalPaperCount">Fractional Paper Count</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Fractional Paper Count definition">i</button>
+                <span class="tooltip-text">Paper count based on fractional authorship</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <button type="button" class="sort-button" data-sort-key="contributingPapers">Contributing Papers</button>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Contributing Papers definition">i</button>
+                <span class="tooltip-text">Number of papers with at least one author from the institution</span>
+              </span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in institutions_rows %}
+          <tr
+            data-institution="{{ row.institution|lower }}"
+            data-mean-fractional-reproducibility-score="{{ row.mean_repro_sort }}"
+            data-mean-fractional-documentation-score="{{ row.mean_doc_sort }}"
+            data-fractional-paper-count="{{ row.fractional_paper_count_sort }}"
+            data-contributing-papers="{{ row.contributing_papers_sort }}"
+          >
+            <td>{{ row.institution }}</td>
+            <td>{{ row.mean_fractional_reproducibility_score }}</td>
+            <td>{{ row.mean_fractional_documentation_score }}</td>
+            <td>{{ row.fractional_paper_count }}</td>
+            <td>{{ row.contributing_papers }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-error-bars/build/index.umd.js"></script>
+  <script>
+    const institutionsReproChartLabels = {{ institutions_repro_chart_labels|tojson }};
+    const institutionsReproChartData = {{ institutions_repro_chart_data|tojson }};
+    const institutionsDocChartLabels = {{ institutions_doc_chart_labels|tojson }};
+    const institutionsDocChartData = {{ institutions_doc_chart_data|tojson }};
+
+    const chartErrorBars =
+      window["chartjs-chart-error-bars"] || window.ChartErrorBars || null;
+
+    if (window.Chart && chartErrorBars) {
+      [
+        "BarWithErrorBarsController",
+        "BarWithErrorBars",
+        "PointWithErrorBar",
+      ].forEach((key) => {
+        if (chartErrorBars[key]) {
+          Chart.register(chartErrorBars[key]);
+        }
+      });
+    }
+
+    const renderInstitutionChart = (chartCanvasId, chartLabels, chartData, chartConfig) => {
+      const chartCanvas = document.getElementById(chartCanvasId);
+      if (!chartCanvas || !window.Chart || chartData.length === 0) {
+        return;
+      }
+
+      try {
+        new Chart(chartCanvas, {
+          type: "barWithErrorBars",
+          data: {
+            labels: chartLabels,
+            datasets: [
+              {
+                label: chartConfig.datasetLabel,
+                data: chartData,
+                backgroundColor: chartConfig.backgroundColor,
+                borderColor: "#163a5c",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                min: chartConfig.xMin,
+                max: chartConfig.xMax,
+                title: {
+                  display: true,
+                  text: chartConfig.axisTitle,
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Institution of Authors",
+                },
+                ticks: {
+                  font: {
+                    size: 11,
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: (context) => {
+                    const raw = context.raw || {};
+                    const score = Number(context.parsed.x);
+                    const lower = Number(raw.xMin);
+                    const upper = Number(raw.xMax);
+                    const institution = String(raw.institutionName || "");
+                    return `${institution}: ${score.toFixed(2)} (95% CI: ${lower.toFixed(2)} - ${upper.toFixed(2)})`;
+                  },
+                },
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.error(`Unable to render ${chartCanvasId}.`, error);
+      }
+    };
+
+    renderInstitutionChart(
+      "institutions-repro-score-chart",
+      institutionsReproChartLabels,
+      institutionsReproChartData,
+      {
+        datasetLabel: "Mean Fractional Reproducibility Score",
+        axisTitle: "Mean Fractional Reproducibility Score",
+        backgroundColor: "#6f98bc",
+        xMin: 0,
+        xMax: 1,
+      }
+    );
+
+    renderInstitutionChart(
+      "institutions-doc-score-chart",
+      institutionsDocChartLabels,
+      institutionsDocChartData,
+      {
+        datasetLabel: "Mean Fractional Documentation Score",
+        axisTitle: "Mean Fractional Documentation Score",
+        backgroundColor: "#8bb7de",
+        xMin: 0,
+        xMax: 7,
+      }
+    );
+
+    const institutionsTableBody = document.querySelector("#institutions-table tbody");
+    const institutionsTableRows = Array.from(
+      document.querySelectorAll("#institutions-table tbody tr")
+    );
+    const institutionsSortButtons = Array.from(
+      document.querySelectorAll("#institutions-table .sort-button")
+    );
+    const institutionsSortTypes = {
+      institution: "text",
+      meanFractionalReproducibilityScore: "number",
+      meanFractionalDocumentationScore: "number",
+      fractionalPaperCount: "number",
+      contributingPapers: "number",
+    };
+    let institutionsSortKey = "meanFractionalReproducibilityScore";
+    let institutionsSortDirection = "desc";
+
+    const sortInstitutionRows = () => {
+      const rows = [...institutionsTableRows];
+      rows.sort((left, right) => {
+        const leftValue = left.dataset[institutionsSortKey] ?? "";
+        const rightValue = right.dataset[institutionsSortKey] ?? "";
+        if (institutionsSortTypes[institutionsSortKey] === "number") {
+          return institutionsSortDirection === "asc"
+            ? Number(leftValue) - Number(rightValue)
+            : Number(rightValue) - Number(leftValue);
+        }
+        return institutionsSortDirection === "asc"
+          ? leftValue.localeCompare(rightValue)
+          : rightValue.localeCompare(leftValue);
+      });
+
+      rows.forEach((row) => {
+        institutionsTableBody.appendChild(row);
+      });
+    };
+
+    institutionsSortButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextKey = button.dataset.sortKey;
+        if (!nextKey) {
+          return;
+        }
+        if (institutionsSortKey === nextKey) {
+          institutionsSortDirection = institutionsSortDirection === "asc" ? "desc" : "asc";
+        } else {
+          institutionsSortKey = nextKey;
+          institutionsSortDirection = "asc";
+        }
+        sortInstitutionRows();
+      });
+    });
+
+    sortInstitutionRows();
+  </script>
+{% endblock %}

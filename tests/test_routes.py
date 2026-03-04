@@ -109,6 +109,32 @@ def test_countries_page_lists_chart_and_table(client) -> None:
     )
 
 
+def test_institutions_page_lists_chart_and_table(client) -> None:
+    response = client.get("/institutions/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="institutions-repro-score-chart"' in body
+    assert 'id="institutions-doc-score-chart"' in body
+    assert "chartjs-chart-error-bars" in body
+    assert "const institutionsReproChartData =" in body
+    assert "const institutionsDocChartData =" in body
+    assert 'id="institutions-table"' in body
+    assert 'data-sort-key="meanFractionalReproducibilityScore"' in body
+    assert ">Institution<" in body
+    assert ">Mean Fractional Reproducibility Score<" in body
+    assert ">Mean Fractional Documentation Score<" in body
+    assert ">Fractional Paper Count<" in body
+    assert ">Contributing Papers<" in body
+    expected_institution_count = len(
+        SQLiteDataStore(DB_PATH).list_institution_documentation_scores()
+    )
+    assert (
+        body.count('data-mean-fractional-reproducibility-score="')
+        == expected_institution_count
+    )
+
+
 def test_data_page_lists_stacked_area_chart(client) -> None:
     response = client.get("/data/")
 

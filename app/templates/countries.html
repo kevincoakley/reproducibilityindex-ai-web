@@ -2,15 +2,30 @@
 
 {% block content %}
   <section class="card">
-    <h2>Country Documentation Scores</h2>
+    <h2>Country Scores</h2>
     <p>
-      Mean fractional documentation score by country (25+ contributing papers), with 95% confidence interval error bars.
+      Horizontal bar charts with 95% confidence interval error bars. Left:
+      reproducibility scores. Right: documentation scores.
     </p>
-    <div class="chart-wrap" style="height: {{ countries_chart_height }}px;">
-      <canvas
-        id="countries-score-chart"
-        aria-label="Country reproducibility score chart"
-      ></canvas>
+    <div class="chart-grid">
+      <div>
+        <h3>Reproducibility Score</h3>
+        <div class="chart-wrap" style="height: {{ countries_chart_height }}px;">
+          <canvas
+            id="countries-repro-score-chart"
+            aria-label="Country reproducibility score chart"
+          ></canvas>
+        </div>
+      </div>
+      <div>
+        <h3>Documentation Score</h3>
+        <div class="chart-wrap" style="height: {{ countries_chart_height }}px;">
+          <canvas
+            id="countries-doc-score-chart"
+            aria-label="Country documentation score chart"
+          ></canvas>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -20,10 +35,9 @@
       <thead>
         <tr>
           <th><button type="button" class="sort-button" data-sort-key="name">Country</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="totalFractionalDocumentationScore">Total Fractional Documentation Score</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="fractionalPaperCount">Fractional Paper Count</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="meanFractionalReproducibilityScore">Mean Fractional Reproducibility Score</button></th>
           <th><button type="button" class="sort-button" data-sort-key="meanFractionalDocumentationScore">Mean Fractional Documentation Score</button></th>
-          <th><button type="button" class="sort-button" data-sort-key="standardError">Standard Error</button></th>
+          <th><button type="button" class="sort-button" data-sort-key="fractionalPaperCount">Fractional Paper Count</button></th>
           <th><button type="button" class="sort-button" data-sort-key="contributingPapers">Contributing Papers</button></th>
         </tr>
       </thead>
@@ -31,17 +45,15 @@
         {% for row in countries_rows %}
           <tr
             data-name="{{ row.name|lower }}"
-            data-total-fractional-documentation-score="{{ row.total_sort }}"
+            data-mean-fractional-reproducibility-score="{{ row.mean_repro_sort }}"
+            data-mean-fractional-documentation-score="{{ row.mean_doc_sort }}"
             data-fractional-paper-count="{{ row.fractional_paper_count_sort }}"
-            data-mean-fractional-documentation-score="{{ row.mean_sort }}"
-            data-standard-error="{{ row.standard_error_sort }}"
             data-contributing-papers="{{ row.contributing_papers_sort }}"
           >
             <td>{{ row.name }}</td>
-            <td>{{ row.total_fractional_documentation_score }}</td>
-            <td>{{ row.fractional_paper_count }}</td>
+            <td>{{ row.mean_fractional_reproducibility_score }}</td>
             <td>{{ row.mean_fractional_documentation_score }}</td>
-            <td>{{ row.standard_error }}</td>
+            <td>{{ row.fractional_paper_count }}</td>
             <td>{{ row.contributing_papers }}</td>
           </tr>
         {% endfor %}
@@ -52,9 +64,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-error-bars/build/index.umd.js"></script>
   <script>
-    const countriesChartLabels = {{ countries_chart_labels|tojson }};
-    const countriesChartData = {{ countries_chart_data|tojson }};
-    const countriesChartCanvas = document.getElementById("countries-score-chart");
+    const countriesReproChartLabels = {{ countries_repro_chart_labels|tojson }};
+    const countriesReproChartData = {{ countries_repro_chart_data|tojson }};
+    const countriesDocChartLabels = {{ countries_doc_chart_labels|tojson }};
+    const countriesDocChartData = {{ countries_doc_chart_data|tojson }};
 
     const chartErrorBars =
       window["chartjs-chart-error-bars"] || window.ChartErrorBars || null;
@@ -71,17 +84,22 @@
       });
     }
 
-    if (countriesChartCanvas && window.Chart && countriesChartData.length > 0) {
+    const renderCountryChart = (chartCanvasId, chartLabels, chartData, chartConfig) => {
+      const chartCanvas = document.getElementById(chartCanvasId);
+      if (!chartCanvas || !window.Chart || chartData.length === 0) {
+        return;
+      }
+
       try {
-        new Chart(countriesChartCanvas, {
+        new Chart(chartCanvas, {
           type: "barWithErrorBars",
           data: {
-            labels: countriesChartLabels,
+            labels: chartLabels,
             datasets: [
               {
-                label: "Mean Fractional Documentation Score",
-                data: countriesChartData,
-                backgroundColor: "#8bb7de",
+                label: chartConfig.datasetLabel,
+                data: chartData,
+                backgroundColor: chartConfig.backgroundColor,
                 borderColor: "#163a5c",
                 borderWidth: 1,
               },
@@ -93,11 +111,11 @@
             maintainAspectRatio: false,
             scales: {
               x: {
-                min: 0,
-                max: 7,
+                min: chartConfig.xMin,
+                max: chartConfig.xMax,
                 title: {
                   display: true,
-                  text: "Mean Fractional Documentation Score",
+                  text: chartConfig.axisTitle,
                 },
               },
               y: {
@@ -132,9 +150,35 @@
           },
         });
       } catch (error) {
-        console.error("Unable to render country error-bar chart.", error);
+        console.error(`Unable to render ${chartCanvasId}.`, error);
       }
-    }
+    };
+
+    renderCountryChart(
+      "countries-repro-score-chart",
+      countriesReproChartLabels,
+      countriesReproChartData,
+      {
+        datasetLabel: "Mean Fractional Reproducibility Score",
+        axisTitle: "Mean Fractional Reproducibility Score",
+        backgroundColor: "#6f98bc",
+        xMin: 0,
+        xMax: 1,
+      }
+    );
+
+    renderCountryChart(
+      "countries-doc-score-chart",
+      countriesDocChartLabels,
+      countriesDocChartData,
+      {
+        datasetLabel: "Mean Fractional Documentation Score",
+        axisTitle: "Mean Fractional Documentation Score",
+        backgroundColor: "#8bb7de",
+        xMin: 0,
+        xMax: 7,
+      }
+    );
 
     const countriesTableBody = document.querySelector("#countries-table tbody");
     const countriesTableRows = Array.from(
@@ -145,13 +189,12 @@
     );
     const countriesSortTypes = {
       name: "text",
-      totalFractionalDocumentationScore: "number",
-      fractionalPaperCount: "number",
+      meanFractionalReproducibilityScore: "number",
       meanFractionalDocumentationScore: "number",
-      standardError: "number",
+      fractionalPaperCount: "number",
       contributingPapers: "number",
     };
-    let countriesSortKey = "meanFractionalDocumentationScore";
+    let countriesSortKey = "meanFractionalReproducibilityScore";
     let countriesSortDirection = "desc";
 
     const sortCountryRows = () => {

@@ -88,22 +88,23 @@ def test_countries_page_lists_chart_and_table(client) -> None:
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
-    assert 'id="countries-score-chart"' in body
+    assert 'id="countries-repro-score-chart"' in body
+    assert 'id="countries-doc-score-chart"' in body
     assert "chartjs-chart-error-bars" in body
-    assert "const countriesChartData =" in body
+    assert "const countriesReproChartData =" in body
+    assert "const countriesDocChartData =" in body
     assert 'id="countries-table"' in body
-    assert 'data-sort-key="meanFractionalDocumentationScore"' in body
+    assert 'data-sort-key="meanFractionalReproducibilityScore"' in body
     assert ">Country<" in body
-    assert ">Total Fractional Documentation Score<" in body
-    assert ">Fractional Paper Count<" in body
+    assert ">Mean Fractional Reproducibility Score<" in body
     assert ">Mean Fractional Documentation Score<" in body
-    assert ">Standard Error<" in body
+    assert ">Fractional Paper Count<" in body
     assert ">Contributing Papers<" in body
     expected_country_count = len(
         SQLiteDataStore(DB_PATH).list_country_documentation_scores()
     )
     assert (
-        body.count('data-mean-fractional-documentation-score="')
+        body.count('data-mean-fractional-reproducibility-score="')
         == expected_country_count
     )
 

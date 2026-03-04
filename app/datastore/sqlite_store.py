@@ -184,6 +184,27 @@ class SQLiteDataStore(DataStore):
               c.name ASC
             """)
 
+    def list_country_reproducibility_scores(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT
+                c.country,
+                c.name,
+                c.flag,
+                crs.total_fractional_reproducibility_score,
+                crs.fractional_paper_count,
+                crs.mean_fractional_reproducibility_score,
+                crs.standard_error,
+                crs.ci95_lower,
+                crs.ci95_upper,
+                crs.contributing_papers
+            FROM countries AS c
+            JOIN countries_reproducibility_scores AS crs
+              ON c.country = crs.country
+            ORDER BY
+              CAST(crs.mean_fractional_reproducibility_score AS REAL) DESC,
+              c.name ASC
+            """)
+
     def get_edition_reproducibility_scores(
         self, venue: str, year: str
     ) -> Record | None:

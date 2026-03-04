@@ -70,7 +70,7 @@ class SQLiteDataStore(DataStore):
                 pm.percent_experiment_setup,
                 p.url
             FROM editions AS p
-            LEFT JOIN editions_reproduciblity_scores AS pm
+            LEFT JOIN editions_reproducibility_scores AS pm
               ON p.venue = pm.venue AND p.year = pm.year
             WHERE p.venue = ?
             ORDER BY p.year DESC
@@ -94,7 +94,7 @@ class SQLiteDataStore(DataStore):
                 pm.percent_industry,
                 p.url
             FROM editions AS p
-            LEFT JOIN editions_reproduciblity_scores AS pm
+            LEFT JOIN editions_reproducibility_scores AS pm
               ON p.venue = pm.venue AND p.year = pm.year
             ORDER BY p.venue ASC, p.year DESC
             """)
@@ -201,7 +201,7 @@ class SQLiteDataStore(DataStore):
                 documentation_code_mean,
                 percent_emperical,
                 percent_industry
-            FROM editions_reproduciblity_scores
+            FROM editions_reproducibility_scores
             WHERE venue = ? AND year = ?
             """,
             (venue, year),

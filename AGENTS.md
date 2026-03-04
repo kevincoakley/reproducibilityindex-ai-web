@@ -108,8 +108,9 @@ Always use `uv` for package management and script execution.
   - authors_list -> the authors for each paper.
   - countries -> a list of the countries to be displayed.
   - countries_documentation_scores -> the documentation scores for each of the countries.
+  - countries_reproducibility_scores -> the reproducibility scores for each of the countries.
   - editions -> a list of the editions for each of the venues.
-  - editions_reproduciblity_scores -> the reproducibility scores for each of the editions.
+  - editions_reproducibility_scores -> the reproducibility scores for each of the editions.
   - results -> the results of our analysis of the papers. 
   - runs -> details about how the results were found.
   - venue_stats -> the statistics for each of the venues.
@@ -122,6 +123,7 @@ Always use `uv` for package management and script execution.
   - authors_list.key = results.key
   - authors_list.country = countries.country
   - countries_documentation_scores.country = countries.country
+  - countries_reproducibility_scores.country = countries.country
 
 ### 7. Deployment
 - The website will be deployed using Docker in production.

@@ -115,7 +115,7 @@
               data-code-doc="{{ row.documentation_code_mean if row.documentation_code_mean != 'N/A' else -1 }}"
               data-other-doc="{{ row.documentation_other_mean if row.documentation_other_mean != 'N/A' else -1 }}"
               data-percent-empirical="{{ row.percent_emperical|replace('%', '') if row.percent_emperical != 'N/A' else -1 }}"
-              data-percent-industry="{{ row.percent_industry|replace('%', '') if row.percent_industry != 'N/A' else -1 }}"
+              data-percent-industry="{{ row.percent_emperical_industry|replace('%', '') if row.percent_emperical_industry != 'N/A' else -1 }}"
             >
               <td>
                 <a href="{{ url_for('pages.venue_years', venue=row.venue) }}">{{ row.venue }}</a>
@@ -131,7 +131,7 @@
               <td>{{ row.documentation_code_mean }}</td>
               <td>{{ row.documentation_other_mean }}</td>
               <td>{{ row.percent_emperical }}</td>
-              <td>{{ row.percent_industry }}</td>
+              <td>{{ row.percent_emperical_industry }}</td>
               <td>
                 {% if row.url %}
                   <a class="icon-link" href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="Edition URL">

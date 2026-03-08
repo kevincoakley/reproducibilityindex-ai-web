@@ -60,14 +60,14 @@ class SQLiteDataStore(DataStore):
                 pm.documentation_dataset_mean,
                 pm.documentation_code_mean,
                 pm.percent_emperical,
-                pm.percent_industry,
-                pm.percent_pseudocode,
-                pm.percent_open_source_code,
-                pm.percent_open_datasets,
-                pm.percent_dataset_splits,
-                pm.percent_hardware_specification,
-                pm.percent_software_dependencies,
-                pm.percent_experiment_setup,
+                pm.percent_emperical_industry,
+                pm.percent_emperical_pseudocode,
+                pm.percent_emperical_open_source_code,
+                pm.percent_emperical_open_datasets,
+                pm.percent_emperical_dataset_splits,
+                pm.percent_emperical_hardware_specification,
+                pm.percent_emperical_software_dependencies,
+                pm.percent_emperical_experiment_setup,
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproducibility_scores AS pm
@@ -91,7 +91,7 @@ class SQLiteDataStore(DataStore):
                 pm.documentation_dataset_mean,
                 pm.documentation_code_mean,
                 pm.percent_emperical,
-                pm.percent_industry,
+                pm.percent_emperical_industry,
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproducibility_scores AS pm
@@ -255,7 +255,7 @@ class SQLiteDataStore(DataStore):
                 documentation_dataset_mean,
                 documentation_code_mean,
                 percent_emperical,
-                percent_industry
+                percent_emperical_industry
             FROM editions_reproducibility_scores
             WHERE venue = ? AND year = ?
             """,

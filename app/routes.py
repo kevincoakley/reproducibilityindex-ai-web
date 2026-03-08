@@ -171,7 +171,9 @@ def index() -> str:
                     row.get("documentation_code_mean")
                 ),
                 "percent_emperical": _to_percent_display(row.get("percent_emperical")),
-                "percent_industry": _to_percent_display(row.get("percent_industry")),
+                "percent_emperical_industry": _to_percent_display(
+                    row.get("percent_emperical_industry")
+                ),
                 "url": row.get("url"),
             }
         )
@@ -498,13 +500,13 @@ def venue_years(venue: str) -> str:
 
     editions = _store().list_editions(venue)
     percentage_metric_fields = [
-        "percent_pseudocode",
-        "percent_open_source_code",
-        "percent_open_datasets",
-        "percent_dataset_splits",
-        "percent_hardware_specification",
-        "percent_software_dependencies",
-        "percent_experiment_setup",
+        "percent_emperical_pseudocode",
+        "percent_emperical_open_source_code",
+        "percent_emperical_open_datasets",
+        "percent_emperical_dataset_splits",
+        "percent_emperical_hardware_specification",
+        "percent_emperical_software_dependencies",
+        "percent_emperical_experiment_setup",
     ]
     venue_chart_datasets: list[dict[str, object]] = []
     for field in percentage_metric_fields:
@@ -516,7 +518,8 @@ def venue_years(venue: str) -> str:
                 continue
             metric_points.append({"x": year_value, "y": percent_value})
         label = " ".join(
-            word.capitalize() for word in field.removeprefix("percent_").split("_")
+            word.capitalize()
+            for word in field.removeprefix("percent_emperical_").split("_")
         )
         venue_chart_datasets.append(
             {
@@ -573,8 +576,8 @@ def venue_results(venue: str, year: str) -> str:
         "percent_emperical": _to_percent_display(
             reproducibility_scores.get("percent_emperical")
         ),
-        "percent_industry": _to_percent_display(
-            reproducibility_scores.get("percent_industry")
+        "percent_emperical_industry": _to_percent_display(
+            reproducibility_scores.get("percent_emperical_industry")
         ),
     }
 

@@ -120,8 +120,8 @@
               {% endif %}
             </td>
             <td>
-              {% if row.percent_industry %}
-                {{ row.percent_industry }}{% if not (row.percent_industry|string|trim).endswith("%") %}%{% endif %}
+              {% if row.percent_emperical_industry %}
+                {{ row.percent_emperical_industry }}{% if not (row.percent_emperical_industry|string|trim).endswith("%") %}%{% endif %}
               {% else %}
                 N/A
               {% endif %}

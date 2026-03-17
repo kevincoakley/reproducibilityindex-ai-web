@@ -208,7 +208,7 @@ class SQLiteDataStore(DataStore):
     def list_institution_documentation_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                institution,
+                institution_normalized,
                 total_fractional_documentation_score,
                 fractional_paper_count,
                 mean_fractional_documentation_score,
@@ -219,13 +219,13 @@ class SQLiteDataStore(DataStore):
             FROM institutions_documentation_scores
             ORDER BY
               CAST(mean_fractional_documentation_score AS REAL) DESC,
-              institution ASC
+              institution_normalized ASC
             """)
 
     def list_institution_reproducibility_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                institution,
+                institution_normalized,
                 total_fractional_reproducibility_score,
                 fractional_paper_count,
                 mean_fractional_reproducibility_score,
@@ -236,7 +236,7 @@ class SQLiteDataStore(DataStore):
             FROM institutions_reproducibility_scores
             ORDER BY
               CAST(mean_fractional_reproducibility_score AS REAL) DESC,
-              institution ASC
+              institution_normalized ASC
             """)
 
     def get_edition_reproducibility_scores(

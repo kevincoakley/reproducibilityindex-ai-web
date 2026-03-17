@@ -344,7 +344,8 @@ def institutions() -> str:
     institutions_repro_chart_labels: list[str] = []
     institutions_repro_chart_data: list[dict[str, object]] = []
     reproducibility_by_institution = {
-        str(row.get("institution") or ""): row for row in reproducibility_rows
+        str(row.get("institution_normalized") or ""): row
+        for row in reproducibility_rows
     }
 
     def _build_institution_chart(
@@ -366,7 +367,7 @@ def institutions() -> str:
             upper_bound = (
                 ci95_upper_value if ci95_upper_value is not None else mean_value
             )
-            institution_name = _to_metric_display(row.get("institution"))
+            institution_name = _to_metric_display(row.get("institution_normalized"))
 
             labels.append(institution_name)
             data.append(
@@ -379,7 +380,7 @@ def institutions() -> str:
             )
 
     for row in documentation_rows:
-        institution = str(row.get("institution") or "")
+        institution = str(row.get("institution_normalized") or "")
         reproducibility_row = reproducibility_by_institution.get(institution, {})
         mean_repro_value = _to_float(
             reproducibility_row.get("mean_fractional_reproducibility_score")
@@ -391,7 +392,7 @@ def institutions() -> str:
         mean_doc_sort = mean_doc_value if mean_doc_value is not None else -1.0
 
         institution_row = {
-            "institution": _to_metric_display(row.get("institution")),
+            "institution": _to_metric_display(row.get("institution_normalized")),
             "mean_fractional_reproducibility_score": _to_metric_display(
                 reproducibility_row.get("mean_fractional_reproducibility_score")
             ),

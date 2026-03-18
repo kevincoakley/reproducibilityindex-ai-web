@@ -57,6 +57,8 @@ With coverage:
 uv run pytest --cov=.
 ```
 
+Coverage checks enforce a minimum of 90%.
+
 ## Format
 
 ```bash

@@ -17,3 +17,6 @@ test = [
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[tool.coverage.report]
+fail_under = 90

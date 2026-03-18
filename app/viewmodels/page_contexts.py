@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from app.route_utils import (
     DETAIL_ROWS,
     RESULT_COLUMN_FIELDS,
@@ -13,6 +15,18 @@ from app.route_utils import (
 )
 
 Record = dict[str, object]
+
+GROUPED_EMAIL_PATTERN = re.compile(
+    r"\{[^{}\r\n]+(?:\s*,\s*[^{}\r\n]+)+\}@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}"
+)
+STANDARD_EMAIL_PATTERN = re.compile(
+    r"\b[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}\b"
+)
+
+
+def _mask_email_addresses(text: str) -> str:
+    masked = GROUPED_EMAIL_PATTERN.sub("EMAIL", text)
+    return STANDARD_EMAIL_PATTERN.sub("EMAIL", masked)
 
 
 def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, object]:
@@ -456,11 +470,12 @@ def build_venue_results_context(
 def build_paper_detail_context(paper: Record) -> dict[str, object]:
     detail_rows: list[dict[str, str]] = []
     for label, verdict_field, text_field in DETAIL_ROWS:
+        evidence = _mask_email_addresses(str(paper.get(text_field) or ""))
         detail_rows.append(
             {
                 "label": label,
                 "verdict": _to_verdict(paper.get(verdict_field), verdict_field),
-                "evidence": str(paper.get(text_field) or ""),
+                "evidence": evidence,
             }
         )
 

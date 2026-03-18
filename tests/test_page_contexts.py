@@ -160,3 +160,35 @@ def test_build_data_and_paper_context_helpers() -> None:
     )
     assert paper_context["detail_rows"][0]["verdict"] == "Theoretical"
     assert paper_context["detail_rows"][1]["verdict"] == "Industry"
+
+
+def test_build_paper_detail_context_masks_email_addresses() -> None:
+    paper_context = build_paper_detail_context(
+        {
+            "research_type_result": 0,
+            "research_type_paper_text": (
+                "Contact john.doe@example.org or {alice, bob, carol}@example.org for details."
+            ),
+            "affiliation_result": 0,
+            "affiliation_paper_text": "",
+            "pseudocode_result": 0,
+            "pseudocode_paper_text": "",
+            "open_source_code_result": 0,
+            "open_source_code_paper_text": "",
+            "open_datasets_result": 0,
+            "open_datasets_paper_text": "",
+            "dataset_splits_result": 0,
+            "dataset_splits_paper_text": "",
+            "hardware_specification_result": 0,
+            "hardware_specification_paper_text": "",
+            "software_dependencies_result": 0,
+            "software_dependencies_paper_text": "",
+            "experiment_setup_result": 0,
+            "experiment_setup_paper_text": "",
+        }
+    )
+
+    assert (
+        paper_context["detail_rows"][0]["evidence"]
+        == "Contact EMAIL or EMAIL for details."
+    )

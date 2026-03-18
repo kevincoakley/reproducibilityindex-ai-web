@@ -12,12 +12,51 @@ class SQLiteDataStore(DataStore):
 
     def __init__(self, db_path: str | Path) -> None:
         self.db_path = Path(db_path).resolve()
+        self._percent_metric_columns = self._resolve_percent_metric_columns()
 
     def _connect(self) -> sqlite3.Connection:
         uri = f"file:{self.db_path}?mode=ro"
         connection = sqlite3.connect(uri, uri=True)
         connection.row_factory = sqlite3.Row
         return connection
+
+    def _list_columns(self, table_name: str) -> set[str]:
+        with self._connect() as connection:
+            rows = connection.execute(f"PRAGMA table_info({table_name})").fetchall()
+        return {str(row["name"]) for row in rows}
+
+    def _resolve_percent_metric_columns(self) -> dict[str, str]:
+        columns = self._list_columns("editions_reproducibility_scores")
+        metric_suffixes = [
+            "",
+            "_industry",
+            "_pseudocode",
+            "_open_source_code",
+            "_open_datasets",
+            "_dataset_splits",
+            "_hardware_specification",
+            "_software_dependencies",
+            "_experiment_setup",
+        ]
+        resolved_columns: dict[str, str] = {}
+        for suffix in metric_suffixes:
+            canonical = f"percent_empirical{suffix}"
+            if canonical in columns:
+                resolved_columns[canonical] = canonical
+            else:
+                raise ValueError(
+                    "Missing required percent metric column. "
+                    f"Expected '{canonical}' "
+                    "in editions_reproducibility_scores."
+                )
+        return resolved_columns
+
+    def _percent_metric_select_list(self, table_alias: str | None = "pm") -> str:
+        prefix = f"{table_alias}." if table_alias else ""
+        return ",\n                ".join(
+            f"{prefix}{source} AS {target}"
+            for target, source in self._percent_metric_columns.items()
+        )
 
     def _fetch_all(self, query: str, params: tuple[Any, ...] = ()) -> list[Record]:
         with self._connect() as connection:
@@ -48,7 +87,7 @@ class SQLiteDataStore(DataStore):
 
     def list_editions(self, venue: str) -> list[Record]:
         return self._fetch_all(
-            """
+            f"""
             SELECT
                 p.venue,
                 p.year,
@@ -59,15 +98,7 @@ class SQLiteDataStore(DataStore):
                 pm.documentation_other_mean,
                 pm.documentation_dataset_mean,
                 pm.documentation_code_mean,
-                pm.percent_emperical,
-                pm.percent_emperical_industry,
-                pm.percent_emperical_pseudocode,
-                pm.percent_emperical_open_source_code,
-                pm.percent_emperical_open_datasets,
-                pm.percent_emperical_dataset_splits,
-                pm.percent_emperical_hardware_specification,
-                pm.percent_emperical_software_dependencies,
-                pm.percent_emperical_experiment_setup,
+                {self._percent_metric_select_list("pm")},
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproducibility_scores AS pm
@@ -79,7 +110,7 @@ class SQLiteDataStore(DataStore):
         )
 
     def list_all_editions(self) -> list[Record]:
-        return self._fetch_all("""
+        return self._fetch_all(f"""
             SELECT
                 p.venue,
                 p.year,
@@ -90,8 +121,8 @@ class SQLiteDataStore(DataStore):
                 pm.documentation_other_mean,
                 pm.documentation_dataset_mean,
                 pm.documentation_code_mean,
-                pm.percent_emperical,
-                pm.percent_emperical_industry,
+                pm.{self._percent_metric_columns["percent_empirical"]} AS percent_empirical,
+                pm.{self._percent_metric_columns["percent_empirical_industry"]} AS percent_empirical_industry,
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproducibility_scores AS pm
@@ -243,7 +274,7 @@ class SQLiteDataStore(DataStore):
         self, venue: str, year: str
     ) -> Record | None:
         return self._fetch_one(
-            """
+            f"""
             SELECT
                 venue,
                 year,
@@ -254,8 +285,8 @@ class SQLiteDataStore(DataStore):
                 documentation_other_mean,
                 documentation_dataset_mean,
                 documentation_code_mean,
-                percent_emperical,
-                percent_emperical_industry
+                {self._percent_metric_columns["percent_empirical"]} AS percent_empirical,
+                {self._percent_metric_columns["percent_empirical_industry"]} AS percent_empirical_industry
             FROM editions_reproducibility_scores
             WHERE venue = ? AND year = ?
             """,

@@ -170,9 +170,9 @@ def index() -> str:
                 "documentation_code_mean": _to_metric_display(
                     row.get("documentation_code_mean")
                 ),
-                "percent_emperical": _to_percent_display(row.get("percent_emperical")),
-                "percent_emperical_industry": _to_percent_display(
-                    row.get("percent_emperical_industry")
+                "percent_empirical": _to_percent_display(row.get("percent_empirical")),
+                "percent_empirical_industry": _to_percent_display(
+                    row.get("percent_empirical_industry")
                 ),
                 "url": row.get("url"),
             }
@@ -501,13 +501,13 @@ def venue_years(venue: str) -> str:
 
     editions = _store().list_editions(venue)
     percentage_metric_fields = [
-        "percent_emperical_pseudocode",
-        "percent_emperical_open_source_code",
-        "percent_emperical_open_datasets",
-        "percent_emperical_dataset_splits",
-        "percent_emperical_hardware_specification",
-        "percent_emperical_software_dependencies",
-        "percent_emperical_experiment_setup",
+        "percent_empirical_pseudocode",
+        "percent_empirical_open_source_code",
+        "percent_empirical_open_datasets",
+        "percent_empirical_dataset_splits",
+        "percent_empirical_hardware_specification",
+        "percent_empirical_software_dependencies",
+        "percent_empirical_experiment_setup",
     ]
     venue_chart_datasets: list[dict[str, object]] = []
     for field in percentage_metric_fields:
@@ -520,7 +520,7 @@ def venue_years(venue: str) -> str:
             metric_points.append({"x": year_value, "y": percent_value})
         label = " ".join(
             word.capitalize()
-            for word in field.removeprefix("percent_emperical_").split("_")
+            for word in field.removeprefix("percent_empirical_").split("_")
         )
         venue_chart_datasets.append(
             {
@@ -574,11 +574,11 @@ def venue_results(venue: str, year: str) -> str:
         "documentation_code_mean": _to_metric_display(
             reproducibility_scores.get("documentation_code_mean")
         ),
-        "percent_emperical": _to_percent_display(
-            reproducibility_scores.get("percent_emperical")
+        "percent_empirical": _to_percent_display(
+            reproducibility_scores.get("percent_empirical")
         ),
-        "percent_emperical_industry": _to_percent_display(
-            reproducibility_scores.get("percent_emperical_industry")
+        "percent_empirical_industry": _to_percent_display(
+            reproducibility_scores.get("percent_empirical_industry")
         ),
     }
 

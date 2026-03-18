@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from flask import Blueprint, abort, render_template
 
-from app.route_utils import DETAIL_ROWS, _store, _to_verdict
+from app.route_utils import _store
+from app.viewmodels.page_contexts import build_paper_detail_context
 
 
 def _render_paper_detail(key: str) -> str:
@@ -10,21 +11,8 @@ def _render_paper_detail(key: str) -> str:
     if paper is None:
         abort(404)
 
-    detail_rows: list[dict[str, str]] = []
-    for label, verdict_field, text_field in DETAIL_ROWS:
-        detail_rows.append(
-            {
-                "label": label,
-                "verdict": _to_verdict(paper.get(verdict_field), verdict_field),
-                "evidence": str(paper.get(text_field) or ""),
-            }
-        )
-
-    return render_template(
-        "paper_detail.html",
-        paper=paper,
-        detail_rows=detail_rows,
-    )
+    context = build_paper_detail_context(paper)
+    return render_template("paper_detail.html", **context)
 
 
 def paper_detail_singular(key: str) -> str:

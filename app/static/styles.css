@@ -67,6 +67,15 @@ body {
   padding: 1rem;
 }
 
+.disclaimer-card {
+  border-left: 4px solid var(--accent);
+  background: #f8fbff;
+}
+
+.disclaimer-card p {
+  margin: 0;
+}
+
 .chart-wrap {
   margin-top: 0.75rem;
   height: 360px;

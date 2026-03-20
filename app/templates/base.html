@@ -12,12 +12,12 @@
         <h1 class="site-title"><a href="{{ url_for('pages.index') }}">{{ site_title }}</a></h1>
         <nav class="site-nav" aria-label="Main navigation">
           <a href="{{ url_for('pages.index') }}">Home</a>
-          <a href="{{ url_for('pages.countries') }}">Countries</a>
-          <a href="{{ url_for('pages.institutions') }}">Institutions</a>
-          <a href="{{ url_for('pages.data') }}">Data</a>
           {% for venue in venue_nav %}
             <a href="{{ url_for('pages.venue_years', venue=venue.venue) }}">{{ venue.venue }}</a>
           {% endfor %}
+          <a href="{{ url_for('pages.countries') }}">Countries</a>
+          <a href="{{ url_for('pages.institutions') }}">Institutions</a>
+          <a href="{{ url_for('pages.data') }}">Data</a>
         </nav>
       </div>
     </header>

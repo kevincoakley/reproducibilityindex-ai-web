@@ -1,0 +1,20 @@
+{% macro text(key) -%}
+  {%- set tooltips = {
+    "repro_score": "Reproducibility Score based on Gundersen et al. (2025)",
+    "doc_mean": "Global mean is the average score over the seven reproducibility variables for empirical research papers.",
+    "doc_median": "Global median is the median score over the seven reproducibility variables for empirical research papers.",
+    "dataset_doc": "Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for empirical research papers.",
+    "code_doc": "Documentation mean is the average score over the Open Source Code reproducibility variables for empirical research papers.",
+    "other_doc": "Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for empirical research papers.",
+    "percent_empirical": "Percentage of papers that are empirical research vs theoretical research",
+    "percent_industry": "Percentage of empirical research papers with at least one author from Industry",
+    "pc": "Pseudocode",
+    "osc": "Open Source Code",
+    "ods": "Open Datasets",
+    "ds": "Dataset Splits",
+    "hs": "Hardware Specification",
+    "sd": "Software Dependencies",
+    "es": "Experiment Setup"
+  } -%}
+  {{- tooltips[key] -}}
+{%- endmacro %}

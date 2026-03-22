@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_tooltips.html" import text as tooltip_text %}
 
 {% block content %}
   {% include "_disclaimer.html" %}
@@ -27,7 +28,7 @@
               <span>Repro. Score</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
-                <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
+                <span class="tooltip-text">{{ tooltip_text("repro_score") }}</span>
               </span>
             </div>
           </th>
@@ -87,7 +88,7 @@
               <button type="button" class="sort-button" data-sort-key="pc">PC</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="PC definition">i</button>
-                <span class="tooltip-text">Pseudocode</span>
+                <span class="tooltip-text">{{ tooltip_text("pc") }}</span>
               </span>
             </div>
           </th>
@@ -96,7 +97,7 @@
               <button type="button" class="sort-button" data-sort-key="osc">OSC</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="OSC definition">i</button>
-                <span class="tooltip-text">Open Source Code</span>
+                <span class="tooltip-text">{{ tooltip_text("osc") }}</span>
               </span>
             </div>
           </th>
@@ -105,7 +106,7 @@
               <button type="button" class="sort-button" data-sort-key="ods">ODS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="ODS definition">i</button>
-                <span class="tooltip-text">Open Datasets</span>
+                <span class="tooltip-text">{{ tooltip_text("ods") }}</span>
               </span>
             </div>
           </th>
@@ -114,7 +115,7 @@
               <button type="button" class="sort-button" data-sort-key="ds">DS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="DS definition">i</button>
-                <span class="tooltip-text">Dataset Splits</span>
+                <span class="tooltip-text">{{ tooltip_text("ds") }}</span>
               </span>
             </div>
           </th>
@@ -123,7 +124,7 @@
               <button type="button" class="sort-button" data-sort-key="hs">HS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="HS definition">i</button>
-                <span class="tooltip-text">Hardware Specification</span>
+                <span class="tooltip-text">{{ tooltip_text("hs") }}</span>
               </span>
             </div>
           </th>
@@ -132,7 +133,7 @@
               <button type="button" class="sort-button" data-sort-key="sd">SD</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="SD definition">i</button>
-                <span class="tooltip-text">Software Dependencies</span>
+                <span class="tooltip-text">{{ tooltip_text("sd") }}</span>
               </span>
             </div>
           </th>
@@ -141,7 +142,7 @@
               <button type="button" class="sort-button" data-sort-key="es">ES</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="ES definition">i</button>
-                <span class="tooltip-text">Experiment Setup</span>
+                <span class="tooltip-text">{{ tooltip_text("es") }}</span>
               </span>
             </div>
           </th>

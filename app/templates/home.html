@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_tooltips.html" import text as tooltip_text %}
 
 {% block content %}
   {% include "_disclaimer.html" %}
@@ -34,7 +35,7 @@
                 <button type="button" class="sort-button" data-sort-key="reproScore">Repro. Score</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
-                  <span class="tooltip-text">Reproducibility Score based on Gundersen et al. (2025)</span>
+                  <span class="tooltip-text">{{ tooltip_text("repro_score") }}</span>
                 </span>
               </div>
             </th>
@@ -43,7 +44,7 @@
                 <button type="button" class="sort-button" data-sort-key="docMean">Doc. Mean</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
-                  <span class="tooltip-text">Global mean is the average score over the seven reproducibility variables for empirical research papers.</span>
+                  <span class="tooltip-text">{{ tooltip_text("doc_mean") }}</span>
                 </span>
               </div>
             </th>
@@ -52,7 +53,7 @@
                 <button type="button" class="sort-button" data-sort-key="docMedian">Doc. Median</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Global Median definition">i</button>
-                  <span class="tooltip-text">Global median is the median score over the seven reproducibility variables for empirical research papers.</span>
+                  <span class="tooltip-text">{{ tooltip_text("doc_median") }}</span>
                 </span>
               </div>
             </th>
@@ -61,7 +62,7 @@
                 <button type="button" class="sort-button" data-sort-key="datasetDoc">Dataset Doc.</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Dataset Mean definition">i</button>
-                  <span class="tooltip-text">Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for empirical research papers.</span>
+                  <span class="tooltip-text">{{ tooltip_text("dataset_doc") }}</span>
                 </span>
               </div>
             </th>
@@ -70,7 +71,7 @@
                 <button type="button" class="sort-button" data-sort-key="codeDoc">Code Doc.</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Code Mean definition">i</button>
-                  <span class="tooltip-text">Documentation mean is the average score over the Open Source Code reproducibility variables for empirical research papers.</span>
+                  <span class="tooltip-text">{{ tooltip_text("code_doc") }}</span>
                 </span>
               </div>
             </th>
@@ -79,7 +80,7 @@
                 <button type="button" class="sort-button" data-sort-key="otherDoc">Other Doc.</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
-                  <span class="tooltip-text">Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for empirical research papers.</span>
+                  <span class="tooltip-text">{{ tooltip_text("other_doc") }}</span>
                 </span>
               </div>
             </th>
@@ -88,7 +89,7 @@
                 <button type="button" class="sort-button" data-sort-key="percentEmpirical">% Empirical</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Percent Empirical definition">i</button>
-                  <span class="tooltip-text">Percentage of papers that are empirical research vs theoretical research</span>
+                  <span class="tooltip-text">{{ tooltip_text("percent_empirical") }}</span>
                 </span>
               </div>
             </th>
@@ -97,7 +98,7 @@
                 <button type="button" class="sort-button" data-sort-key="percentIndustry">% Industry</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Percent Industry definition">i</button>
-                  <span class="tooltip-text">Percentage of empirical research papers with at least one author from Industry</span>
+                  <span class="tooltip-text">{{ tooltip_text("percent_industry") }}</span>
                 </span>
               </div>
             </th>

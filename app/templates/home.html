@@ -6,17 +6,17 @@
 
   <section class="card">
     <h2>Reproducibility Score Trend</h2>
-    <p>Edition reproducibility score by venue over time.</p>
+    <p>Edition <a href="{{ url_for('pages.methods') }}#sec:reproducibility-score">reproducibility score</a> by venue over time.</p>
     <div class="chart-wrap">
       <canvas id="home-repro-score-chart" aria-label="Reproducibility score trend by venue and year"></canvas>
     </div>
   </section>
 
   <section class="card">
-    <h2>Global Documentation Mean Trend</h2>
-    <p>Edition reproducibility metrics global mean by venue over time.</p>
+    <h2>Documentation Score Trend</h2>
+    <p>Edition <a href="{{ url_for('pages.methods') }}#sec:documentation-score">documentation score</a> by venue over time.</p>
     <div class="chart-wrap">
-      <canvas id="home-global-mean-chart" aria-label="Global mean trend by venue and year"></canvas>
+      <canvas id="home-global-mean-chart" aria-label="Documentation score trend by venue and year"></canvas>
     </div>
   </section>
 
@@ -32,7 +32,7 @@
             <th><button type="button" class="sort-button" data-sort-key="papers">Papers</button></th>
             <th>
               <div class="header-with-tooltip">
-                <button type="button" class="sort-button" data-sort-key="reproScore">Repro. Score</button>
+                <button type="button" class="sort-button" data-sort-key="reproScore">RS</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
                   <span class="tooltip-text">{{ tooltip_text("repro_score") }}</span>
@@ -41,7 +41,7 @@
             </th>
             <th>
               <div class="header-with-tooltip">
-                <button type="button" class="sort-button" data-sort-key="docMean">Doc. Mean</button>
+                <button type="button" class="sort-button" data-sort-key="docMean">DS</button>
                 <span class="tooltip-wrap">
                   <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
                   <span class="tooltip-text">{{ tooltip_text("doc_mean") }}</span>

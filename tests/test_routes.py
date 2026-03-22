@@ -72,8 +72,8 @@ def test_home_page_lists_all_editions_table(
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">Repro. Score<" in body
-    assert ">Doc. Mean<" in body
+    assert ">RS<" in body
+    assert ">DS<" in body
     assert ">Doc. Median<" in body
     assert ">Dataset Doc.<" in body
     assert ">Code Doc.<" in body
@@ -208,8 +208,8 @@ def test_venue_page(client, sample_data: dict[str, str]) -> None:
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">Repro. Score<" in body
-    assert ">Doc. Mean<" in body
+    assert ">RS<" in body
+    assert ">DS<" in body
     assert ">Doc. Median<" in body
     assert ">Dataset Doc.<" in body
     assert ">Code Doc.<" in body
@@ -243,8 +243,8 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">Repro. Score<" in body
-    assert ">Doc. Mean<" in body
+    assert ">RS<" in body
+    assert ">DS<" in body
     assert ">Doc. Median<" in body
     assert ">Dataset Doc.<" in body
     assert ">Code Doc.<" in body

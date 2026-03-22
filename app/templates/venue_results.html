@@ -25,20 +25,76 @@
           <th>Papers</th>
           <th>
             <div class="header-with-tooltip">
-              <span>Repro. Score</span>
+              <span>RS</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("repro_score") }}</span>
               </span>
             </div>
           </th>
-          <th>Doc. Mean</th>
-          <th>Doc. Median</th>
-          <th>Dataset Doc.</th>
-          <th>Code Doc.</th>
-          <th>Other Doc.</th>
-          <th>% Empirical</th>
-          <th>% Industry</th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>DS</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("doc_mean") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>Doc. Median</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Global Median definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("doc_median") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>Dataset Doc.</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Dataset Mean definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("dataset_doc") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>Code Doc.</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Code Mean definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("code_doc") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>Other Doc.</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("other_doc") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>% Empirical</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Percent Empirical definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("percent_empirical") }}</span>
+              </span>
+            </div>
+          </th>
+          <th>
+            <div class="header-with-tooltip">
+              <span>% Industry</span>
+              <span class="tooltip-wrap">
+                <button type="button" class="info-icon-button" aria-label="Percent Industry definition">i</button>
+                <span class="tooltip-text">{{ tooltip_text("percent_industry") }}</span>
+              </span>
+            </div>
+          </th>
           <th>Website</th>
         </tr>
       </thead>

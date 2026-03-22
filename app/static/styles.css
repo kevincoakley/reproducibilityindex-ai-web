@@ -17,11 +17,18 @@ body {
   color: var(--ink);
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   line-height: 1.45;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
   width: min(1120px, 95vw);
   margin: 0 auto;
+}
+
+.page-content {
+  flex: 1;
 }
 
 .site-header {
@@ -237,6 +244,18 @@ pre {
   padding: 0.75rem;
   border-radius: 6px;
   overflow-x: auto;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.site-footer .container {
+  padding: 0.45rem 0;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
 @media (max-width: 640px) {

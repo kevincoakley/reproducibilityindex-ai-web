@@ -39,6 +39,7 @@ def app():
         {
             "TESTING": True,
             "SITE_TITLE": "test.reproducibilityindex.ai",
+            "WEB_VERSION": "test-build",
             "SQLITE_DB_PATH": str(DB_PATH),
             "DB_BACKEND": "sqlite",
         }
@@ -81,6 +82,28 @@ def test_home_page_lists_all_editions_table(
     assert ">% Industry<" in body
     expected_venue_count = len(SQLiteDataStore(DB_PATH).list_venues())
     assert body.count('data-venue="') == expected_venue_count
+    assert 'id="site-version"' in body
+    assert ">test-build<" in body
+
+
+def test_footer_defaults_to_dev_when_web_version_env_var_unset(monkeypatch) -> None:
+    monkeypatch.delenv("WEB_VERSION", raising=False)
+    app = create_app(
+        {
+            "TESTING": True,
+            "SITE_TITLE": "test.reproducibilityindex.ai",
+            "SQLITE_DB_PATH": str(DB_PATH),
+            "DB_BACKEND": "sqlite",
+        }
+    )
+    test_client = app.test_client()
+
+    response = test_client.get("/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="site-version"' in body
+    assert ">dev<" in body
 
 
 def test_countries_page_lists_chart_and_table(client) -> None:

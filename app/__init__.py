@@ -19,6 +19,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     )
     app.config.from_mapping(
         SITE_TITLE=os.getenv("SITE_TITLE", "reproducibilityindex.ai"),
+        WEB_VERSION=os.getenv("WEB_VERSION", "dev"),
         DB_BACKEND=os.getenv("DB_BACKEND", "sqlite"),
         SQLITE_DB_PATH=os.getenv("SQLITE_DB_PATH", str(default_db_path)),
         OBJECT_STORAGE_URL=os.getenv("OBJECT_STORAGE_URL", default_object_storage_url),
@@ -33,6 +34,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     def inject_globals() -> dict[str, object]:
         return {
             "site_title": app.config["SITE_TITLE"],
+            "web_version": app.config["WEB_VERSION"],
             "object_storage_url": app.config["OBJECT_STORAGE_URL"],
             "venue_nav": app.extensions["data_store"].list_venues(),
         }

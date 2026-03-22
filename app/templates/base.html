@@ -23,8 +23,14 @@
       </div>
     </header>
 
-    <main class="container">
+    <main class="container page-content">
       {% block content %}{% endblock %}
     </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span id="site-version">{{ web_version }}</span>
+      </div>
+    </footer>
   </body>
 </html>

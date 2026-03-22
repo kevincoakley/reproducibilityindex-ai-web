@@ -261,6 +261,19 @@ def test_paper_page(client, sample_data: dict[str, str]) -> None:
     body = response.get_data(as_text=True)
     assert f"/runs/{sample_data['run']}" in body
     assert "Venue PDF" in body
+    assert "Archive PDF" not in body
+    assert "Plain Text" not in body
+
+
+def test_papers_page_shows_archive_links_when_enabled(
+    client, sample_data: dict[str, str]
+) -> None:
+    response = client.get(f"/papers/{sample_data['paper_key']}?archive=1")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert "Archive PDF" in body
+    assert "Plain Text" in body
     assert (
         "https://object.cloud.sdsc.edu/v1/AUTH_da4962d3368042ac8337e2dfdd3e7bf3/"
         f"ml-papers/{sample_data['venue']}/{sample_data['year']}/"

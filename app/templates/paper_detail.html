@@ -14,24 +14,26 @@
       <a href="{{ paper.pdf_url }}" target="_blank" rel="noopener noreferrer" title="Venue PDF">
         Venue PDF <span aria-hidden="true">&#128196;</span>
       </a>
-      |
-      <a
-        href="{{ object_storage_url }}ml-papers/{{ paper.venue }}/{{ paper.year }}/{{ paper.key }}.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Archive PDF"
-      >
-        Archive PDF <span aria-hidden="true">&#128196;</span>
-      </a>
-      |
-      <a
-        href="{{ object_storage_url }}ml-papers-txt/{{ paper.venue }}/{{ paper.year }}/{{ paper.key }}.txt"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Plain Text"
-      >
-        Plain Text <span aria-hidden="true">&#128196;</span>
-      </a>
+      {% if show_archive_links %}
+        |
+        <a
+          href="{{ object_storage_url }}ml-papers/{{ paper.venue }}/{{ paper.year }}/{{ paper.key }}.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Archive PDF"
+        >
+          Archive PDF <span aria-hidden="true">&#128196;</span>
+        </a>
+        |
+        <a
+          href="{{ object_storage_url }}ml-papers-txt/{{ paper.venue }}/{{ paper.year }}/{{ paper.key }}.txt"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Plain Text"
+        >
+          Plain Text <span aria-hidden="true">&#128196;</span>
+        </a>
+      {% endif %}
       |
       <a href="{{ url_for('pages.run_detail', run=paper.run) }}">LLM Run Details</a>
     </p>

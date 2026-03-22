@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from flask import Blueprint, abort, render_template
+from flask import Blueprint, abort, render_template, request
 
 from app.route_utils import _store
 from app.viewmodels.page_contexts import build_paper_detail_context
@@ -12,6 +12,7 @@ def _render_paper_detail(key: str) -> str:
         abort(404)
 
     context = build_paper_detail_context(paper)
+    context["show_archive_links"] = request.args.get("archive") == "1"
     return render_template("paper_detail.html", **context)
 
 

@@ -258,6 +258,11 @@ pre {
   font-size: 0.82rem;
 }
 
+/* Keep in-page anchors visible below the sticky site header. */
+:target {
+  scroll-margin-top: 7rem;
+}
+
 @media (max-width: 640px) {
   .chart-wrap {
     height: 300px;

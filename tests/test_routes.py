@@ -183,6 +183,16 @@ def test_data_page_lists_stacked_area_chart(client) -> None:
     assert "sort-button" not in body
 
 
+def test_methods_page(client) -> None:
+    response = client.get("/methods/")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert 'id="sec:documentation-reproducibility-score"' in body
+    assert "mathjax@3/es5/tex-mml-chtml.js" in body
+    assert "💡 Methods" in body
+
+
 def test_venue_page(client, sample_data: dict[str, str]) -> None:
     response = client.get(f"/venues/{sample_data['venue']}")
 

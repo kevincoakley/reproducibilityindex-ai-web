@@ -37,6 +37,7 @@
 ├── README.md                       # Project description
 ├── results.sqlite                  # SQLite database file for dynamic website
 ├── run.py                          # Entry point for running the dynamic website
+├── technical-debt                  # Technical debt tracking
 ├── tests/                          # Directory for test files
 └── uv.lock                         # Lock file for dependencies
 ```
@@ -134,7 +135,21 @@ Always use `uv` for package management and script execution.
 - Update the Dockerfile when changes are made that might affect the production environment (e.g. new dependencies, changes to how the app is run).
 - Update the README.md with instructions for running the code in production using Docker.
 
-## 8. Critical Rules for Agents
+### 8. Technical Debt
+- The technical debt is tracked in the `technical-debt` directory.
+- When I ask you to track technical debt, create a new file in the `technical-debt` directory with the name `YYYY-MM-DD-<description>.md`.
+- The file should be a markdown file with the following format:
+```markdown
+# Technical Debt
+
+## Description
+
+## Solution
+
+## Impact
+```
+
+## 9. Critical Rules for Agents
 - Do not update `uv.lock` manually. Use `uv add` or `uv sync`.
 - Check `pyproject.toml` to see existing dependencies before adding new ones.
 - Run tests after every significant code change to ensure no regressions.

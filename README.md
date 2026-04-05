@@ -25,7 +25,7 @@ Key pages:
 ## Run (production-style)
 
 ```bash
-uv run flask --app run.py run --host 0.0.0.0 --port 5000
+uv run gunicorn --bind 0.0.0.0:5000 --workers 4 --threads 2 --timeout 60 run:app
 ```
 
 ## Run with Docker
@@ -41,9 +41,14 @@ Run container (mount local SQLite database as read-only volume):
 ```bash
 docker run --rm -p 5000:5000 \
   -e SQLITE_DB_PATH=/data/results.sqlite \
+  -e GUNICORN_WORKERS=4 \
+  -e GUNICORN_THREADS=2 \
+  -e GUNICORN_TIMEOUT=60 \
   -v "$(pwd)/results.sqlite:/data/results.sqlite:ro" \
   reproducibilityindex-ai-web
 ```
+
+The container runs Gunicorn bound to `0.0.0.0:5000` by default.
 
 ## Test
 
@@ -70,3 +75,7 @@ uv run black .
 - `SITE_TITLE` (default: `reproducibilityindex.ai`)
 - `DB_BACKEND` (default: `sqlite`)
 - `SQLITE_DB_PATH` (default: `results.sqlite` in repo root)
+- `GUNICORN_BIND` (default: `0.0.0.0:5000`)
+- `GUNICORN_WORKERS` (default: `4`)
+- `GUNICORN_THREADS` (default: `2`)
+- `GUNICORN_TIMEOUT` (default: `60`)

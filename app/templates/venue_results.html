@@ -25,7 +25,7 @@
           <th>Papers</th>
           <th>
             <div class="header-with-tooltip">
-              <span>RS</span>
+              <span>Reproducibility Score</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Reproducibility Score definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("repro_score") }}</span>
@@ -34,46 +34,10 @@
           </th>
           <th>
             <div class="header-with-tooltip">
-              <span>DS</span>
+              <span>Documentation Score</span>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="Global Mean definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("doc_mean") }}</span>
-              </span>
-            </div>
-          </th>
-          <th>
-            <div class="header-with-tooltip">
-              <span>Doc. Median</span>
-              <span class="tooltip-wrap">
-                <button type="button" class="info-icon-button" aria-label="Global Median definition">i</button>
-                <span class="tooltip-text">{{ tooltip_text("doc_median") }}</span>
-              </span>
-            </div>
-          </th>
-          <th>
-            <div class="header-with-tooltip">
-              <span>Dataset Doc.</span>
-              <span class="tooltip-wrap">
-                <button type="button" class="info-icon-button" aria-label="Dataset Mean definition">i</button>
-                <span class="tooltip-text">{{ tooltip_text("dataset_doc") }}</span>
-              </span>
-            </div>
-          </th>
-          <th>
-            <div class="header-with-tooltip">
-              <span>Code Doc.</span>
-              <span class="tooltip-wrap">
-                <button type="button" class="info-icon-button" aria-label="Code Mean definition">i</button>
-                <span class="tooltip-text">{{ tooltip_text("code_doc") }}</span>
-              </span>
-            </div>
-          </th>
-          <th>
-            <div class="header-with-tooltip">
-              <span>Other Doc.</span>
-              <span class="tooltip-wrap">
-                <button type="button" class="info-icon-button" aria-label="Documentation Mean definition">i</button>
-                <span class="tooltip-text">{{ tooltip_text("other_doc") }}</span>
               </span>
             </div>
           </th>
@@ -107,10 +71,6 @@
           <td>{{ metrics.number_papers }}</td>
           <td>{{ metrics.reproducibility_score }}</td>
           <td>{{ metrics.documentation_global_mean }}</td>
-          <td>{{ metrics.documentation_global_median }}</td>
-          <td>{{ metrics.documentation_dataset_mean }}</td>
-          <td>{{ metrics.documentation_code_mean }}</td>
-          <td>{{ metrics.documentation_other_mean }}</td>
           <td>{{ metrics.percent_empirical }}</td>
           <td>{{ metrics.percent_empirical_industry }}</td>
           <td>
@@ -141,65 +101,72 @@
           <th><button type="button" class="sort-button" data-sort-key="title">Title</button></th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="pc">PC</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="pc">PC</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="PC definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("pc") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="osc">OSC</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="osc">OSC</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="OSC definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("osc") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="ods">ODS</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="ods">ODS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="ODS definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("ods") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="ds">DS</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="ds">DS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="DS definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("ds") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="hs">HS</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="hs">HS</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="HS definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("hs") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="sd">SD</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="sd">SD</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="SD definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("sd") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th>
             <div class="header-with-tooltip">
-              <button type="button" class="sort-button" data-sort-key="es">ES</button>
+              <button type="button" class="sort-button sort-button--no-caret" data-sort-key="es">ES</button>
               <span class="tooltip-wrap">
                 <button type="button" class="info-icon-button" aria-label="ES definition">i</button>
                 <span class="tooltip-text">{{ tooltip_text("es") }}</span>
               </span>
+              <span class="sort-caret" aria-hidden="true">▲▼</span>
             </div>
           </th>
           <th><button type="button" class="sort-button" data-sort-key="total">Total</button></th>

@@ -131,6 +131,28 @@ th {
   font-weight: 700;
   cursor: pointer;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.sort-button::after {
+  content: "▲▼";
+  font-size: 0.55rem;
+  line-height: 1;
+  letter-spacing: -0.15rem;
+  color: #64748b;
+}
+
+.sort-button--no-caret::after {
+  content: none;
+}
+
+.sort-caret {
+  font-size: 0.55rem;
+  line-height: 1;
+  letter-spacing: -0.15rem;
+  color: #64748b;
 }
 
 .header-with-tooltip {

@@ -72,12 +72,12 @@ def test_home_page_lists_all_editions_table(
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">RS<" in body
-    assert ">DS<" in body
-    assert ">Doc. Median<" in body
-    assert ">Dataset Doc.<" in body
-    assert ">Code Doc.<" in body
-    assert ">Other Doc.<" in body
+    assert ">Reproducibility Score<" in body
+    assert ">Documentation Score<" in body
+    assert ">Doc. Median<" not in body
+    assert ">Dataset Doc.<" not in body
+    assert ">Code Doc.<" not in body
+    assert ">Other Doc.<" not in body
     assert ">% Empirical<" in body
     assert ">% Industry<" in body
     expected_venue_count = len(SQLiteDataStore(DB_PATH).list_venues())
@@ -200,6 +200,14 @@ def test_venue_page(client, sample_data: dict[str, str]) -> None:
     body = response.get_data(as_text=True)
     assert 'id="venue-global-mean-chart"' in body
     assert "const venueChartDatasets =" in body
+    assert 'id="venue-editions-table"' in body
+    assert 'data-sort-key="year"' in body
+    assert 'data-sort-key="papers"' in body
+    assert 'data-sort-key="reproScore"' in body
+    assert 'data-sort-key="docMean"' in body
+    assert 'data-sort-key="docMedian"' not in body
+    assert 'data-sort-key="percentEmpirical"' in body
+    assert 'data-sort-key="percentIndustry"' in body
     assert (
         "The Percentage of Empirical Papers Documenting Each Reproducibility Variable"
         in body
@@ -208,12 +216,12 @@ def test_venue_page(client, sample_data: dict[str, str]) -> None:
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">RS<" in body
-    assert ">DS<" in body
-    assert ">Doc. Median<" in body
-    assert ">Dataset Doc.<" in body
-    assert ">Code Doc.<" in body
-    assert ">Other Doc.<" in body
+    assert ">Reproducibility Score<" in body
+    assert ">Documentation Score<" in body
+    assert ">Doc. Median<" not in body
+    assert ">Dataset Doc.<" not in body
+    assert ">Code Doc.<" not in body
+    assert ">Other Doc.<" not in body
     assert ">% Empirical<" in body
     assert ">% Industry<" in body
     assert ">Website<" in body
@@ -231,7 +239,7 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">PC<" in body
     assert ">OSC<" in body
     assert ">ODS<" in body
-    assert ">DS<" in body
+    assert ">Documentation Score<" in body
     assert ">HS<" in body
     assert ">SD<" in body
     assert ">ES<" in body
@@ -243,12 +251,12 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">Venue<" in body
     assert ">Year<" in body
     assert ">Papers<" in body
-    assert ">RS<" in body
-    assert ">DS<" in body
-    assert ">Doc. Median<" in body
-    assert ">Dataset Doc.<" in body
-    assert ">Code Doc.<" in body
-    assert ">Other Doc.<" in body
+    assert ">Reproducibility Score<" in body
+    assert ">Documentation Score<" in body
+    assert ">Doc. Median<" not in body
+    assert ">Dataset Doc.<" not in body
+    assert ">Code Doc.<" not in body
+    assert ">Other Doc.<" not in body
     assert ">% Empirical<" in body
     assert ">% Industry<" in body
     assert ">Website<" in body

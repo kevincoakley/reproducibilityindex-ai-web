@@ -137,6 +137,13 @@ def test_institutions_page_lists_chart_and_table(client) -> None:
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
+    assert 'id="institution-contributing-papers-filter"' in body
+    assert "/institutions/contributing_papers/25" in body
+    assert "/institutions/contributing_papers/100" in body
+    assert (
+        '<option\n            value="/institutions/contributing_papers/100"\n            selected'
+        in body
+    )
     assert 'id="institutions-repro-score-chart"' in body
     assert 'id="institutions-doc-score-chart"' in body
     assert "chartjs-chart-error-bars" in body
@@ -150,13 +157,45 @@ def test_institutions_page_lists_chart_and_table(client) -> None:
     assert ">Mean Fractional Documentation Score<" in body
     assert ">Fractional Paper Count<" in body
     assert ">Contributing Papers<" in body
+    assert "Institutions With 100+ Contributing Papers" in body
     expected_institution_count = len(
-        SQLiteDataStore(DB_PATH).list_institution_documentation_scores()
+        SQLiteDataStore(DB_PATH).list_institution_documentation_scores(
+            min_contributing_papers=100
+        )
     )
     assert (
         body.count('data-mean-fractional-reproducibility-score="')
         == expected_institution_count
     )
+
+
+def test_institutions_page_filters_by_contributing_papers(client) -> None:
+    response = client.get("/institutions/contributing_papers/100")
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert (
+        '<option\n            value="/institutions/contributing_papers/100"\n            selected'
+        in body
+    )
+    assert "Institutions With 100+ Contributing Papers" in body
+    expected_institution_count = len(
+        SQLiteDataStore(DB_PATH).list_institution_documentation_scores(
+            min_contributing_papers=100
+        )
+    )
+    assert (
+        body.count('data-mean-fractional-reproducibility-score="')
+        == expected_institution_count
+    )
+
+
+def test_institutions_page_rejects_unsupported_contributing_papers_filter(
+    client,
+) -> None:
+    response = client.get("/institutions/contributing_papers/13")
+
+    assert response.status_code == 404
 
 
 def test_data_page_lists_stacked_area_chart(client) -> None:

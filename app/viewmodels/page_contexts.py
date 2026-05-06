@@ -16,6 +16,10 @@ from app.route_utils import (
 
 Record = dict[str, object]
 
+INSTITUTION_CHART_BASELINE_ROW_COUNT = 251
+INSTITUTION_CHART_BASELINE_HEIGHT = 4400
+INSTITUTION_CHART_MIN_HEIGHT = 840
+
 GROUPED_EMAIL_PATTERN = re.compile(
     r"\{[^{}\r\n]+(?:\s*,\s*[^{}\r\n]+)+\}@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}"
 )
@@ -308,7 +312,14 @@ def build_institutions_context(
     institutions_chart_row_count = max(
         len(institutions_doc_chart_data), len(institutions_repro_chart_data)
     )
-    institutions_chart_height = max(840, min(4400, institutions_chart_row_count * 66))
+    institutions_chart_height = max(
+        INSTITUTION_CHART_MIN_HEIGHT,
+        round(
+            institutions_chart_row_count
+            * INSTITUTION_CHART_BASELINE_HEIGHT
+            / INSTITUTION_CHART_BASELINE_ROW_COUNT
+        ),
+    )
 
     return {
         "institutions_rows": institutions_rows,

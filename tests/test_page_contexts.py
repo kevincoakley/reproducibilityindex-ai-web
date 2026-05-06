@@ -119,6 +119,42 @@ def test_build_institutions_context_uses_titles_for_display_labels() -> None:
     assert context["institutions_repro_chart_labels"] == ["TU Wien"]
 
 
+def test_build_institutions_context_scales_chart_height_from_100_plus_baseline() -> (
+    None
+):
+    def institution_rows(row_count: int) -> list[dict[str, object]]:
+        return [
+            {
+                "institution_normalized": f"Institution_{index}",
+                "institution_title": f"Institution {index}",
+                "mean_fractional_documentation_score": "0.8",
+                "mean_fractional_reproducibility_score": "0.7",
+                "fractional_paper_count": "3.5",
+                "contributing_papers": "100",
+                "ci95_lower": "0.6",
+                "ci95_upper": "0.9",
+            }
+            for index in range(row_count)
+        ]
+
+    baseline_context = build_institutions_context(
+        documentation_rows=institution_rows(251),
+        reproducibility_rows=institution_rows(251),
+    )
+    larger_context = build_institutions_context(
+        documentation_rows=institution_rows(502),
+        reproducibility_rows=institution_rows(502),
+    )
+    smaller_context = build_institutions_context(
+        documentation_rows=institution_rows(65),
+        reproducibility_rows=institution_rows(65),
+    )
+
+    assert baseline_context["institutions_chart_height"] == 4400
+    assert larger_context["institutions_chart_height"] == 8800
+    assert smaller_context["institutions_chart_height"] == 1139
+
+
 def test_build_venue_results_context_computes_totals_and_icons() -> None:
     context = build_venue_results_context(
         venue_row={"venue": "ICML"},

@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 from app.datastore.base import DataStore, Record
 
@@ -18,7 +19,18 @@ class SQLiteDataStore(DataStore):
         uri = f"file:{self.db_path}?mode=ro"
         connection = sqlite3.connect(uri, uri=True)
         connection.row_factory = sqlite3.Row
+        connection.create_function(
+            "institution_lookup_key", 1, self._institution_lookup_key
+        )
         return connection
+
+    @staticmethod
+    def _institution_lookup_key(value: object) -> str:
+        key = unquote(str(value or ""))
+        missing_closing_parentheses = key.count("(") - key.count(")")
+        if missing_closing_parentheses > 0:
+            key = f"{key}{')' * missing_closing_parentheses}"
+        return key
 
     def _list_columns(self, table_name: str) -> set[str]:
         with self._connect() as connection:
@@ -239,35 +251,41 @@ class SQLiteDataStore(DataStore):
     def list_institution_documentation_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                institution_normalized,
-                total_fractional_documentation_score,
-                fractional_paper_count,
-                mean_fractional_documentation_score,
-                standard_error,
-                ci95_lower,
-                ci95_upper,
-                contributing_papers
-            FROM institutions_documentation_scores
+                ids.institution_normalized,
+                COALESCE(i.title, ids.institution_normalized) AS institution_title,
+                ids.total_fractional_documentation_score,
+                ids.fractional_paper_count,
+                ids.mean_fractional_documentation_score,
+                ids.standard_error,
+                ids.ci95_lower,
+                ids.ci95_upper,
+                ids.contributing_papers
+            FROM institutions_documentation_scores AS ids
+            LEFT JOIN institutions AS i
+              ON institution_lookup_key(ids.institution_normalized) = i.key
             ORDER BY
-              CAST(mean_fractional_documentation_score AS REAL) DESC,
-              institution_normalized ASC
+              CAST(ids.mean_fractional_documentation_score AS REAL) DESC,
+              institution_title ASC
             """)
 
     def list_institution_reproducibility_scores(self) -> list[Record]:
         return self._fetch_all("""
             SELECT
-                institution_normalized,
-                total_fractional_reproducibility_score,
-                fractional_paper_count,
-                mean_fractional_reproducibility_score,
-                standard_error,
-                ci95_lower,
-                ci95_upper,
-                contributing_papers
-            FROM institutions_reproducibility_scores
+                irs.institution_normalized,
+                COALESCE(i.title, irs.institution_normalized) AS institution_title,
+                irs.total_fractional_reproducibility_score,
+                irs.fractional_paper_count,
+                irs.mean_fractional_reproducibility_score,
+                irs.standard_error,
+                irs.ci95_lower,
+                irs.ci95_upper,
+                irs.contributing_papers
+            FROM institutions_reproducibility_scores AS irs
+            LEFT JOIN institutions AS i
+              ON institution_lookup_key(irs.institution_normalized) = i.key
             ORDER BY
-              CAST(mean_fractional_reproducibility_score AS REAL) DESC,
-              institution_normalized ASC
+              CAST(irs.mean_fractional_reproducibility_score AS REAL) DESC,
+              institution_title ASC
             """)
 
     def get_edition_reproducibility_scores(

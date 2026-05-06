@@ -112,6 +112,7 @@ Always use `uv` for package management and script execution.
   - countries_reproducibility_scores -> the reproducibility scores for each of the countries.
   - editions -> a list of the editions for each of the venues.
   - editions_reproducibility_scores -> the reproducibility scores for each of the editions.
+  - institutions -> a list of the institutions to be displayed.
   - institutions_documentation_scores -> the documentation scores for each of the institutions.
   - institutions_reproducibility_scores -> the reproducibility scores for each of the institutions.
   - results -> the results of our analysis of the papers. 
@@ -125,8 +126,11 @@ Always use `uv` for package management and script execution.
   - authors_list.run = results.run = runs.run
   - authors_list.key = results.key
   - authors_list.country = countries.country
+  - authors_list.institution_normalized = institutions.key
   - countries_documentation_scores.country = countries.country
   - countries_reproducibility_scores.country = countries.country
+  - institutions_documentation_scores.institution_normalized = institutions.key
+  - institutions_reproducibility_scores.institution_normalized = institutions.key
 
 ### 7. Deployment
 - The website will be deployed using Docker in production.

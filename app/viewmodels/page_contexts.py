@@ -248,6 +248,7 @@ def build_institutions_context(
     for row in documentation_rows:
         institution = str(row.get("institution_normalized") or "")
         reproducibility_row = reproducibility_by_institution.get(institution, {})
+        institution_title = row.get("institution_title") or institution
         mean_repro_value = _to_float(
             reproducibility_row.get("mean_fractional_reproducibility_score")
         )
@@ -257,7 +258,7 @@ def build_institutions_context(
 
         institutions_rows.append(
             {
-                "institution": _to_metric_display(row.get("institution_normalized")),
+                "institution": _to_metric_display(institution_title),
                 "mean_fractional_reproducibility_score": _to_metric_display(
                     reproducibility_row.get("mean_fractional_reproducibility_score")
                 ),
@@ -290,7 +291,7 @@ def build_institutions_context(
     institutions_doc_chart_labels, institutions_doc_chart_data = _build_ci_chart_data(
         documentation_rows,
         "mean_fractional_documentation_score",
-        "institution_normalized",
+        "institution_title",
         "institutionName",
         False,
     )
@@ -298,7 +299,7 @@ def build_institutions_context(
         _build_ci_chart_data(
             reproducibility_rows,
             "mean_fractional_reproducibility_score",
-            "institution_normalized",
+            "institution_title",
             "institutionName",
             False,
         )

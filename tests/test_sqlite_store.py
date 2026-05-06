@@ -76,6 +76,94 @@ def _create_scores_table(db_path: Path, percent_prefix: str) -> None:
     connection.close()
 
 
+def _create_institution_score_tables(db_path: Path) -> None:
+    connection = sqlite3.connect(db_path)
+    connection.execute("""
+        CREATE TABLE institutions (
+            key TEXT,
+            title TEXT
+        )
+        """)
+    connection.execute("""
+        CREATE TABLE institutions_documentation_scores (
+            institution_normalized TEXT,
+            total_fractional_documentation_score REAL,
+            fractional_paper_count REAL,
+            mean_fractional_documentation_score REAL,
+            standard_error REAL,
+            ci95_lower REAL,
+            ci95_upper REAL,
+            contributing_papers REAL
+        )
+        """)
+    connection.execute("""
+        CREATE TABLE institutions_reproducibility_scores (
+            institution_normalized TEXT,
+            total_fractional_reproducibility_score REAL,
+            fractional_paper_count REAL,
+            mean_fractional_reproducibility_score REAL,
+            standard_error REAL,
+            ci95_lower REAL,
+            ci95_upper REAL,
+            contributing_papers REAL
+        )
+        """)
+    connection.execute("INSERT INTO institutions VALUES ('TU_Wien', 'TU Wien')")
+    connection.execute("""
+        INSERT INTO institutions VALUES (
+            'Hong_Kong_University_of_Science_and_Technology_(Guangzhou)',
+            'Hong Kong University of Science and Technology (Guangzhou)'
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions VALUES (
+            'University_of_Maryland,_College_Park',
+            'University of Maryland, College Park'
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions VALUES (
+            'Télécom_Paris',
+            'Télécom Paris'
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_documentation_scores VALUES (
+            'TU_Wien', 2.4, 3.0, 0.8, 0.1, 0.6, 0.9, 4.0
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_documentation_scores VALUES (
+            'Missing_Institution', 1.0, 2.0, 0.5, 0.1, 0.4, 0.6, 2.0
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_documentation_scores VALUES (
+            'Hong_Kong_University_of_Science_and_Technology_(Guangzhou',
+            1.0, 2.0, 0.4, 0.1, 0.3, 0.5, 2.0
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_documentation_scores VALUES (
+            'University_of_Maryland%2C_College_Park',
+            1.0, 2.0, 0.3, 0.1, 0.2, 0.4, 2.0
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_documentation_scores VALUES (
+            'T%C3%A9l%C3%A9com_Paris',
+            1.0, 2.0, 0.2, 0.1, 0.1, 0.3, 2.0
+        )
+        """)
+    connection.execute("""
+        INSERT INTO institutions_reproducibility_scores VALUES (
+            'TU_Wien', 2.1, 3.0, 0.7, 0.1, 0.5, 0.8, 4.0
+        )
+        """)
+    connection.commit()
+    connection.close()
+
+
 def test_list_editions_uses_canonical_percent_keys_with_canonical_schema(
     tmp_path: Path,
 ) -> None:
@@ -89,6 +177,43 @@ def test_list_editions_uses_canonical_percent_keys_with_canonical_schema(
     assert row["percent_empirical_industry"] == 22.0
     assert row["percent_empirical_pseudocode"] == 60.0
     assert row["percent_empirical_experiment_setup"] == 78.0
+
+
+def test_institution_score_rows_include_title_and_fallback(tmp_path: Path) -> None:
+    db_path = tmp_path / "institutions.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    _create_institution_score_tables(db_path)
+    store = SQLiteDataStore(db_path)
+
+    documentation_rows = store.list_institution_documentation_scores()
+    reproducibility_rows = store.list_institution_reproducibility_scores()
+
+    documentation_by_key = {
+        row["institution_normalized"]: row for row in documentation_rows
+    }
+    assert documentation_by_key["TU_Wien"]["institution_title"] == "TU Wien"
+    assert (
+        documentation_by_key["Missing_Institution"]["institution_title"]
+        == "Missing_Institution"
+    )
+    assert (
+        documentation_by_key[
+            "Hong_Kong_University_of_Science_and_Technology_(Guangzhou"
+        ]["institution_title"]
+        == "Hong Kong University of Science and Technology (Guangzhou)"
+    )
+    assert (
+        documentation_by_key["University_of_Maryland%2C_College_Park"][
+            "institution_title"
+        ]
+        == "University of Maryland, College Park"
+    )
+    assert (
+        documentation_by_key["T%C3%A9l%C3%A9com_Paris"]["institution_title"]
+        == "Télécom Paris"
+    )
+    assert reproducibility_rows[0]["institution_normalized"] == "TU_Wien"
+    assert reproducibility_rows[0]["institution_title"] == "TU Wien"
 
 
 def test_store_fails_fast_when_percent_columns_missing(tmp_path: Path) -> None:

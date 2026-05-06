@@ -4,6 +4,7 @@ from app.viewmodels.page_contexts import (
     build_countries_context,
     build_data_context,
     build_home_context,
+    build_institutions_context,
     build_paper_detail_context,
     build_venue_results_context,
 )
@@ -82,6 +83,40 @@ def test_build_countries_context_builds_chart_bounds_and_fallback_labels() -> No
     assert context["countries_doc_chart_data"][0]["xMin"] == 0.6
     assert context["countries_repro_chart_data"][0]["xMin"] == 0.7
     assert context["countries_chart_height"] == 420
+
+
+def test_build_institutions_context_uses_titles_for_display_labels() -> None:
+    context = build_institutions_context(
+        documentation_rows=[
+            {
+                "institution_normalized": "TU_Wien",
+                "institution_title": "TU Wien",
+                "mean_fractional_documentation_score": "0.8",
+                "fractional_paper_count": "3.5",
+                "contributing_papers": "4",
+                "ci95_lower": "0.6",
+                "ci95_upper": "0.9",
+            }
+        ],
+        reproducibility_rows=[
+            {
+                "institution_normalized": "TU_Wien",
+                "institution_title": "TU Wien",
+                "mean_fractional_reproducibility_score": "0.7",
+                "ci95_lower": None,
+                "ci95_upper": None,
+            }
+        ],
+    )
+
+    assert context["institutions_rows"][0]["institution"] == "TU Wien"
+    assert (
+        context["institutions_rows"][0]["mean_fractional_reproducibility_score"]
+        == "0.7"
+    )
+    assert context["institutions_doc_chart_labels"] == ["TU Wien"]
+    assert context["institutions_doc_chart_data"][0]["institutionName"] == "TU Wien"
+    assert context["institutions_repro_chart_labels"] == ["TU Wien"]
 
 
 def test_build_venue_results_context_computes_totals_and_icons() -> None:

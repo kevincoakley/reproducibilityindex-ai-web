@@ -145,6 +145,7 @@ def test_institutions_page_lists_chart_and_table(client) -> None:
     assert 'id="institutions-table"' in body
     assert 'data-sort-key="meanFractionalReproducibilityScore"' in body
     assert ">Institution<" in body
+    assert "TU Wien" in body
     assert ">Mean Fractional Reproducibility Score<" in body
     assert ">Mean Fractional Documentation Score<" in body
     assert ">Fractional Paper Count<" in body

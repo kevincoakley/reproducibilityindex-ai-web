@@ -19,7 +19,8 @@ Open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 Key pages:
 - `/` home
 - `/countries/` country-level reproducibility chart and table
-- `/institutions/` institution-level reproducibility chart and table
+- `/institutions/` institution-level reproducibility chart and table, defaulting to institutions with 100+ contributing papers
+- `/institutions/contributing_papers/100` institution chart and table filtered to 100+ contributing papers
 - `/data/` stacked area chart of paper counts by venue and year
 
 ## Run (production-style)

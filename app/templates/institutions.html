@@ -9,6 +9,21 @@
       Horizontal bar charts with 95% confidence interval error bars. Left:
       <a href="{{ url_for('pages.methods') }}#sec:reproducibility-score">reproducibility scores</a>. Right: <a href="{{ url_for('pages.methods') }}#sec:documentation-score">documentation scores</a>.
     </p>
+    <div class="filter-bar">
+      <label for="institution-contributing-papers-filter">
+        Minimum contributing papers
+      </label>
+      <select id="institution-contributing-papers-filter" name="contributing_papers">
+        {% for threshold in institution_contributing_papers_thresholds %}
+          <option
+            value="{{ url_for('pages.institutions', min_contributing_papers=threshold) }}"
+            {% if threshold == selected_institution_contributing_papers %}selected{% endif %}
+          >
+            {{ threshold }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
     <div class="chart-grid">
       <div>
         <h3>Reproducibility Score</h3>
@@ -32,7 +47,7 @@
   </section>
 
   <section class="card">
-    <h2>All Institutions</h2>
+    <h2>Institutions With {{ selected_institution_contributing_papers }}+ Contributing Papers</h2>
     <table id="institutions-table">
       <thead>
         <tr>
@@ -106,6 +121,18 @@
     const institutionsReproChartData = {{ institutions_repro_chart_data|tojson }};
     const institutionsDocChartLabels = {{ institutions_doc_chart_labels|tojson }};
     const institutionsDocChartData = {{ institutions_doc_chart_data|tojson }};
+    const institutionContributingPapersFilter = document.getElementById(
+      "institution-contributing-papers-filter"
+    );
+
+    if (institutionContributingPapersFilter) {
+      institutionContributingPapersFilter.addEventListener("change", (event) => {
+        const nextUrl = event.target.value;
+        if (nextUrl) {
+          window.location.assign(nextUrl);
+        }
+      });
+    }
 
     const chartErrorBars =
       window["chartjs-chart-error-bars"] || window.ChartErrorBars || null;

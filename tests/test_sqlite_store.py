@@ -216,6 +216,33 @@ def test_institution_score_rows_include_title_and_fallback(tmp_path: Path) -> No
     assert reproducibility_rows[0]["institution_title"] == "TU Wien"
 
 
+def test_institution_score_rows_filter_by_min_contributing_papers(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "institutions.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    _create_institution_score_tables(db_path)
+    store = SQLiteDataStore(db_path)
+
+    documentation_rows = store.list_institution_documentation_scores(
+        min_contributing_papers=2
+    )
+    reproducibility_rows = store.list_institution_reproducibility_scores(
+        min_contributing_papers=4
+    )
+
+    assert len(documentation_rows) == 5
+    assert (
+        len(store.list_institution_documentation_scores(min_contributing_papers=3)) == 1
+    )
+    assert [row["institution_normalized"] for row in reproducibility_rows] == [
+        "TU_Wien"
+    ]
+    assert (
+        store.list_institution_reproducibility_scores(min_contributing_papers=5) == []
+    )
+
+
 def test_store_fails_fast_when_percent_columns_missing(tmp_path: Path) -> None:
     db_path = tmp_path / "invalid.sqlite"
     connection = sqlite3.connect(db_path)

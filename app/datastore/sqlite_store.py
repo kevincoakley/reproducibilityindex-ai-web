@@ -248,8 +248,19 @@ class SQLiteDataStore(DataStore):
               c.name ASC
             """)
 
-    def list_institution_documentation_scores(self) -> list[Record]:
-        return self._fetch_all("""
+    def list_institution_documentation_scores(
+        self, min_contributing_papers: int | None = None
+    ) -> list[Record]:
+        where_clause = ""
+        params: tuple[object, ...] = ()
+        if min_contributing_papers is not None:
+            where_clause = """
+            WHERE CAST(ids.contributing_papers AS REAL) >= ?
+            """
+            params = (min_contributing_papers,)
+
+        return self._fetch_all(
+            f"""
             SELECT
                 ids.institution_normalized,
                 COALESCE(i.title, ids.institution_normalized) AS institution_title,
@@ -263,13 +274,27 @@ class SQLiteDataStore(DataStore):
             FROM institutions_documentation_scores AS ids
             LEFT JOIN institutions AS i
               ON institution_lookup_key(ids.institution_normalized) = i.key
+            {where_clause}
             ORDER BY
               CAST(ids.mean_fractional_documentation_score AS REAL) DESC,
               institution_title ASC
-            """)
+            """,
+            params,
+        )
 
-    def list_institution_reproducibility_scores(self) -> list[Record]:
-        return self._fetch_all("""
+    def list_institution_reproducibility_scores(
+        self, min_contributing_papers: int | None = None
+    ) -> list[Record]:
+        where_clause = ""
+        params: tuple[object, ...] = ()
+        if min_contributing_papers is not None:
+            where_clause = """
+            WHERE CAST(irs.contributing_papers AS REAL) >= ?
+            """
+            params = (min_contributing_papers,)
+
+        return self._fetch_all(
+            f"""
             SELECT
                 irs.institution_normalized,
                 COALESCE(i.title, irs.institution_normalized) AS institution_title,
@@ -283,10 +308,13 @@ class SQLiteDataStore(DataStore):
             FROM institutions_reproducibility_scores AS irs
             LEFT JOIN institutions AS i
               ON institution_lookup_key(irs.institution_normalized) = i.key
+            {where_clause}
             ORDER BY
               CAST(irs.mean_fractional_reproducibility_score AS REAL) DESC,
               institution_title ASC
-            """)
+            """,
+            params,
+        )
 
     def get_edition_reproducibility_scores(
         self, venue: str, year: str

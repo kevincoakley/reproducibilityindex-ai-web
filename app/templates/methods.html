@@ -43,7 +43,7 @@ specifications, and experiment details. These variables were derived
 from the broader framework introduced by  <span class="citation"
 data-cites="gundersen_2018">[3]</span> and narrowed to a subset that
 could be identified accurately and consistently at scale using an
-LLM <span class="citation" data-cites="anonymous_2026">[4]</span>. The
+LLM <span class="citation" data-cites="coakley_2026">[4]</span>. The
 selection was motivated by two considerations: each variable captures
 information that is substantively important for reproducing machine
 learning research, and each can be detected with sufficient reliability
@@ -82,7 +82,7 @@ Documentation Score is not to exhaustively characterise all determinants
 of reproducibility, but to measure a reproducibility-relevant subset of
 reporting practices that can be observed consistently across the vast
 majority of published papers. <span class="citation"
-data-cites="anonymous_2026">[4]</span> confirmed F1 scores exceeding 90%
+data-cites="coakley_2026">[4]</span> confirmed F1 scores exceeding 90%
 for most variables on an independently labelled evaluation dataset of
 160 papers. In this sense, the Documentation Score should be interpreted
 as a measure of documentation quality with respect to reproducibility,
@@ -98,7 +98,7 @@ papers sharing open data but not code could be reproduced 33% of the
 time. Papers without shared data were not attempted and are assigned a
 score of 0. Following this approach, we assign each paper a score
 according to:</p>
-<p><span class="math display">\[\begin{equation}
+<p><span class="math display">\begin{equation}
   R_p =
   \begin{cases}
     0.86 &amp; \text{if both open code and data are available,} \\
@@ -106,7 +106,7 @@ according to:</p>
     0    &amp; \text{if open data is not available.}
   \end{cases}
   \label{eq:rep-score}
-\end{equation}\]</span></p>
+\end{equation}</span></p>
 <p>The Reproducibility Score for a set of papers is the average of these
 values and therefore ranges from 0 to 1. Note that with the current rule
 set of <a href="#eq:rep-score" data-reference-type="ref"
@@ -213,11 +213,11 @@ artificial intelligence,”</span> in <em>Proceedings of the 32nd AAAI
 conference on artificial intelligence</em>, 2018, pp. 1644–1651. doi: <a
 href="https://doi.org/10.1609/aaai.v32i1.11503">10.1609/aaai.v32i1.11503</a>.</div>
 </div>
-<div id="ref-anonymous_2026" class="csl-entry" role="listitem">
+<div id="ref-coakley_2026" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[4] </div><div
-class="csl-right-inline">Anonymous, <span>“The embrace of open science:
-An analysis of a decade of AI research and 56 800 conference
-papers,”</span> <em>Under Review</em>.</div>
+class="csl-right-inline">K. L. Coakley, T. Snelleman, H. Hoos, and O. E. Gundersen, 
+<span>“The embrace of open science: An analysis of a decade of AI research and 
+56 800 conference papers,”</span> <em>Under Review</em>.</div>
 </div>
 <div id="ref-raff_2019" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[5] </div><div class="csl-right-inline">E.

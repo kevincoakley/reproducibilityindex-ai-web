@@ -30,6 +30,17 @@
 
     <footer class="site-footer">
       <div class="container">
+        <div class="footer-logos">
+          <a href="https://www.ntnu.no/" target="_blank" rel="noopener noreferrer">
+            <img src="{{ url_for('static', filename='NTNU.png') }}" alt="NTNU" class="footer-logo">
+          </a>
+          <a href="https://www.sdsc.edu/" target="_blank" rel="noopener noreferrer">
+            <img src="{{ url_for('static', filename='SDSC.png') }}" alt="SDSC" class="footer-logo">
+          </a>
+          <a href="https://www.rwth-aachen.de/" target="_blank" rel="noopener noreferrer">
+            <img src="{{ url_for('static', filename='RWTH.png') }}" alt="RWTH" class="footer-logo">
+          </a>
+        </div>
         <span id="site-version">{{ web_version }}</span>
       </div>
     </footer>

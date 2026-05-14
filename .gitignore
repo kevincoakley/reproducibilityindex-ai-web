@@ -1,6 +1,7 @@
 .git
 .venv
 .coverage
+.claude
 __pycache__
 .pytest_cache
 *.sqlite

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ site_title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
   </head>
   <body>
     <header class="site-header">
@@ -44,5 +45,23 @@
         <span id="site-version">{{ web_version }}</span>
       </div>
     </footer>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.tooltip-wrap').forEach(function (wrap) {
+          var tipEl = wrap.querySelector('.tooltip-text');
+          if (!tipEl) return;
+          tippy(wrap, {
+            content: tipEl.innerHTML,
+            allowHTML: true,
+            interactive: true,
+            theme: 'site',
+            maxWidth: 352,
+          });
+          tipEl.style.display = 'none';
+        });
+      });
+    </script>
   </body>
 </html>

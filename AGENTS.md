@@ -104,7 +104,7 @@ Always use `uv` for package management and script execution.
 - The title of the website should be: reproducibilityindex.ai . However, this should be a varaible and not hard coded.
 - Always use Tippy.js v6 (https://atomiks.github.io/tippyjs/) for all tooltips on the website. It is loaded via CDN in `base.html` and therefore applies site-wide. Load order matters: `@popperjs/core@2` must come before `tippy.js@6` (use the unpkg.com URLs from the official docs).
   - Tooltips are triggered by elements with class `tooltip-wrap`; the tooltip content is in a child element with class `tooltip-text`.
-  - All tooltips must use `interactive: true`, `interactiveBorder: 30`, and `delay: [0, 500]` so users can hover into and copy text from tooltips without it closing.
+  - All tooltips must use `interactive: true` so users can hover into and copy text from tooltips without it closing.
   - Use the custom `site` theme defined in `styles.css` for consistent dark styling.
   - Inline citation tooltips are defined in `app/templates/_references.html` using the `cite(key, label)` Jinja2 macro.
   - Info-icon tooltips (ⓘ) use text from `app/templates/_tooltips.html` via the `text(key)` Jinja2 macro.

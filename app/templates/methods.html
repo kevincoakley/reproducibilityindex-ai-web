@@ -37,7 +37,7 @@ different artifact-sharing conditions [{{ cite("gundersen_2025", "2") }}].</p>
 7]\)</span> is based on seven reproducibility variables: pseudocode,
 open code, open data, dataset splits, software dependencies, hardware
 specifications, and experiment details. These variables were derived
-from the broader framework introduced by [{{ cite("gundersen_2018", "3") }}] and narrowed to a subset that
+from the broader framework introduced by {{ cite("gundersen_2018", "Gundersen and Kjensmo") }} and narrowed to a subset that
 could be identified accurately and consistently at scale using an
 LLM [{{ cite("coakley_2026", "4") }}]. The
 selection was motivated by two considerations: each variable captures
@@ -56,7 +56,7 @@ surrounding the acquisition of results. Pseudocode further helps clarify
 the intended method when implementation details are not fully
 recoverable from the text alone. Second, prior work has shown that these
 factors are closely related to whether AI research can be reproduced in
-practice; [{{ cite("raff_2019", "5") }}] found
+practice; {{ cite("raff_2019", "Raff") }} found
 that pseudocode, readability, and specification of hyperparameters were
 among the features most predictive of a successful independent
 replication. Differences in software framework
@@ -71,7 +71,7 @@ of variables is appropriate in a large-scale study; the purpose of the
 Documentation Score is not to exhaustively characterise all determinants
 of reproducibility, but to measure a reproducibility-relevant subset of
 reporting practices that can be observed consistently across the vast
-majority of published papers. [{{ cite("coakley_2026", "4") }}] confirmed F1 scores exceeding 90%
+majority of published papers. {{ cite("coakley_2026", "Coakley et al.") }} confirmed F1 scores exceeding 90%
 for most variables on an independently labelled evaluation dataset of
 160 papers. In this sense, the Documentation Score should be interpreted
 as a measure of documentation quality with respect to reproducibility,
@@ -80,7 +80,7 @@ rather than a direct measure of successful reproduction.</p>
 <p>The Reproducibility Score <span class="math inline">\(R_p \in [0,
 1]\)</span> complements the Documentation Score by estimating the extent
 to which a collection of papers is reproducible in practice. It is based
-on empirical results reported by [{{ cite("gundersen_2025", "2") }}], who found that papers sharing
+on empirical results reported by {{ cite("gundersen_2025", "Gundersen et al.") }}, who found that papers sharing
 both open code and data could be reproduced 86% of the time, whereas
 papers sharing open data but not code could be reproduced 33% of the
 time. Papers without shared data were not attempted and are assigned a
@@ -97,10 +97,8 @@ according to:</p>
 \end{equation}</span></p>
 <p>The Reproducibility Score for a set of papers is the average of these
 values and therefore ranges from 0 to 1. Note that with the current rule
-set of <a href="#eq:rep-score" data-reference-type="ref"
-data-reference="eq:rep-score">[eq:rep-score]</a> the range is
-effectively from 0 to 0.86 as no paper can be awarded currently based on
-the empirical data.</p>
+set of the above equation, the range is effectively from 0 to 0.86 as no 
+paper can be awarded currently based on the empirical data.</p>
 <p>This formulation is preferable to simpler additive alternatives
 because it is empirically calibrated rather than normatively assigned. A
 scheme that awards one point for open code and one for open data would

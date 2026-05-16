@@ -1,12 +1,11 @@
 {% extends "base.html" %}
+{% from "_references.html" import cite %}
 
 {% block content %}
 
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-
   <section class="card">
-
 
 <h1 id="sec:documentation-reproducibility-score">Documentation and
 Reproducibility Scores</h1>
@@ -20,8 +19,7 @@ measures provide complementary information on reproducibility-relevant
 documentation and the estimated reproducibility likelihood of the
 research itself.</p>
 <p>These two metrics build on the reproducibility types and degrees
-introduced by  <span class="citation"
-data-cites="gundersen_2021">[1]</span>. Reproducibility types describe
+introduced by {{ cite("gundersen_2021", "Gundersen") }}. Reproducibility types describe
 what documentation is used when reproducing an experiment: a textual
 description only (R1), code and description (R2), data and description
 (R3), or the complete experiment (R4). Reproducibility degrees describe
@@ -30,20 +28,18 @@ if the reproduced outcome is identical (for example, same class),
 analysis reproducible if a different outcome yields the same conclusion
 under the same analysis, and interpretation reproducible if a different
 analysis still supports the same conclusion. The Documentation Score
-measures reporting practices along the R1–R4 axis, while the
+measures reporting practices along the R1&#x2013;R4 axis, while the
 Reproducibility Score estimates the likelihood of reproduction along the
 outcome analysis dimension using observed reproduction rates under
-different artifact-sharing conditions <span class="citation"
-data-cites="gundersen_2025">[2]</span>.</p>
+different artifact-sharing conditions [{{ cite("gundersen_2025", "2") }}].</p>
 <h2 id="sec:documentation-score">Documentation Score</h2>
 <p>The Documentation Score <span class="math inline">\(D_p \in [0,
 7]\)</span> is based on seven reproducibility variables: pseudocode,
 open code, open data, dataset splits, software dependencies, hardware
 specifications, and experiment details. These variables were derived
-from the broader framework introduced by  <span class="citation"
-data-cites="gundersen_2018">[3]</span> and narrowed to a subset that
+from the broader framework introduced by [{{ cite("gundersen_2018", "3") }}] and narrowed to a subset that
 could be identified accurately and consistently at scale using an
-LLM <span class="citation" data-cites="coakley_2026">[4]</span>. The
+LLM [{{ cite("coakley_2026", "4") }}]. The
 selection was motivated by two considerations: each variable captures
 information that is substantively important for reproducing machine
 learning research, and each can be detected with sufficient reliability
@@ -60,39 +56,31 @@ surrounding the acquisition of results. Pseudocode further helps clarify
 the intended method when implementation details are not fully
 recoverable from the text alone. Second, prior work has shown that these
 factors are closely related to whether AI research can be reproduced in
-practice; <span class="citation" data-cites="raff_2019">[5]</span> found
+practice; [{{ cite("raff_2019", "5") }}] found
 that pseudocode, readability, and specification of hyperparameters were
 among the features most predictive of a successful independent
-replication. Differences in software framework <span class="citation"
-data-cites="henderson_2018 pouchard_2020">[6], [7]</span>, software
-versions <span class="citation"
-data-cites="coakley_2022 crane_2018 gundersen_2022 shahriari_2022">[8],
-[9], [10], [11]</span>, ancillary software <span class="citation"
-data-cites="coakley_2022 crane_2018 gundersen_2022 pham_2020 pineau_2021">[8],
-[9], [10], [12], [13]</span>, processing units <span class="citation"
-data-cites="coakley_2022 hong_2013 gundersen_2022 nagarajan_2019">[8],
-[10], [14], [15]</span>, random seeds <span class="citation"
-data-cites="bouthillier_2021 melis_2017 pham_2020 reimers_2017 zhuang_2021">[12],
-[16], [17], [18], [19]</span>, and dataset splits <span class="citation"
-data-cites="makridakis_2018 bouthillier_2019 bouthillier_2021">[16],
-[20], [21]</span> have each been shown to produce substantially
+replication. Differences in software framework
+[{{ cite("henderson_2018", "6") }}, {{ cite("pouchard_2020", "7") }}], software
+versions [{{ cite("coakley_2022", "8") }}, {{ cite("crane_2018", "9") }}, {{ cite("gundersen_2022", "10") }}, {{ cite("shahriari_2022", "11") }}], ancillary software
+[{{ cite("coakley_2022", "8") }}, {{ cite("crane_2018", "9") }}, {{ cite("gundersen_2022", "10") }}, {{ cite("pham_2020", "12") }}, {{ cite("pineau_2021", "13") }}], processing units
+[{{ cite("coakley_2022", "8") }}, {{ cite("gundersen_2022", "10") }}, {{ cite("hong_2013", "14") }}, {{ cite("nagarajan_2019", "15") }}], random seeds
+[{{ cite("pham_2020", "12") }}, {{ cite("bouthillier_2021", "16") }}, {{ cite("melis_2017", "17") }}, {{ cite("reimers_2017", "18") }}, {{ cite("zhuang_2021", "19") }}], and dataset splits
+[{{ cite("bouthillier_2021", "16") }}, {{ cite("makridakis_2018", "20") }}, {{ cite("bouthillier_2019", "21") }}] have each been shown to produce substantially
 different results when reproducing experiments. Third, a restricted set
 of variables is appropriate in a large-scale study; the purpose of the
 Documentation Score is not to exhaustively characterise all determinants
 of reproducibility, but to measure a reproducibility-relevant subset of
 reporting practices that can be observed consistently across the vast
-majority of published papers. <span class="citation"
-data-cites="coakley_2026">[4]</span> confirmed F1 scores exceeding 90%
+majority of published papers. [{{ cite("coakley_2026", "4") }}] confirmed F1 scores exceeding 90%
 for most variables on an independently labelled evaluation dataset of
-160 papers. In this sense, the Documentation Score should be interpreted
+160 papers. In this sense, the Documentation Score should be interpreted
 as a measure of documentation quality with respect to reproducibility,
 rather than a direct measure of successful reproduction.</p>
 <h2 id="sec:reproducibility-score">Reproducibility Score</h2>
 <p>The Reproducibility Score <span class="math inline">\(R_p \in [0,
 1]\)</span> complements the Documentation Score by estimating the extent
 to which a collection of papers is reproducible in practice. It is based
-on empirical results reported by  <span class="citation"
-data-cites="gundersen_2025">[2]</span>, who found that papers sharing
+on empirical results reported by [{{ cite("gundersen_2025", "2") }}], who found that papers sharing
 both open code and data could be reproduced 86% of the time, whereas
 papers sharing open data but not code could be reproduced 33% of the
 time. Papers without shared data were not attempted and are assigned a
@@ -122,33 +110,24 @@ under different sharing conditions. It also captures an important
 asymmetry between code and data. In many machine learning settings, the
 absence of open data is a more severe obstacle than the absence of code,
 because using a different dataset introduces its own sources of
-irreproducibility: dataset bias from collection methods <span
-class="citation"
-data-cites="goodchild_2021 finlayson_2021 torralba_2011 pineau_2021 recht_2019">[13],
-[22], [23], [24], [25]</span>, inconsistencies introduced by
-pre-processing <span class="citation"
-data-cites="dacrema_2019">[26]</span> and annotation quality <span
-class="citation" data-cites="belz_2021">[27]</span>, and differences in
-how data is split across training, validation, and test sets <span
-class="citation"
-data-cites="bouthillier_2019 bouthillier_2021 coltekin_2020 makridakis_2018 pouchard_2020">[7],
-[16], [20], [21], [28]</span>. At the same time, sharing data without
+irreproducibility: dataset bias from collection methods
+[{{ cite("pineau_2021", "13") }}, {{ cite("goodchild_2021", "22") }}, {{ cite("finlayson_2021", "23") }}, {{ cite("torralba_2011", "24") }}, {{ cite("recht_2019", "25") }}], inconsistencies introduced by
+pre-processing [{{ cite("dacrema_2019", "26") }}] and annotation quality
+[{{ cite("belz_2021", "27") }}], and differences in
+how data is split across training, validation, and test sets
+[{{ cite("pouchard_2020", "7") }}, {{ cite("bouthillier_2021", "16") }}, {{ cite("makridakis_2018", "20") }}, {{ cite("bouthillier_2019", "21") }}, {{ cite("coltekin_2020", "28") }}]. At the same time, sharing data without
 code does not ensure reproducibility, since reproduction may still fail
 because of missing algorithmic and implementation details such as
-hyperparameter choices, optimisation procedures <span class="citation"
-data-cites="bouthillier_2019 bouthillier_2021 henderson_2018 reimers_2017">[6],
-[16], [18], [21]</span>, initialisation <span class="citation"
-data-cites="pham_2020 zhuang_2021">[12], [19]</span>, random seeds <span
-class="citation"
-data-cites="bouthillier_2021 melis_2017 pham_2020 reimers_2017 zhuang_2021">[12],
-[16], [17], [18], [19]</span>, or undocumented engineering decisions.
+hyperparameter choices, optimisation procedures
+[{{ cite("henderson_2018", "6") }}, {{ cite("bouthillier_2021", "16") }}, {{ cite("reimers_2017", "18") }}, {{ cite("bouthillier_2019", "21") }}], initialisation
+[{{ cite("pham_2020", "12") }}, {{ cite("zhuang_2021", "19") }}], random seeds
+[{{ cite("pham_2020", "12") }}, {{ cite("bouthillier_2021", "16") }}, {{ cite("melis_2017", "17") }}, {{ cite("reimers_2017", "18") }}, {{ cite("zhuang_2021", "19") }}], or undocumented engineering decisions.
 The Reproducibility Score therefore reflects both the central role of
 dataset availability and the additional contribution of code
 availability to successful reproduction.</p>
 <p>At the same time, this score should be interpreted with appropriate
 caution. The underlying empirical estimates are based on a relatively
-small sample of reproduction attempts <span class="citation"
-data-cites="gundersen_2025">[2]</span> and should therefore be
+small sample of reproduction attempts [{{ cite("gundersen_2025", "2") }}] and should therefore be
 understood as approximate probabilities rather than universal constants.
 Nevertheless, they provide a more defensible basis for large-scale
 estimation than arbitrary equal weighting, which, for the purposes of
@@ -162,288 +141,31 @@ consequential artifact-sharing practices into an empirically grounded
 estimate of reproducibility potential.</p>
 <h1 id="entity-level-attribution-and-ranking">Entity-Level Attribution
 and Ranking</h1>
-<p>We distribute credit for each paper proportionally among its authors’
-affiliated entities, following the fractional counting approach <span
-class="citation" data-cites="gauffriau_2005 gauffriau_2008">[29],
-[30]</span>. In the description below, we use the term entity to refer
+<p>We distribute credit for each paper proportionally among its authors'
+affiliated entities, following the fractional counting approach
+[{{ cite("gauffriau_2005", "29") }}, {{ cite("gauffriau_2008", "30") }}]. In the description below, we use the term entity to refer
 to either a country or an institution. If an author has more than one
 affiliation, only the first affiliation is used for attribution.</p>
-<p>For a paper with N authors, each author’s affiliated entity receives
+<p>For a paper with N authors, each author's affiliated entity receives
 a share equal to <span class="math inline">\(1/N\)</span> of that
-paper’s score. For example, a paper with four authors, two from entity A
-and one each from entities B and C, assigns half the paper’s score to
+paper's score. For example, a paper with four authors, two from entity A
+and one each from entities B and C, assigns half the paper's score to
 entity A and one quarter each to entities B and C. Authors with unknown
 affiliations are retained in the denominator to prevent artificial score
-inflation. The entity’s overall score is the weighted mean of these
+inflation. The entity's overall score is the weighted mean of these
 fractional contributions across all papers to which it contributed. Only
 entities with at least 25 absolute contributing papers are included for
 countries and at least 100 for institutions. Entities are ranked by
 their mean weighted score.</p>
 <p>Because entities with few contributing papers may exhibit extreme
 scores due to variance alone, we account for statistical uncertainty
-using a robust standard error that applies Bessel’s correction based on
+using a robust standard error that applies Bessel's correction based on
 the unweighted count of distinct papers per entity. We tested the score
-distributions for normality <span class="citation"
-data-cites="dagostino_1971 dagostino_1973">[31], [32]</span> and
+distributions for normality [{{ cite("dagostino_1971", "31") }}, {{ cite("dagostino_1973", "32") }}] and
 rejected the null hypothesis of normality. We therefore report 95%
 confidence intervals using the bias-corrected and accelerated (BCa)
-bootstrap method <span class="citation"
-data-cites="efron_1994">[33]</span> with 10,000 resamples, which does
+bootstrap method [{{ cite("efron_1994", "33") }}] with 10,000 resamples, which does
 not assume normality of the underlying distribution.</p>
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0"
-role="list">
-<div id="ref-gundersen_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">O.
-E. Gundersen, <span>“The fundamental principles of
-reproducibility,”</span> <em>Philosophical Transactions of the Royal
-Society A</em>, vol. 379, no. 2197, p. 20200210, 2021.</div>
-</div>
-<div id="ref-gundersen_2025" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">O.
-E. Gundersen, O. Cappelen, M. Mølnå, and N. G. Nilsen, <span>“The
-unreasonable effectiveness of open science in AI: A replication
-study,”</span> in <em>Proceedings of the 39th AAAI Conference on
-Artificial Intelligence</em>, 2025, pp. 26211–26219. doi: <a
-href="https://doi.org/10.1609/aaai.v39i25.34818">10.1609/aaai.v39i25.34818</a>.</div>
-</div>
-<div id="ref-gundersen_2018" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[3] </div><div class="csl-right-inline">O.
-E. Gundersen and S. Kjensmo, <span>“State of the art: Reproducibility in
-artificial intelligence,”</span> in <em>Proceedings of the 32nd AAAI
-conference on artificial intelligence</em>, 2018, pp. 1644–1651. doi: <a
-href="https://doi.org/10.1609/aaai.v32i1.11503">10.1609/aaai.v32i1.11503</a>.</div>
-</div>
-<div id="ref-coakley_2026" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[4] </div><div
-class="csl-right-inline">K. L. Coakley, T. Snelleman, H. Hoos, and O. E. Gundersen, 
-<span>“The embrace of open science: An analysis of a decade of AI research and 
-56 800 conference papers,”</span> <em>Under Review</em>.</div>
-</div>
-<div id="ref-raff_2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[5] </div><div class="csl-right-inline">E.
-Raff, <span>“A step toward quantifying independently reproducible
-machine learning research,”</span> vol. 32, pp. 1–11, 2019, Available:
-<a
-href="https://proceedings.neurips.cc/paper_files/paper/2019/file/c429429bf1f2af051f2021dc92a8ebea-Paper.pdf">https://proceedings.neurips.cc/paper_files/paper/2019/file/c429429bf1f2af051f2021dc92a8ebea-Paper.pdf</a></div>
-</div>
-<div id="ref-henderson_2018" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[6] </div><div class="csl-right-inline">P.
-Henderson, R. Islam, P. Bachman, J. Pineau, D. Precup, and D. Meger,
-<span>“Deep reinforcement learning that matters,”</span> in
-<em>Proceedings of the thirty-second AAAI conference on artificial
-intelligence</em>, 2018, pp. 3207–3214.</div>
-</div>
-<div id="ref-pouchard_2020" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[7] </div><div class="csl-right-inline">L.
-Pouchard, Y. Lin, and H. Van Dam, <span>“Replicating machine learning
-experiments in materials science,”</span> in <em>Parallel computing:
-Technology trends</em>, vol. 36, in Advances in parallel computing, vol.
-36., IOS Press, 2020, pp. 743–755. doi: <a
-href="https://doi.org/10.3233/APC200105">10.3233/APC200105</a>.</div>
-</div>
-<div id="ref-coakley_2022" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[8] </div><div class="csl-right-inline">K.
-Coakley, C. R. Kirkpatrick, and O. E. Gundersen, <span>“Examining the
-effect of implementation factors on deep learning
-reproducibility,”</span> in <em>Proceedings of the IEEE 18th
-international conference on e-science (e-science)</em>, IEEE, 2022, pp.
-397–398.</div>
-</div>
-<div id="ref-crane_2018" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[9] </div><div class="csl-right-inline">M.
-Crane, <span>“Questionable answers in question answering research:
-Reproducibility and variability of published results,”</span>
-<em>Transactions of the Association for Computational Linguistics</em>,
-vol. 6, pp. 241–252, 2018.</div>
-</div>
-<div id="ref-gundersen_2022" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[10] </div><div class="csl-right-inline">O.
-E. Gundersen, S. Shamsaliei, and R. J. Isdahl, <span>“Do machine
-learning platforms provide out-of-the-box reproducibility?”</span>
-<em>Future Generation Computer Systems</em>, vol. 126, pp. 34–47, 2022,
-doi: <a
-href="https://doi.org/10.1016/j.future.2021.06.014">https://doi.org/10.1016/j.future.2021.06.014</a>.</div>
-</div>
-<div id="ref-shahriari_2022" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[11] </div><div class="csl-right-inline">M.
-Shahriari, R. Ramler, and L. Fischer, <span>“How do deep-learning
-framework versions affect the reproducibility of neural network
-models?”</span> <em>Machine Learning and Knowledge Extraction</em>, vol.
-4, no. 4, pp. 888–911, 2022.</div>
-</div>
-<div id="ref-pham_2020" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[12] </div><div class="csl-right-inline">H.
-V. Pham <em>et al.</em>, <span>“Problems and opportunities in training
-deep learning software systems: An analysis of variance,”</span> in
-<em>Proceedings of the 35th IEEE/ACM international conference on
-automated software engineering</em>, New York, NY, USA: Association for
-Computing Machinery, 2020, pp. 771–783. doi: <a
-href="https://doi.org/10.1145/3324884.3416545">10.1145/3324884.3416545</a>.</div>
-</div>
-<div id="ref-pineau_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[13] </div><div
-class="csl-right-inline"><span class="nocase">J. Pineau <em>et
-al.</em></span>, <span>“Improving reproducibility in machine learning
-research (a report from the NeurIPS 2019 reproducibility
-program),”</span> <em>Journal of Machine Learning Research</em>, vol.
-22, no. 1, 2021.</div>
-</div>
-<div id="ref-hong_2013" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[14] </div><div
-class="csl-right-inline">S.-Y. Hong <em>et al.</em>, <span>“An
-evaluation of the software system dependency of a global atmospheric
-model,”</span> <em>Monthly Weather Review</em>, vol. 141, no. 11, pp.
-4165–4172, 2013, doi: <a
-href="https://doi.org/10.1175/MWR-D-12-00352.1">https://doi.org/10.1175/MWR-D-12-00352.1</a>.</div>
-</div>
-<div id="ref-nagarajan_2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[15] </div><div class="csl-right-inline">P.
-Nagarajan, G. Warnell, and P. Stone, <span>“The impact of nondeterminism
-on reproducibility in deep reinforcement learning,”</span> in <em>2nd
-reproducibility in machine learning workshop at ICML 2018</em>,
-Stockholm, Sweden, 2019.</div>
-</div>
-<div id="ref-bouthillier_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[16] </div><div
-class="csl-right-inline"><span class="nocase">X. Bouthillier <em>et
-al.</em></span>, <span>“Accounting for variance in machine learning
-benchmarks,”</span> <em>Proceedings of the Fourth Conference on Machine
-Learning and Systems</em>, vol. 3, pp. 747–769, 2021.</div>
-</div>
-<div id="ref-melis_2017" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[17] </div><div class="csl-right-inline">G.
-Melis, C. Dyer, and P. Blunsom, <span>“On the state of the art of
-evaluation in neural language models,”</span> in <em>Proceedings of the
-sixth international conference on learning representations</em>, 2018.
-Available: <a
-href="https://openreview.net/forum?id=ByJHuTgA-">https://openreview.net/forum?id=ByJHuTgA-</a></div>
-</div>
-<div id="ref-reimers_2017" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[18] </div><div class="csl-right-inline">N.
-Reimers and I. Gurevych, <span>“Reporting score distributions makes a
-difference: Performance study of <span>LSTM</span>-networks for sequence
-tagging,”</span> in <em>Proceedings of the 22nd conference on empirical
-methods in natural language processing</em>, M. Palmer, R. Hwa, and S.
-Riedel, Eds., Copenhagen, Denmark: Association for Computational
-Linguistics, Sep. 2017, pp. 338–348. doi: <a
-href="https://doi.org/10.18653/v1/D17-1035">10.18653/v1/D17-1035</a>.</div>
-</div>
-<div id="ref-zhuang_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[19] </div><div class="csl-right-inline">D.
-Zhuang, X. Zhang, S. Song, and S. Hooker, <span>“Randomness in neural
-network training: Characterizing the impact of tooling,”</span> in
-<em>Proceedings of the fourth conference on machine learning and
-systems</em>, D. Marculescu, Y. Chi, and C. Wu, Eds., 2022, pp. 316–336.
-Available: <a
-href="https://proceedings.mlsys.org/paper_files/paper/2022/file/427e0e886ebf87538afdf0badb805b7f-Paper.pdf">https://proceedings.mlsys.org/paper_files/paper/2022/file/427e0e886ebf87538afdf0badb805b7f-Paper.pdf</a></div>
-</div>
-<div id="ref-makridakis_2018" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[20] </div><div class="csl-right-inline">S.
-Makridakis, E. Spiliotis, and V. Assimakopoulos, <span>“Statistical and
-machine learning forecasting methods: Concerns and ways forward,”</span>
-<em>PloS one</em>, vol. 13, no. 3, p. e0194889, 2018.</div>
-</div>
-<div id="ref-bouthillier_2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[21] </div><div class="csl-right-inline">X.
-Bouthillier, C. Laurent, and P. Vincent, <span>“Unreproducible research
-is reproducible,”</span> in <em>Proceedings of the 36th international
-conference on machine learning</em>, PMLR, 2019, pp. 725–734.</div>
-</div>
-<div id="ref-goodchild_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[22] </div><div class="csl-right-inline">M.
-F. Goodchild and W. Li, <span>“Replication across space and time must be
-weak in the social and environmental sciences,”</span> <em>Proceedings
-of the National Academy of Sciences</em>, vol. 118, no. 35, p.
-e2015759118, 2021.</div>
-</div>
-<div id="ref-finlayson_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[23] </div><div class="csl-right-inline">S.
-G. Finlayson <em>et al.</em>, <span>“The clinician and dataset shift in
-artificial intelligence,”</span> <em>New England Journal of
-Medicine</em>, vol. 385, no. 3, pp. 283–286, 2021, doi: <a
-href="https://doi.org/10.1056/NEJMc2104626">10.1056/NEJMc2104626</a>.</div>
-</div>
-<div id="ref-torralba_2011" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[24] </div><div class="csl-right-inline">A.
-Torralba and A. A. Efros, <span>“Unbiased look at dataset bias,”</span>
-in <em>Proceedings of the 29th IEEE/CVF conference on computer vision
-and pattern recognition</em>, Colorado Springs, CO, USA: IEEE, 2011, pp.
-1521–1528. doi: <a
-href="https://doi.org/10.1109/CVPR.2011.5995347">10.1109/CVPR.2011.5995347</a>.</div>
-</div>
-<div id="ref-recht_2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[25] </div><div class="csl-right-inline">B.
-Recht, R. Roelofs, L. Schmidt, and V. Shankar, <span>“Do
-<span>I</span>mage<span>N</span>et classifiers generalize to
-<span>I</span>mage<span>N</span>et?”</span> in <em>Proceedings of the
-36th international conference on machine learning</em>, K. Chaudhuri and
-R. Salakhutdinov, Eds., in Proceedings of machine learning research,
-vol. 97. PMLR, 2019, pp. 5389–5400. Available: <a
-href="https://proceedings.mlr.press/v97/recht19a.html">https://proceedings.mlr.press/v97/recht19a.html</a></div>
-</div>
-<div id="ref-dacrema_2019" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[26] </div><div class="csl-right-inline">M.
-Ferrari Dacrema, P. Cremonesi, and D. Jannach, <span>“Are we really
-making much progress? A worrying analysis of recent neural
-recommendation approaches,”</span> in <em>Proceedings of the 13th ACM
-conference on recommender systems</em>, New York, NY, USA: Association
-for Computing Machinery, 2019, pp. 101–109. doi: <a
-href="https://doi.org/10.1145/3298689.3347058">10.1145/3298689.3347058</a>.</div>
-</div>
-<div id="ref-belz_2021" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[27] </div><div class="csl-right-inline">A.
-Belz, A. Shimorina, S. Agarwal, and E. Reiter, <span>“The
-<span>R</span>epro<span>G</span>en shared task on reproducibility of
-human evaluations in <span>NLG</span>: Overview and results,”</span> in
-<em>Proceedings of the 14th international conference on natural language
-generation</em>, Aberdeen, Scotland, UK: Association for Computational
-Linguistics, Aug. 2021, pp. 249–258.</div>
-</div>
-<div id="ref-coltekin_2020" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[28] </div><div class="csl-right-inline">Ç.
-Çöltekin, <span>“Verification, reproduction and replication of
-<span>NLP</span> experiments: A case study on parsing
-<span>U</span>niversal <span>D</span>ependencies,”</span> in
-<em>Proceedings of the fourth workshop on universal dependencies (UDW
-2020)</em>, Barcelona, Spain (Online): Association for Computational
-Linguistics, Dec. 2020, pp. 46–56. Available: <a
-href="https://aclanthology.org/2020.udw-1.6/">https://aclanthology.org/2020.udw-1.6/</a></div>
-</div>
-<div id="ref-gauffriau_2005" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[29] </div><div class="csl-right-inline">M.
-Gauffriau and P. O. Larsen, <span>“Counting methods are decisive for
-rankings based on publication and citation studies,”</span>
-<em>Scientometrics</em>, vol. 64, no. 1, pp. 85–93, 2005.</div>
-</div>
-<div id="ref-gauffriau_2008" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[30] </div><div class="csl-right-inline">M.
-Gauffriau, P. Larsen, I. Maye, A. Roulin-Perriard, and M. von Ins,
-<span>“Comparisons of results of publication counting using different
-methods,”</span> <em>Scientometrics</em>, vol. 77, no. 1, pp. 147–176,
-2008.</div>
-</div>
-<div id="ref-dagostino_1971" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[31] </div><div
-class="csl-right-inline"><span class="nocase">R. B. d’Agostino</span>,
-<span>“An omnibus test of normality for moderate and large size
-samples,”</span> <em>Biometrika</em>, vol. 58, no. 2, pp. 341–348,
-1971.</div>
-</div>
-<div id="ref-dagostino_1973" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[32] </div><div class="csl-right-inline">R.
-D’agostino and E. S. Pearson, <span>“Tests for departure from normality.
-Empirical results for the distributions of b 2 and√ b,”</span>
-<em>Biometrika</em>, vol. 60, no. 3, pp. 613–622, 1973.</div>
-</div>
-<div id="ref-efron_1994" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[33] </div><div class="csl-right-inline">B.
-Efron and R. J. Tibshirani, <em>An introduction to the bootstrap</em>.
-Chapman; Hall/CRC, 1994.</div>
-</div>
-</div>
-
-
-
 
   </section>
 

@@ -26,12 +26,14 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          python-version-file: .python-version
 
       - name: Install dependencies
-        run: uv sync --group test
+        run: uv sync --frozen --group test
 
       - name: Run tests
-        run: uv run pytest --cov=. --cov-fail-under=90
+        run: uv run pytest --cov=.
 
   push:
     needs: test

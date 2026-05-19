@@ -1,7 +1,7 @@
 {% macro text(key) -%}
   {%- set tooltips = {
-    "repro_score": "Reproducibility Score based on Gundersen et al. (2025)",
-    "doc_mean": "Global mean is the average score over the seven reproducibility variables for empirical research papers.",
+    "repro_score": "Reproducibility Score based on Gundersen et al. (2025). <a href='/methods/#sec:reproducibility-score'>See Methods for details</a>.",
+    "doc_mean": "Global mean is the average score over the seven reproducibility variables for empirical research papers. <a href='/methods/#sec:documentation-score'>See Methods for details</a>.",
     "doc_median": "Global median is the median score over the seven reproducibility variables for empirical research papers.",
     "dataset_doc": "Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for empirical research papers.",
     "code_doc": "Documentation mean is the average score over the Open Source Code reproducibility variables for empirical research papers.",
@@ -16,5 +16,5 @@
     "sd": "Software Dependencies",
     "es": "Experiment Setup"
   } -%}
-  {{- tooltips[key] -}}
+  {{- tooltips[key] | safe -}}
 {%- endmacro %}

@@ -153,9 +153,23 @@
               x: {
                 min: chartConfig.xMin,
                 max: chartConfig.xMax,
+                position: "bottom",
                 title: {
                   display: true,
                   text: chartConfig.axisTitle,
+                },
+              },
+              xTop: {
+                type: "linear",
+                min: chartConfig.xMin,
+                max: chartConfig.xMax,
+                position: "top",
+                title: {
+                  display: true,
+                  text: chartConfig.axisTitle,
+                },
+                grid: {
+                  drawOnChartArea: false,
                 },
               },
               y: {

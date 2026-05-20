@@ -18,6 +18,7 @@
     <div class="chart-wrap">
       <canvas id="venue-global-mean-chart" aria-label="Global mean trend by year"></canvas>
     </div>
+    <div id="venue-global-mean-chart-legend" class="chart-legend"></div>
 
     <table id="venue-editions-table">
       <thead>
@@ -123,7 +124,7 @@
       venueChartDatasets &&
       venueChartDatasets.some((dataset) => dataset.data.length > 0)
     ) {
-      new Chart(venueChartCanvas, {
+      const venueChart = new Chart(venueChartCanvas, {
         type: "line",
         data: {
           datasets: venueChartDatasets.map((dataset) => ({
@@ -166,8 +167,7 @@
           },
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
             tooltip: {
               callbacks: {
@@ -177,6 +177,7 @@
           },
         },
       });
+      buildChartLegend(venueChart, "venue-global-mean-chart-legend");
     }
 
     const venueEditionsTableBody = document.querySelector("#venue-editions-table tbody");

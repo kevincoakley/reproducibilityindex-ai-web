@@ -56,6 +56,8 @@ Always use `uv` for package management and script execution.
 
 ### Running Code
 - Run script: `uv run python <script_path>`
+- Run dev server: `uv run python run.py` (default port 5000)
+- Run dev server on a custom port: `PORT=5001 uv run python run.py`
 
 ### Testing
 - Install test environment: `uv sync --group test`
@@ -101,6 +103,12 @@ Always use `uv` for package management and script execution.
   - Functional Layout: There is very little "fluff" or decorative imagery; every element serves a direct purpose, such as providing introduction text, a changelog, or model rankings.
   - Bootstrap-inspired Aesthetic: The buttons, spacing, and overall responsiveness are reminiscent of modern web frameworks like Bootstrap or Tailwind, which are commonly used for scientific and open-source project pages.
 - Always use Chart.js (https://www.chartjs.org) for any charts or visualizations on the website.
+- All Chart.js charts must use a custom HTML checkbox legend instead of the built-in Chart.js legend:
+  1. Set `plugins.legend.display: false` in the chart options.
+  2. Add a `<div id="<chart-id>-legend" class="chart-legend"></div>` immediately after the chart's `<canvas>` element (or in a matching grid cell for side-by-side charts).
+  3. Store the chart in a variable and call `buildChartLegend(chart, "<chart-id>-legend")` after creation.
+  - `buildChartLegend` is a global function defined in a `<script>` block placed **before `<main>`** in `base.html`. It must stay before `{% block content %}` so page scripts can call it; moving it to the footer will break all chart legends. It handles both multi-dataset charts (line, bar — uses `dataset.borderColor`) and pie/doughnut charts (uses `dataset.backgroundColor[index]` and `chart.toggleDataVisibility(index)`).
+  - Legend styles (`.chart-legend`, `.chart-legend-item`) are defined in `styles.css`.
 - The title of the website should be: reproducibilityindex.ai . However, this should be a varaible and not hard coded.
 - Always use Tippy.js v6 (https://atomiks.github.io/tippyjs/) for all tooltips on the website. It is loaded via CDN in `base.html` and therefore applies site-wide. Load order matters: `@popperjs/core@2` must come before `tippy.js@6` (use the unpkg.com URLs from the official docs).
   - Tooltips are triggered by elements with class `tooltip-wrap`; the tooltip content is in a child element with class `tooltip-text`.

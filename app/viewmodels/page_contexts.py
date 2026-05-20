@@ -4,6 +4,7 @@ import re
 
 from app.route_utils import (
     DETAIL_ROWS,
+    RESULT_COLUMN_FIELD_LABELS,
     RESULT_COLUMN_FIELDS,
     _to_binary,
     _to_binary_icon,
@@ -481,10 +482,10 @@ def build_venue_results_context(
     if total_papers > 0:
         edition_bar_chart_percentages: list[float] = [
             round(metric_true_counts[field] / total_papers * 100, 1)
-            for field in RESULT_COLUMN_FIELDS
+            for field, _ in RESULT_COLUMN_FIELD_LABELS
         ]
     else:
-        edition_bar_chart_percentages = [0.0] * len(RESULT_COLUMN_FIELDS)
+        edition_bar_chart_percentages = [0.0] * len(RESULT_COLUMN_FIELD_LABELS)
 
     return {
         "venue": venue_row,
@@ -492,10 +493,10 @@ def build_venue_results_context(
         "edition_url": edition_url,
         "metrics": metrics,
         "results": results,
-        "edition_bar_chart_labels": ["PC", "OSC", "ODS", "DS", "HS", "SD", "ES"],
+        "edition_bar_chart_labels": [label for _, label in RESULT_COLUMN_FIELD_LABELS],
         "edition_bar_chart_percentages": edition_bar_chart_percentages,
         "edition_kde_histogram": score_histogram,
-        "edition_kde_max_total": len(RESULT_COLUMN_FIELDS),
+        "edition_kde_max_total": len(RESULT_COLUMN_FIELD_LABELS),
     }
 
 

@@ -281,19 +281,16 @@
     if (editionKdeCanvas && window.Chart && Object.keys(editionKdeHistogram).length > 0) {
       const kdeXLabels = Array.from({ length: editionKdeMaxTotal + 1 }, (_, i) => i);
 
-      const kdeRawData = [];
-      for (const [scoreStr, count] of Object.entries(editionKdeHistogram)) {
-        for (let i = 0; i < count; i++) {
-          kdeRawData.push(Number(scoreStr));
-        }
-      }
-      const n = kdeRawData.length;
+      const histogramEntries = Object.entries(editionKdeHistogram).map(
+        ([k, v]) => [Number(k), Number(v)]
+      );
+      const n = histogramEntries.reduce((acc, [, count]) => acc + count, 0);
       const bandwidth = 0.5;
 
       const kdeDensities = kdeXLabels.map((x) => {
-        const sum = kdeRawData.reduce((acc, xi) => {
+        const sum = histogramEntries.reduce((acc, [xi, count]) => {
           const z = (x - xi) / bandwidth;
-          return acc + Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+          return acc + count * Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
         }, 0);
         return sum / (n * bandwidth);
       });

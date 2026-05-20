@@ -4,15 +4,17 @@ from flask import current_app
 
 from app.datastore.base import DataStore
 
-RESULT_COLUMN_FIELDS = [
-    "pseudocode_result",
-    "open_source_code_result",
-    "open_datasets_result",
-    "dataset_splits_result",
-    "hardware_specification_result",
-    "software_dependencies_result",
-    "experiment_setup_result",
+RESULT_COLUMN_FIELD_LABELS: list[tuple[str, str]] = [
+    ("pseudocode_result", "PC"),
+    ("open_source_code_result", "OSC"),
+    ("open_datasets_result", "ODS"),
+    ("dataset_splits_result", "DS"),
+    ("hardware_specification_result", "HS"),
+    ("software_dependencies_result", "SD"),
+    ("experiment_setup_result", "ES"),
 ]
+
+RESULT_COLUMN_FIELDS = [field for field, _ in RESULT_COLUMN_FIELD_LABELS]
 
 
 DETAIL_ROWS = [

@@ -169,6 +169,7 @@ def test_build_venue_results_context_computes_totals_and_icons() -> None:
         raw_results=[
             {
                 "title": "Paper A",
+                "research_type_result": 0,
                 "pseudocode_result": 1,
                 "open_source_code_result": 0,
                 "open_datasets_result": "1",
@@ -176,7 +177,18 @@ def test_build_venue_results_context_computes_totals_and_icons() -> None:
                 "hardware_specification_result": "no",
                 "software_dependencies_result": "yes",
                 "experiment_setup_result": "unknown",
-            }
+            },
+            {
+                "title": "Paper B",
+                "research_type_result": 1,
+                "pseudocode_result": 1,
+                "open_source_code_result": 1,
+                "open_datasets_result": 1,
+                "dataset_splits_result": 1,
+                "hardware_specification_result": 1,
+                "software_dependencies_result": 1,
+                "experiment_setup_result": 1,
+            },
         ],
     )
 
@@ -186,6 +198,21 @@ def test_build_venue_results_context_computes_totals_and_icons() -> None:
     assert result["pseudocode_result_icon"] == "✅"
     assert result["open_source_code_result_icon"] == "❌"
     assert result["experiment_setup_result_icon"] == "N/A"
+    assert len(context["results"]) == 2  # both papers appear in the table
+    assert context["edition_bar_chart_labels"] == [
+        "PC",
+        "OSC",
+        "ODS",
+        "DS",
+        "HS",
+        "SD",
+        "ES",
+    ]
+    # charts only count Paper A (empirical); Paper B (theoretical) is excluded
+    assert context["edition_bar_chart_percentages"][0] == 100.0  # pseudocode True
+    assert context["edition_bar_chart_percentages"][1] == 0.0  # open_source_code False
+    assert context["edition_kde_histogram"] == {3: 1}
+    assert context["edition_kde_max_total"] == 7
 
 
 def test_build_data_and_paper_context_helpers() -> None:

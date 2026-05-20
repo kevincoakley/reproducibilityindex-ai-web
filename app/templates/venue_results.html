@@ -7,6 +7,22 @@
 
   <section class="card">
     <h2>{{ venue.venue_name }} ({{ venue.venue }}) - {{ year }}</h2>
+
+    <div class="chart-grid">
+      <div>
+        <h3>Documentation Rate of Empirical Papers by Reproducibility Variable</h3>
+        <div class="chart-wrap chart-wrap-half">
+          <canvas id="edition-bar-chart" aria-label="Bar chart of documentation variable percentages"></canvas>
+        </div>
+      </div>
+      <div>
+        <h3>Distribution of Empirical Papers by Number of Documented Variables</h3>
+        <div class="chart-wrap chart-wrap-half">
+          <canvas id="edition-kde-chart" aria-label="KDE density chart of total reproducibility scores"></canvas>
+        </div>
+      </div>
+    </div>
+
     <p>
       Website:
       {% if edition_url %}
@@ -201,7 +217,138 @@
     </table>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
+    const editionBarLabels = {{ edition_bar_chart_labels|tojson }};
+    const editionBarPercentages = {{ edition_bar_chart_percentages|tojson }};
+    const editionKdeHistogram = {{ edition_kde_histogram|tojson }};
+    const editionKdeMaxTotal = {{ edition_kde_max_total|tojson }};
+
+    const editionBarCanvas = document.getElementById("edition-bar-chart");
+    if (editionBarCanvas && window.Chart && editionBarPercentages.length > 0) {
+      new Chart(editionBarCanvas, {
+        type: "bar",
+        data: {
+          labels: editionBarLabels,
+          datasets: [
+            {
+              label: "% of Papers",
+              data: editionBarPercentages,
+              backgroundColor: "hsla(211, 65%, 42%, 0.7)",
+              borderColor: "hsl(211, 65%, 42%)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Variable",
+              },
+            },
+            y: {
+              min: 0,
+              max: 100,
+              title: {
+                display: true,
+                text: "Percent",
+              },
+              ticks: {
+                stepSize: 20,
+                callback: (value) => `${Number(value)}%`,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.parsed.y}%`,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    const editionKdeCanvas = document.getElementById("edition-kde-chart");
+    if (editionKdeCanvas && window.Chart && Object.keys(editionKdeHistogram).length > 0) {
+      const kdeXLabels = Array.from({ length: editionKdeMaxTotal + 1 }, (_, i) => i);
+
+      const histogramEntries = Object.entries(editionKdeHistogram).map(
+        ([k, v]) => [Number(k), Number(v)]
+      );
+      const n = histogramEntries.reduce((acc, [, count]) => acc + count, 0);
+      const bandwidth = 0.5;
+
+      const kdeDensities = kdeXLabels.map((x) => {
+        const sum = histogramEntries.reduce((acc, [xi, count]) => {
+          const z = (x - xi) / bandwidth;
+          return acc + count * Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+        }, 0);
+        return sum / (n * bandwidth);
+      });
+
+      new Chart(editionKdeCanvas, {
+        type: "line",
+        data: {
+          labels: kdeXLabels,
+          datasets: [
+            {
+              label: "Density",
+              data: kdeDensities,
+              borderColor: "hsl(211, 65%, 42%)",
+              backgroundColor: "hsla(211, 65%, 42%, 0.15)",
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: 3,
+              pointHoverRadius: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "category",
+              title: {
+                display: true,
+                text: "Number of Documented Variables",
+              },
+            },
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Probability Density",
+              },
+              ticks: {
+                callback: (value) => Number(value).toFixed(3),
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `Density: ${context.parsed.y.toFixed(4)}`,
+              },
+            },
+          },
+        },
+      });
+    }
+
     const searchInput = document.getElementById("paper-search");
     const tableRows = Array.from(document.querySelectorAll("#papers-table tbody tr"));
     const tableBody = document.querySelector("#papers-table tbody");

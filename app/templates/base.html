@@ -25,6 +25,60 @@
       </div>
     </header>
 
+    <script>
+      function buildChartLegend(chart, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const type = chart.config.type;
+        if (type === "pie" || type === "doughnut") {
+          const labels = chart.data.labels || [];
+          const bgColors = (chart.data.datasets[0] || {}).backgroundColor || [];
+          labels.forEach((label, index) => {
+            const color = Array.isArray(bgColors) ? bgColors[index] : bgColors;
+            const item = document.createElement("span");
+            item.className = "chart-legend-item";
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = true;
+            cb.id = `${containerId}-cb-${index}`;
+            if (color) cb.style.setProperty("--swatch-color", color);
+            const lbl = document.createElement("label");
+            lbl.htmlFor = cb.id;
+            lbl.textContent = label;
+            cb.addEventListener("change", () => {
+              chart.toggleDataVisibility(index);
+              item.classList.toggle("is-hidden", !cb.checked);
+              chart.update();
+            });
+            item.appendChild(cb);
+            item.appendChild(lbl);
+            container.appendChild(item);
+          });
+        } else {
+          chart.data.datasets.forEach((dataset, index) => {
+            const item = document.createElement("span");
+            item.className = "chart-legend-item";
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = true;
+            cb.id = `${containerId}-cb-${index}`;
+            if (dataset.borderColor) cb.style.setProperty("--swatch-color", dataset.borderColor);
+            const lbl = document.createElement("label");
+            lbl.htmlFor = cb.id;
+            lbl.textContent = dataset.label;
+            cb.addEventListener("change", () => {
+              chart.data.datasets[index].hidden = !cb.checked;
+              item.classList.toggle("is-hidden", !cb.checked);
+              chart.update();
+            });
+            item.appendChild(cb);
+            item.appendChild(lbl);
+            container.appendChild(item);
+          });
+        }
+      }
+    </script>
+
     <main class="container page-content">
       {% block content %}{% endblock %}
     </main>

@@ -120,6 +120,37 @@ body {
   height: 320px;
 }
 
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.75rem;
+  color: var(--ink);
+}
+
+.chart-legend-item input[type="checkbox"] {
+  accent-color: var(--swatch-color, var(--accent));
+  width: 0.9rem;
+  height: 0.9rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.chart-legend-item.is-hidden label {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
 h2,
 h3 {
   margin-top: 0;

@@ -11,6 +11,7 @@
     <div class="chart-wrap">
       <canvas id="home-repro-score-chart" aria-label="Reproducibility score trend by venue and year"></canvas>
     </div>
+    <div id="home-repro-score-chart-legend" class="chart-legend"></div>
   </section>
 
   <section class="card">
@@ -19,6 +20,7 @@
     <div class="chart-wrap">
       <canvas id="home-global-mean-chart" aria-label="Documentation score trend by venue and year"></canvas>
     </div>
+    <div id="home-global-mean-chart-legend" class="chart-legend"></div>
   </section>
 
   <section class="card">
@@ -121,7 +123,7 @@
       window.Chart &&
       homeReproScoreChartDatasets.length > 0
     ) {
-      new Chart(homeReproScoreChartCanvas, {
+      const reproChart = new Chart(homeReproScoreChartCanvas, {
         type: "line",
         data: {
           datasets: homeReproScoreChartDatasets.map((dataset) => ({
@@ -160,19 +162,19 @@
           },
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
           },
         },
       });
+      buildChartLegend(reproChart, "home-repro-score-chart-legend");
     }
 
     const homeDocMeanChartDatasets = {{ home_doc_mean_chart_datasets|tojson }};
     const homeDocMeanChartCanvas = document.getElementById("home-global-mean-chart");
 
     if (homeDocMeanChartCanvas && window.Chart && homeDocMeanChartDatasets.length > 0) {
-      new Chart(homeDocMeanChartCanvas, {
+      const docChart = new Chart(homeDocMeanChartCanvas, {
         type: "line",
         data: {
           datasets: homeDocMeanChartDatasets.map((dataset) => ({
@@ -211,12 +213,12 @@
           },
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
           },
         },
       });
+      buildChartLegend(docChart, "home-global-mean-chart-legend");
     }
 
     const homeTableBody = document.querySelector("#home-editions-table tbody");

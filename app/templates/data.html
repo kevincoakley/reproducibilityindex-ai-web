@@ -9,6 +9,7 @@
     <div class="chart-wrap">
       <canvas id="data-papers-chart" aria-label="Stacked area chart of paper counts by venue and year"></canvas>
     </div>
+    <div id="data-papers-chart-legend" class="chart-legend"></div>
 
     <div class="chart-grid">
       <div class="chart-wrap chart-wrap-half">
@@ -17,6 +18,10 @@
       <div class="chart-wrap chart-wrap-half">
         <canvas id="year-total-pie-chart" aria-label="Pie chart of total papers by year"></canvas>
       </div>
+    </div>
+    <div class="chart-grid">
+      <div id="venue-total-pie-chart-legend" class="chart-legend"></div>
+      <div id="year-total-pie-chart-legend" class="chart-legend"></div>
     </div>
 
     <table>
@@ -74,7 +79,7 @@
       }
       const yearLabels = Array.from(allYears).sort((a, b) => a - b);
 
-      new Chart(dataChartCanvas, {
+      const dataPapersChart = new Chart(dataChartCanvas, {
         type: "line",
         data: {
           labels: yearLabels,
@@ -128,8 +133,7 @@
           },
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
             tooltip: {
               callbacks: {
@@ -139,6 +143,7 @@
           },
         },
       });
+      buildChartLegend(dataPapersChart, "data-papers-chart-legend");
     }
 
     if (
@@ -147,7 +152,7 @@
       venueStatsLabels.length > 0 &&
       venueStatsTotals.length > 0
     ) {
-      new Chart(venueTotalPieCanvas, {
+      const venuePieChart = new Chart(venueTotalPieCanvas, {
         type: "pie",
         data: {
           labels: venueStatsLabels,
@@ -166,12 +171,12 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
           },
         },
       });
+      buildChartLegend(venuePieChart, "venue-total-pie-chart-legend");
     }
 
     if (
@@ -180,7 +185,7 @@
       yearStatsLabels.length > 0 &&
       yearStatsTotals.length > 0
     ) {
-      new Chart(yearTotalPieCanvas, {
+      const yearPieChart = new Chart(yearTotalPieCanvas, {
         type: "pie",
         data: {
           labels: yearStatsLabels,
@@ -199,12 +204,12 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: true,
-              position: "bottom",
+              display: false,
             },
           },
         },
       });
+      buildChartLegend(yearPieChart, "year-total-pie-chart-legend");
     }
   </script>
 {% endblock %}

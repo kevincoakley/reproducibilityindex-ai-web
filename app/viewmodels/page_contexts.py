@@ -455,20 +455,36 @@ def build_venue_results_context(
         ),
     }
 
+    metric_true_counts: dict[str, int] = {field: 0 for field in RESULT_COLUMN_FIELDS}
+    score_histogram: dict[int, int] = {}
     results: list[Record] = []
     for row in raw_results:
         normalized = dict(row)
         total = 0
+        is_empirical = _to_binary(row.get("research_type_result")) == 0
         for field in RESULT_COLUMN_FIELDS:
             binary_value = _to_binary(row.get(field))
             if binary_value is not None:
                 total += binary_value
+                if is_empirical:
+                    metric_true_counts[field] += binary_value
             normalized[f"{field}_binary"] = (
                 binary_value if binary_value is not None else -1
             )
             normalized[f"{field}_icon"] = _to_binary_icon(row.get(field))
         normalized["total"] = total
+        if is_empirical:
+            score_histogram[total] = score_histogram.get(total, 0) + 1
         results.append(normalized)
+
+    total_papers = sum(score_histogram.values())
+    if total_papers > 0:
+        edition_bar_chart_percentages: list[float] = [
+            round(metric_true_counts[field] / total_papers * 100, 1)
+            for field in RESULT_COLUMN_FIELDS
+        ]
+    else:
+        edition_bar_chart_percentages = [0.0] * len(RESULT_COLUMN_FIELDS)
 
     return {
         "venue": venue_row,
@@ -476,6 +492,10 @@ def build_venue_results_context(
         "edition_url": edition_url,
         "metrics": metrics,
         "results": results,
+        "edition_bar_chart_labels": ["PC", "OSC", "ODS", "DS", "HS", "SD", "ES"],
+        "edition_bar_chart_percentages": edition_bar_chart_percentages,
+        "edition_kde_histogram": score_histogram,
+        "edition_kde_max_total": len(RESULT_COLUMN_FIELDS),
     }
 
 

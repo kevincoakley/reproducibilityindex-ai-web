@@ -300,6 +300,12 @@ def test_venue_year_page(client, sample_data: dict[str, str]) -> None:
     assert ">% Empirical<" in body
     assert ">% Industry<" in body
     assert ">Website<" in body
+    assert 'id="edition-bar-chart"' in body
+    assert 'id="edition-kde-chart"' in body
+    assert "const editionBarLabels =" in body
+    assert "const editionBarPercentages =" in body
+    assert "const editionKdeHistogram =" in body
+    assert "const editionKdeMaxTotal =" in body
 
 
 def test_paper_page(client, sample_data: dict[str, str]) -> None:

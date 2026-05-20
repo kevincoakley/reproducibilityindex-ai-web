@@ -1,20 +1,25 @@
 {% macro text(key) -%}
   {%- set tooltips = {
     "repro_score": "Reproducibility Score based on <a href='https://doi.org/10.1609/aaai.v39i25.34818'>Gundersen et al. (2025)</a>. <a href='/methods/#sec:reproducibility-score'>See Methods for details</a>.",
-    "doc_mean": "Global mean is the average score over the seven reproducibility variables for empirical research papers. <a href='/methods/#sec:documentation-score'>See Methods for details</a>.",
+    "doc_mean": "Documentation Score is the average score over the seven reproducibility variables for empirical research papers. <a href='/methods/#sec:documentation-score'>See Methods for details</a>.",
     "doc_median": "Global median is the median score over the seven reproducibility variables for empirical research papers.",
     "dataset_doc": "Documentation mean is the average score over the Open Datasets and Dataset Splits reproducibility variables for empirical research papers.",
     "code_doc": "Documentation mean is the average score over the Open Source Code reproducibility variables for empirical research papers.",
     "other_doc": "Documentation mean is the average score over the Pseudocode, Hardware Specification, Software Dependencies, and Experiment Setup reproducibility variables for empirical research papers.",
-    "percent_empirical": "Percentage of papers that are empirical research vs theoretical research",
-    "percent_industry": "Percentage of empirical research papers with at least one author from Industry",
+    "percent_empirical": "Percentage of papers that are empirical research vs theoretical research.",
+    "percent_industry": "Percentage of empirical research papers with at least one author from Industry.",
     "pc": "Pseudocode",
     "osc": "Open Source Code",
     "ods": "Open Datasets",
     "ds": "Dataset Splits",
     "hs": "Hardware Specification",
     "sd": "Software Dependencies",
-    "es": "Experiment Setup"
+    "es": "Experiment Setup",
+    "repro_score_frac": "Mean reproducibility score across papers, weighted by fractional authorship, based on <a href='https://doi.org/10.1609/aaai.v39i25.34818'>Gundersen et al. (2025)</a>. <a href='/methods/#sec:reproducibility-score'>See Methods for details</a>.",
+    "doc_mean_frac": "Mean documentation score across papers, weighted by fractional authorship. <a href='/methods/#sec:documentation-score'>See Methods for details</a>.",
+    "fractional_paper": "Paper count based on fractional authorship.",
+    "contrib_papers_country": "Number of papers with at least one author from the country.",
+    "contrib_papers_institution": "Number of papers with at least one author from the institution."
   } -%}
   {{- tooltips[key] | safe -}}
 {%- endmacro %}

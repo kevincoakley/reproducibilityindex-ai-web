@@ -34,10 +34,24 @@ def _mask_email_addresses(text: str) -> str:
     return STANDARD_EMAIL_PATTERN.sub("EMAIL", masked)
 
 
+_VENUE_POINT_STYLES: dict[str, str] = {
+    "AAAI": "star",
+    "DMLR": "triangle",
+    "ICLR": "rectRot",
+    "ICML": "rect",
+    "IJCAI": "circle",
+    "JAIR": "cross",
+    "JMLR": "crossRot",
+    "NeurIPS": "rectRounded",
+    "TMLR": "dash",
+}
+
+
 def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, object]:
     all_edition_rows: list[Record] = []
     doc_mean_chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
     repro_score_chart_points_by_venue: dict[str, list[dict[str, float]]] = {}
+    scatter_by_year: dict[str, dict[str, list[dict]]] = {}
 
     for row in all_edition_source_rows:
         documentation_global_mean_raw = row.get("documentation_global_mean")
@@ -96,6 +110,33 @@ def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, objec
                 {"x": year_value, "y": reproducibility_score_value}
             )
 
+        if venue and year_value is not None:
+            acad_doc = _to_float(row.get("academia_documentation_score"))
+            acad_rep = _to_float(row.get("academia_reproducibility_score"))
+            ind_doc = _to_float(row.get("industry_documentation_score"))
+            ind_rep = _to_float(row.get("industry_reproducibility_score"))
+            point_style = _VENUE_POINT_STYLES.get(venue, "circle")
+            year_key = str(year_value)
+            scatter_by_year.setdefault(year_key, {"academia": [], "industry": []})
+            if acad_doc is not None and acad_rep is not None:
+                scatter_by_year[year_key]["academia"].append(
+                    {
+                        "x": acad_doc,
+                        "y": acad_rep,
+                        "venue": venue,
+                        "pointStyle": point_style,
+                    }
+                )
+            if ind_doc is not None and ind_rep is not None:
+                scatter_by_year[year_key]["industry"].append(
+                    {
+                        "x": ind_doc,
+                        "y": ind_rep,
+                        "venue": venue,
+                        "pointStyle": point_style,
+                    }
+                )
+
     editions: list[Record] = []
     seen_venues: set[str] = set()
     for row in all_edition_rows:
@@ -114,10 +155,26 @@ def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, objec
         for venue, points in sorted(repro_score_chart_points_by_venue.items())
     ]
 
+    home_scatter_years = sorted(
+        (
+            y
+            for y, groups in scatter_by_year.items()
+            if groups["academia"] or groups["industry"]
+        ),
+        reverse=True,
+    )
+    home_scatter_data = {y: scatter_by_year[y] for y in home_scatter_years}
+    home_scatter_venue_shapes = [
+        {"venue": v, "pointStyle": s} for v, s in _VENUE_POINT_STYLES.items()
+    ]
+
     return {
         "editions": editions,
         "home_doc_mean_chart_datasets": home_doc_mean_chart_datasets,
         "home_repro_score_chart_datasets": home_repro_score_chart_datasets,
+        "home_scatter_data": home_scatter_data,
+        "home_scatter_years": home_scatter_years,
+        "home_scatter_venue_shapes": home_scatter_venue_shapes,
     }
 
 

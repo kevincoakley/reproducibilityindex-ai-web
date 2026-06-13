@@ -31,7 +31,11 @@ def _create_scores_table(db_path: Path, percent_prefix: str) -> None:
             {percent_prefix}_dataset_splits REAL,
             {percent_prefix}_hardware_specification REAL,
             {percent_prefix}_software_dependencies REAL,
-            {percent_prefix}_experiment_setup REAL
+            {percent_prefix}_experiment_setup REAL,
+            academia_documentation_score REAL,
+            academia_reproducibility_score REAL,
+            industry_documentation_score REAL,
+            industry_reproducibility_score REAL
         )
         """)
     connection.execute("""
@@ -65,7 +69,11 @@ def _create_scores_table(db_path: Path, percent_prefix: str) -> None:
             69.0,
             72.0,
             75.0,
-            78.0
+            78.0,
+            4.2,
+            0.68,
+            3.9,
+            0.55
         )
         """)
     connection.execute(
@@ -177,6 +185,21 @@ def test_list_editions_uses_canonical_percent_keys_with_canonical_schema(
     assert row["percent_empirical_industry"] == 22.0
     assert row["percent_empirical_pseudocode"] == 60.0
     assert row["percent_empirical_experiment_setup"] == 78.0
+
+
+def test_list_all_editions_includes_affiliation_scatter_scores(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "scatter.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    store = SQLiteDataStore(db_path)
+
+    row = store.list_all_editions()[0]
+
+    assert row["academia_documentation_score"] == 4.2
+    assert row["academia_reproducibility_score"] == 0.68
+    assert row["industry_documentation_score"] == 3.9
+    assert row["industry_reproducibility_score"] == 0.55
 
 
 def test_institution_score_rows_include_title_and_fallback(tmp_path: Path) -> None:

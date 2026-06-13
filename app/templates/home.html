@@ -24,6 +24,32 @@
   </section>
 
   <section class="card">
+    <h2>Reproducibility vs Documentation by Affiliation</h2>
+    <p>
+      Per-affiliation <a href="{{ url_for('pages.methods') }}#sec:reproducibility-score">reproducibility</a>
+      and <a href="{{ url_for('pages.methods') }}#sec:documentation-score">documentation</a>
+      scores for each venue. Empirical papers only.
+    </p>
+    <div class="scatter-controls">
+      <label for="scatter-year-select">Year:</label>
+      <select id="scatter-year-select">
+        {% for year in home_scatter_years %}
+          <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="home-scatter-chart" aria-label="Scatter plot of reproducibility vs documentation score by affiliation and venue"></canvas>
+    </div>
+    <div id="home-scatter-chart-legend" class="chart-legend"></div>
+    <div class="scatter-venue-key">
+      {% for item in home_scatter_venue_shapes %}
+        <span class="scatter-venue-key-item scatter-shape-{{ item.pointStyle }}">{{ item.venue }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
     <h2>Latest Editions</h2>
     <p>Browse reproducibility metrics across the latest editions of each venue.</p>
 
@@ -219,6 +245,91 @@
         },
       });
       buildChartLegend(docChart, "home-global-mean-chart-legend");
+    }
+
+    const homeScatterData = {{ home_scatter_data | tojson }};
+    const homeScatterCanvas = document.getElementById("home-scatter-chart");
+    const homeScatterYearSelect = document.getElementById("scatter-year-select");
+
+    if (homeScatterCanvas && window.Chart && homeScatterData && Object.keys(homeScatterData).length > 0) {
+      const ACADEMIA_COLOR = "#3B82F6";
+      const INDUSTRY_COLOR = "#EF4444";
+
+      function buildScatterDatasets(year) {
+        const yearData = homeScatterData[year] || { academia: [], industry: [] };
+        return [
+          {
+            label: "Academia",
+            data: yearData.academia,
+            borderColor: ACADEMIA_COLOR,
+            backgroundColor: ACADEMIA_COLOR,
+            pointStyle: yearData.academia.map((p) => p.pointStyle),
+            pointRadius: 8,
+            pointHoverRadius: 10,
+            parsing: false,
+          },
+          {
+            label: "Industry",
+            data: yearData.industry,
+            borderColor: INDUSTRY_COLOR,
+            backgroundColor: INDUSTRY_COLOR,
+            pointStyle: yearData.industry.map((p) => p.pointStyle),
+            pointRadius: 8,
+            pointHoverRadius: 10,
+            parsing: false,
+          },
+        ];
+      }
+
+      const initialYear = homeScatterYearSelect
+        ? homeScatterYearSelect.value
+        : Object.keys(homeScatterData)[0];
+
+      const scatterChart = new Chart(homeScatterCanvas, {
+        type: "scatter",
+        data: { datasets: buildScatterDatasets(initialYear) },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              min: 0,
+              max: 7,
+              title: { display: true, text: "Documentation Score" },
+            },
+            y: {
+              min: 0,
+              max: 1,
+              title: { display: true, text: "Reproducibility Score" },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  const p = ctx.raw;
+                  return (
+                    `${p.venue} — ${ctx.dataset.label}: ` +
+                    `Repro ${p.y.toFixed(2)}, Doc ${p.x.toFixed(2)}`
+                  );
+                },
+              },
+            },
+          },
+        },
+      });
+
+      buildChartLegend(scatterChart, "home-scatter-chart-legend");
+
+      if (homeScatterYearSelect) {
+        homeScatterYearSelect.addEventListener("change", () => {
+          scatterChart.data.datasets = buildScatterDatasets(
+            homeScatterYearSelect.value
+          );
+          scatterChart.update();
+        });
+      }
     }
 
     const homeTableBody = document.querySelector("#home-editions-table tbody");

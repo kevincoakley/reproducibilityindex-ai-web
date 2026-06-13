@@ -396,6 +396,63 @@ pre {
   white-space: nowrap;
 }
 
+.scatter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.scatter-venue-key {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.scatter-venue-key-item::before {
+  margin-right: 0.3rem;
+}
+
+.scatter-venue-key-item.scatter-shape-star::before {
+  content: "★";
+}
+
+.scatter-venue-key-item.scatter-shape-triangle::before {
+  content: "▲";
+}
+
+.scatter-venue-key-item.scatter-shape-rectRot::before {
+  content: "◆";
+}
+
+.scatter-venue-key-item.scatter-shape-rect::before {
+  content: "■";
+}
+
+.scatter-venue-key-item.scatter-shape-circle::before {
+  content: "●";
+}
+
+.scatter-venue-key-item.scatter-shape-cross::before {
+  content: "✚";
+}
+
+.scatter-venue-key-item.scatter-shape-crossRot::before {
+  content: "✖";
+}
+
+.scatter-venue-key-item.scatter-shape-rectRounded::before {
+  content: "▪";
+}
+
+.scatter-venue-key-item.scatter-shape-dash::before {
+  content: "—";
+}
+
 @media (max-width: 640px) {
   .chart-wrap {
     height: 300px;

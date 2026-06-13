@@ -135,6 +135,10 @@ class SQLiteDataStore(DataStore):
                 pm.documentation_code_mean,
                 pm.{self._percent_metric_columns["percent_empirical"]} AS percent_empirical,
                 pm.{self._percent_metric_columns["percent_empirical_industry"]} AS percent_empirical_industry,
+                pm.academia_documentation_score,
+                pm.academia_reproducibility_score,
+                pm.industry_documentation_score,
+                pm.industry_reproducibility_score,
                 p.url
             FROM editions AS p
             LEFT JOIN editions_reproducibility_scores AS pm

@@ -50,7 +50,11 @@ def _build_fixture_db(path: Path) -> None:
             percent_empirical_dataset_splits REAL,
             percent_empirical_hardware_specification REAL,
             percent_empirical_software_dependencies REAL,
-            percent_empirical_experiment_setup REAL
+            percent_empirical_experiment_setup REAL,
+            academia_documentation_score REAL,
+            academia_reproducibility_score REAL,
+            industry_documentation_score REAL,
+            industry_reproducibility_score REAL
         );
 
         CREATE TABLE runs (
@@ -168,7 +172,7 @@ def _build_fixture_db(path: Path) -> None:
     )
     con.execute(
         """INSERT INTO editions_reproducibility_scores VALUES
-           (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+           (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (
             "VENUE",
             "2024",
@@ -188,6 +192,10 @@ def _build_fixture_db(path: Path) -> None:
             0.6,
             0.7,
             0.8,
+            4.0,
+            0.65,
+            3.8,
+            0.52,
         ),
     )
     con.execute(
@@ -261,6 +269,6 @@ def _build_fixture_db(path: Path) -> None:
 
 @pytest.fixture(scope="session", autouse=True)
 def ensure_test_database() -> None:
-    """Create a minimal fixture database when results.sqlite is absent."""
-    if not DB_PATH.exists():
+    """Create a minimal fixture database when results.sqlite is absent or empty."""
+    if not DB_PATH.exists() or DB_PATH.stat().st_size == 0:
         _build_fixture_db(DB_PATH)

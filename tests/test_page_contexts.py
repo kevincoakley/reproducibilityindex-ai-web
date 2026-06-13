@@ -10,44 +10,96 @@ from app.viewmodels.page_contexts import (
 )
 
 
+def _make_edition_row(
+    venue: str,
+    year: str,
+    *,
+    acad_doc: object = None,
+    acad_rep: object = None,
+    ind_doc: object = None,
+    ind_rep: object = None,
+) -> dict:
+    return {
+        "venue": venue,
+        "year": year,
+        "number_papers": 10,
+        "reproducibility_score": "0.5",
+        "documentation_global_mean": "3.0",
+        "documentation_global_median": "3.0",
+        "documentation_other_mean": "1.5",
+        "documentation_dataset_mean": "1.0",
+        "documentation_code_mean": "0.5",
+        "percent_empirical": "80",
+        "percent_empirical_industry": "20",
+        "academia_documentation_score": acad_doc,
+        "academia_reproducibility_score": acad_rep,
+        "industry_documentation_score": ind_doc,
+        "industry_reproducibility_score": ind_rep,
+        "url": f"https://example.org/{year}",
+    }
+
+
 def test_build_home_context_deduplicates_venues_and_sorts_chart_points() -> None:
     context = build_home_context(
         [
-            {
-                "venue": "ICML",
-                "year": "2024",
-                "number_papers": 10,
-                "reproducibility_score": "0.2",
-                "documentation_global_mean": "0.3",
-                "documentation_global_median": "0.3",
-                "documentation_other_mean": "0.3",
-                "documentation_dataset_mean": "0.3",
-                "documentation_code_mean": "0.3",
-                "percent_empirical": "75",
-                "percent_empirical_industry": "25",
-                "url": "https://example.org/2024",
-            },
-            {
-                "venue": "ICML",
-                "year": "2023",
-                "number_papers": 9,
-                "reproducibility_score": "0.4",
-                "documentation_global_mean": "0.5",
-                "documentation_global_median": "0.5",
-                "documentation_other_mean": "0.5",
-                "documentation_dataset_mean": "0.5",
-                "documentation_code_mean": "0.5",
-                "percent_empirical": "70",
-                "percent_empirical_industry": "20",
-                "url": "https://example.org/2023",
-            },
+            _make_edition_row("ICML", "2024"),
+            _make_edition_row("ICML", "2023"),
         ]
     )
 
     assert len(context["editions"]) == 1
     assert context["editions"][0]["venue"] == "ICML"
     repro_dataset = context["home_repro_score_chart_datasets"][0]
-    assert repro_dataset["data"] == [{"x": 2023, "y": 0.4}, {"x": 2024, "y": 0.2}]
+    assert repro_dataset["data"] == [{"x": 2023, "y": 0.5}, {"x": 2024, "y": 0.5}]
+
+
+def test_build_home_context_builds_scatter_data_keyed_by_year() -> None:
+    context = build_home_context(
+        [
+            _make_edition_row(
+                "AAAI", "2025", acad_doc=3.87, acad_rep=0.56, ind_doc=3.73, ind_rep=0.50
+            ),
+            _make_edition_row(
+                "ICLR", "2025", acad_doc=4.57, acad_rep=0.72, ind_doc=4.50, ind_rep=0.65
+            ),
+            _make_edition_row(
+                "AAAI", "2024", acad_doc=3.50, acad_rep=0.52, ind_doc=3.40, ind_rep=0.45
+            ),
+        ]
+    )
+
+    scatter_data = context["home_scatter_data"]
+    scatter_years = context["home_scatter_years"]
+
+    assert scatter_years == ["2025", "2024"]
+    assert len(scatter_data["2025"]["academia"]) == 2
+    assert len(scatter_data["2025"]["industry"]) == 2
+    assert len(scatter_data["2024"]["academia"]) == 1
+
+    aaai_acad = next(
+        p for p in scatter_data["2025"]["academia"] if p["venue"] == "AAAI"
+    )
+    assert aaai_acad["x"] == 3.87
+    assert aaai_acad["y"] == 0.56
+    assert aaai_acad["pointStyle"] == "star"
+
+    iclr_ind = next(p for p in scatter_data["2025"]["industry"] if p["venue"] == "ICLR")
+    assert iclr_ind["x"] == 4.50
+    assert iclr_ind["pointStyle"] == "rectRot"
+
+
+def test_build_home_context_omits_scatter_points_when_scores_missing() -> None:
+    context = build_home_context(
+        [
+            _make_edition_row("AAAI", "2025", acad_doc=3.87, acad_rep=0.56),
+            _make_edition_row("ICLR", "2025"),
+        ]
+    )
+
+    scatter_data = context["home_scatter_data"]
+    assert len(scatter_data["2025"]["academia"]) == 1
+    assert scatter_data["2025"]["academia"][0]["venue"] == "AAAI"
+    assert scatter_data["2025"]["industry"] == []
 
 
 def test_build_countries_context_builds_chart_bounds_and_fallback_labels() -> None:

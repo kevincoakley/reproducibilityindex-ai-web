@@ -251,7 +251,7 @@
     const homeScatterCanvas = document.getElementById("home-scatter-chart");
     const homeScatterYearSelect = document.getElementById("scatter-year-select");
 
-    if (homeScatterCanvas && window.Chart && homeScatterData) {
+    if (homeScatterCanvas && window.Chart && homeScatterData && Object.keys(homeScatterData).length > 0) {
       const ACADEMIA_COLOR = "#3B82F6";
       const INDUSTRY_COLOR = "#EF4444";
 

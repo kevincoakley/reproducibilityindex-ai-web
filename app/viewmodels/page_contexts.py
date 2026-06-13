@@ -155,7 +155,14 @@ def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, objec
         for venue, points in sorted(repro_score_chart_points_by_venue.items())
     ]
 
-    home_scatter_years = sorted(scatter_by_year.keys(), reverse=True)
+    home_scatter_years = sorted(
+        (
+            y
+            for y, groups in scatter_by_year.items()
+            if groups["academia"] or groups["industry"]
+        ),
+        reverse=True,
+    )
     home_scatter_data = {y: scatter_by_year[y] for y in home_scatter_years}
     home_scatter_venue_shapes = [
         {"venue": v, "pointStyle": s} for v, s in _VENUE_POINT_STYLES.items()

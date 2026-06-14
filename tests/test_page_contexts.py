@@ -270,6 +270,8 @@ def test_build_venue_results_context_computes_totals_and_icons() -> None:
 def test_build_data_and_paper_context_helpers() -> None:
     data_context = build_data_context(
         total_papers=42,
+        total_input_tokens=1_000_000,
+        total_output_tokens=500_000,
         paper_count_rows=[{"venue": "ICML", "year": "2024", "number_papers": "5"}],
         data_rows_source=[
             {
@@ -278,6 +280,8 @@ def test_build_data_and_paper_context_helpers() -> None:
                 "number_papers": "5",
                 "run": "run-1",
                 "url": "https://example.org",
+                "input_tokens": 200000,
+                "output_tokens": 80000,
             }
         ],
         venue_stats_rows=[{"venue": "ICML", "total": "5"}],
@@ -285,6 +289,10 @@ def test_build_data_and_paper_context_helpers() -> None:
     )
     assert data_context["venue_stats_totals"] == [5]
     assert data_context["data_chart_datasets"][0]["data"] == [{"x": 2024, "y": 5}]
+    assert data_context["total_input_tokens"] == "1,000,000"
+    assert data_context["total_output_tokens"] == "500,000"
+    assert data_context["data_rows"][0]["input_tokens"] == "200,000"
+    assert data_context["data_rows"][0]["output_tokens"] == "80,000"
 
     paper_context = build_paper_detail_context(
         {
@@ -306,10 +314,15 @@ def test_build_data_and_paper_context_helpers() -> None:
             "software_dependencies_paper_text": "text",
             "experiment_setup_result": 1,
             "experiment_setup_paper_text": "text",
+            "input_tokens": 150000,
+            "thoughts_tokens": 30000,
+            "output_tokens": 20000,
         }
     )
     assert paper_context["detail_rows"][0]["verdict"] == "Theoretical"
     assert paper_context["detail_rows"][1]["verdict"] == "Industry"
+    assert paper_context["input_tokens"] == "150,000"
+    assert paper_context["output_tokens"] == "50,000"
 
 
 def test_build_paper_detail_context_masks_email_addresses() -> None:

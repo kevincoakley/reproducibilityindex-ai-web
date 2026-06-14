@@ -166,7 +166,9 @@ class SQLiteDataStore(DataStore):
                 r.year,
                 r.run,
                 e.url,
-                paper_counts.number_papers
+                paper_counts.number_papers,
+                paper_counts.input_tokens,
+                paper_counts.output_tokens
             FROM results AS r
             LEFT JOIN editions AS e
               ON e.venue = r.venue AND e.year = r.year
@@ -174,7 +176,9 @@ class SQLiteDataStore(DataStore):
                 SELECT
                     venue,
                     year,
-                    COUNT(key) AS number_papers
+                    COUNT(key) AS number_papers,
+                    SUM(input_tokens) AS input_tokens,
+                    SUM(thoughts_tokens + output_tokens) AS output_tokens
                 FROM results
                 GROUP BY venue, year
             ) AS paper_counts
@@ -207,6 +211,34 @@ class SQLiteDataStore(DataStore):
         if isinstance(total, int):
             return total
         if isinstance(total, str):
+            return int(total)
+        return 0
+
+    def get_total_input_tokens(self) -> int:
+        row = self._fetch_one("""
+            SELECT SUM(input_tokens) AS total
+            FROM results
+            """)
+        if row is None:
+            return 0
+        total = row.get("total")
+        if isinstance(total, int):
+            return total
+        if isinstance(total, (float, str)):
+            return int(total)
+        return 0
+
+    def get_total_output_tokens(self) -> int:
+        row = self._fetch_one("""
+            SELECT SUM(thoughts_tokens + output_tokens) AS total
+            FROM results
+            """)
+        if row is None:
+            return 0
+        total = row.get("total")
+        if isinstance(total, int):
+            return total
+        if isinstance(total, (float, str)):
             return int(total)
         return 0
 
@@ -407,7 +439,10 @@ class SQLiteDataStore(DataStore):
                 software_dependencies_result,
                 software_dependencies_paper_text,
                 experiment_setup_result,
-                experiment_setup_paper_text
+                experiment_setup_paper_text,
+                input_tokens,
+                thoughts_tokens,
+                output_tokens
             FROM results
             WHERE key = ?
             """,

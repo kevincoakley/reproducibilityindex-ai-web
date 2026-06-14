@@ -177,8 +177,8 @@ class SQLiteDataStore(DataStore):
                     venue,
                     year,
                     COUNT(key) AS number_papers,
-                    SUM(input_tokens) AS input_tokens,
-                    SUM(thoughts_tokens + output_tokens) AS output_tokens
+                    SUM(COALESCE(input_tokens, 0)) AS input_tokens,
+                    SUM(COALESCE(thoughts_tokens, 0) + COALESCE(output_tokens, 0)) AS output_tokens
                 FROM results
                 GROUP BY venue, year
             ) AS paper_counts
@@ -230,7 +230,7 @@ class SQLiteDataStore(DataStore):
 
     def get_total_output_tokens(self) -> int:
         row = self._fetch_one("""
-            SELECT SUM(thoughts_tokens + output_tokens) AS total
+            SELECT SUM(COALESCE(thoughts_tokens, 0) + COALESCE(output_tokens, 0)) AS total
             FROM results
             """)
         if row is None:

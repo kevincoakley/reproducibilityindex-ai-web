@@ -290,9 +290,8 @@ def _build_fixture_db(path: Path) -> None:
 def _fixture_db_is_stale(path: Path) -> bool:
     """Return True if the database is missing required columns added recently."""
     try:
-        con = sqlite3.connect(path)
-        cols = {row[1] for row in con.execute("PRAGMA table_info(results)")}
-        con.close()
+        with sqlite3.connect(path) as con:
+            cols = {row[1] for row in con.execute("PRAGMA table_info(results)")}
         return not {"input_tokens", "thoughts_tokens", "output_tokens"}.issubset(cols)
     except Exception:
         return True

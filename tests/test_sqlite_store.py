@@ -312,6 +312,72 @@ def test_get_total_papers_count_handles_non_integer_rows(tmp_path: Path) -> None
     assert store.get_total_papers_count() == 0
 
 
+def _create_results_with_tokens(db_path: Path) -> None:
+    """Replace the stub results table with one that includes token columns."""
+    connection = sqlite3.connect(db_path)
+    connection.execute("DROP TABLE IF EXISTS results")
+    connection.execute("""
+        CREATE TABLE results (
+            key TEXT,
+            input_tokens INTEGER,
+            thoughts_tokens INTEGER,
+            output_tokens INTEGER
+        )
+        """)
+    connection.execute(
+        "INSERT INTO results VALUES (?, ?, ?, ?)", ("paper-a", 100, 30, 20)
+    )
+    connection.execute(
+        "INSERT INTO results VALUES (?, ?, ?, ?)", ("paper-b", 200, None, 40)
+    )
+    connection.execute(
+        "INSERT INTO results VALUES (?, ?, ?, ?)", ("paper-c", None, 10, None)
+    )
+    connection.commit()
+    connection.close()
+
+
+def test_get_total_input_tokens(tmp_path: Path) -> None:
+    db_path = tmp_path / "tokens.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    _create_results_with_tokens(db_path)
+    store = SQLiteDataStore(db_path)
+
+    # paper-a: 100, paper-b: 200, paper-c: NULL → COALESCE gives 0 → total 300
+    assert store.get_total_input_tokens() == 300
+
+
+def test_get_total_output_tokens(tmp_path: Path) -> None:
+    db_path = tmp_path / "tokens_out.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    _create_results_with_tokens(db_path)
+    store = SQLiteDataStore(db_path)
+
+    # paper-a: 30+20=50, paper-b: 0+40=40, paper-c: 10+0=10 → total 100
+    assert store.get_total_output_tokens() == 100
+
+
+def test_get_total_tokens_returns_zero_on_empty_table(tmp_path: Path) -> None:
+    db_path = tmp_path / "empty_tokens.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    connection = sqlite3.connect(db_path)
+    connection.execute("DROP TABLE IF EXISTS results")
+    connection.execute("""
+        CREATE TABLE results (
+            key TEXT,
+            input_tokens INTEGER,
+            thoughts_tokens INTEGER,
+            output_tokens INTEGER
+        )
+        """)
+    connection.commit()
+    connection.close()
+    store = SQLiteDataStore(db_path)
+
+    assert store.get_total_input_tokens() == 0
+    assert store.get_total_output_tokens() == 0
+
+
 def test_build_data_store_rejects_unsupported_backend() -> None:
     app = Flask(__name__)
     app.config.update(

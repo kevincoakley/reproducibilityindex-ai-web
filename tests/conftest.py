@@ -20,6 +20,20 @@ DB_PATH = PROJECT_ROOT / "results.sqlite"
 def _build_fixture_db(path: Path) -> None:
     con = sqlite3.connect(path)
     con.executescript("""
+        DROP TABLE IF EXISTS venues;
+        DROP TABLE IF EXISTS editions;
+        DROP TABLE IF EXISTS editions_reproducibility_scores;
+        DROP TABLE IF EXISTS runs;
+        DROP TABLE IF EXISTS results;
+        DROP TABLE IF EXISTS countries;
+        DROP TABLE IF EXISTS countries_documentation_scores;
+        DROP TABLE IF EXISTS countries_reproducibility_scores;
+        DROP TABLE IF EXISTS institutions;
+        DROP TABLE IF EXISTS institutions_documentation_scores;
+        DROP TABLE IF EXISTS institutions_reproducibility_scores;
+        DROP TABLE IF EXISTS venue_stats;
+        DROP TABLE IF EXISTS year_stats;
+
         CREATE TABLE venues (
             venue TEXT PRIMARY KEY,
             venue_name TEXT,
@@ -91,7 +105,10 @@ def _build_fixture_db(path: Path) -> None:
             software_dependencies_result INTEGER,
             software_dependencies_paper_text TEXT,
             experiment_setup_result INTEGER,
-            experiment_setup_paper_text TEXT
+            experiment_setup_paper_text TEXT,
+            input_tokens INTEGER,
+            thoughts_tokens INTEGER,
+            output_tokens INTEGER
         );
 
         CREATE TABLE countries (
@@ -204,7 +221,7 @@ def _build_fixture_db(path: Path) -> None:
     )
     con.execute(
         """INSERT INTO results VALUES
-           (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+           (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (
             "test-paper-key",
             "A Test Paper",
@@ -231,6 +248,9 @@ def _build_fixture_db(path: Path) -> None:
             "No software dependencies.",
             0,
             "No experiment setup.",
+            150000,
+            30000,
+            20000,
         ),
     )
     con.execute(
@@ -267,8 +287,22 @@ def _build_fixture_db(path: Path) -> None:
     con.close()
 
 
+def _fixture_db_is_stale(path: Path) -> bool:
+    """Return True if the database is missing required columns added recently."""
+    try:
+        with sqlite3.connect(path) as con:
+            cols = {row[1] for row in con.execute("PRAGMA table_info(results)")}
+        return not {"input_tokens", "thoughts_tokens", "output_tokens"}.issubset(cols)
+    except Exception:
+        return True
+
+
 @pytest.fixture(scope="session", autouse=True)
 def ensure_test_database() -> None:
-    """Create a minimal fixture database when results.sqlite is absent or empty."""
-    if not DB_PATH.exists() or DB_PATH.stat().st_size == 0:
+    """Create a minimal fixture database when results.sqlite is absent, empty, or stale."""
+    if (
+        not DB_PATH.exists()
+        or DB_PATH.stat().st_size == 0
+        or _fixture_db_is_stale(DB_PATH)
+    ):
         _build_fixture_db(DB_PATH)

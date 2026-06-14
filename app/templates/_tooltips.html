@@ -19,7 +19,9 @@
     "doc_mean_frac": "Mean documentation score across papers, weighted by fractional authorship. <a href='/methods/#sec:documentation-score'>See Methods for details</a>.",
     "fractional_paper": "Paper count based on fractional authorship.",
     "contrib_papers_country": "Number of papers with at least one author from the country.",
-    "contrib_papers_institution": "Number of papers with at least one author from the institution."
+    "contrib_papers_institution": "Number of papers with at least one author from the institution.",
+    "input_tokens": "Total number of tokens sent to the LLM as input for this paper's analysis.",
+    "output_tokens": "Total number of tokens produced by the LLM (including reasoning/thinking tokens) for this paper's analysis."
   } -%}
   {{- tooltips[key] | safe -}}
 {%- endmacro %}

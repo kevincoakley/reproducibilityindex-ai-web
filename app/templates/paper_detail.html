@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% from "_references.html" import cite %}
+{% from "_tooltips.html" import text as tooltip_text %}
 
 {% block content %}
   {% include "_disclaimer.html" %}
@@ -37,6 +38,16 @@
       {% endif %}
       |
       <a href="{{ url_for('pages.run_detail', run=paper.run) }}">LLM Run Details</a>
+      | Input Tokens: {{ input_tokens }}
+      <span class="tooltip-wrap">
+        <button type="button" class="info-icon-button" aria-label="Input Tokens definition">i</button>
+        <span class="tooltip-text">{{ tooltip_text("input_tokens") }}</span>
+      </span>
+      | Output Tokens: {{ output_tokens }}
+      <span class="tooltip-wrap">
+        <button type="button" class="info-icon-button" aria-label="Output Tokens definition">i</button>
+        <span class="tooltip-text">{{ tooltip_text("output_tokens") }}</span>
+      </span>
     </p>
 
     <table>

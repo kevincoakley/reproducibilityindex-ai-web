@@ -18,6 +18,17 @@ from app.route_utils import (
 Record = dict[str, object]
 
 INSTITUTION_CHART_BASELINE_ROW_COUNT = 251
+
+
+def _format_token(value: object) -> str:
+    if value is None:
+        return "N/A"
+    try:
+        return f"{int(value):,}"
+    except (ValueError, TypeError):
+        return "N/A"
+
+
 INSTITUTION_CHART_BASELINE_HEIGHT = 4400
 INSTITUTION_CHART_MIN_HEIGHT = 840
 
@@ -391,6 +402,8 @@ def build_institutions_context(
 
 def build_data_context(
     total_papers: int,
+    total_input_tokens: int,
+    total_output_tokens: int,
     paper_count_rows: list[Record],
     data_rows_source: list[Record],
     venue_stats_rows: list[Record],
@@ -418,12 +431,16 @@ def build_data_context(
             "number_papers": _to_metric_display(row.get("number_papers")),
             "run": _to_metric_display(row.get("run")),
             "url": row.get("url"),
+            "input_tokens": _format_token(row.get("input_tokens")),
+            "output_tokens": _format_token(row.get("output_tokens")),
         }
         for row in data_rows_source
     ]
 
     return {
         "total_papers": total_papers,
+        "total_input_tokens": f"{total_input_tokens:,}",
+        "total_output_tokens": f"{total_output_tokens:,}",
         "data_chart_datasets": data_chart_datasets,
         "data_rows": data_rows,
         "venue_stats_labels": [str(row.get("venue")) for row in venue_stats_rows],
@@ -569,7 +586,12 @@ def build_paper_detail_context(paper: Record) -> dict[str, object]:
             }
         )
 
+    output_tokens = (paper.get("thoughts_tokens") or 0) + (
+        paper.get("output_tokens") or 0
+    )
     return {
         "paper": paper,
         "detail_rows": detail_rows,
+        "input_tokens": _format_token(paper.get("input_tokens")),
+        "output_tokens": _format_token(output_tokens),
     }

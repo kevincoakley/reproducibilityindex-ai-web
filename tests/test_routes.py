@@ -364,3 +364,14 @@ def test_affiliation_mapping() -> None:
     assert _to_verdict(0, "affiliation_result") == "Academia"
     assert _to_verdict(1, "affiliation_result") == "Collaboration"
     assert _to_verdict(2, "affiliation_result") == "Industry"
+
+
+def test_about_page(client) -> None:
+    response = client.get("/about/")
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert "Kevin Coakley" in body
+    assert "Thijs Snelleman" in body
+    assert "Holger H. Hoos" in body
+    assert "Odd Erik Gundersen" in body
+    assert "kcoakley.jpg" in body

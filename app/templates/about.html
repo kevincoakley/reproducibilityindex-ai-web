@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+  <h2>About</h2>
+  <div class="bio-grid">
+
+    <div class="bio-card">
+      <img src="{{ url_for('static', filename='kcoakley.jpg') }}" alt="Kevin Coakley" class="bio-photo" />
+      <h3>MAS Kevin Coakley</h3>
+      <span class="bio-email">kcoakley[at]sdsc[dot]edu</span>
+      <p>Kevin Coakley is a Computational and Data Science Research Specialist at the San Diego Supercomputer Center and UC San Diego, where he focuses on AI reproducibility. He holds a Master of Advanced Studies in Architecture-based Enterprise Systems Engineering and Leadership from UC San Diego and is currently pursuing a PhD in Computer Science at the Norwegian University of Science and Technology. His research centers on training and evaluating machine learning models for robustness and reproducibility, with applications in image recognition, time series prediction, and natural language processing.</p>
+    </div>
+
+    <div class="bio-card">
+      <img src="{{ url_for('static', filename='tsnelleman.jpg') }}" alt="Thijs Snelleman" class="bio-photo" />
+      <h3>M.Sc. Thijs Snelleman</h3>
+      <span class="bio-email">snelleman[at]aim[dot]rwth-aachen[dot]de</span>
+      <p>Thijs completed his Bachelor's and Master's degree in Computer Science at Leiden University (Netherlands) in 2022, specialising in Artificial Intelligence. He now works as Research Programmer and PhD candidate at the chair. Thijs did his Master thesis on detecting coronary arteries in CCTA scans. During his studies he held multiple roles as a programmer, as well as teaching which he enjoyed very much. Currently Thijs is doing a PhD on the reproducibility of AI research. On his days off, Thijs enjoys city walks, cooking stew, reading up on history and video games.</p>
+    </div>
+
+    <div class="bio-card">
+      <img src="{{ url_for('static', filename='hhoos.jpg') }}" alt="Holger H. Hoos" class="bio-photo" />
+      <h3>Prof. Dr. Holger H. Hoos</h3>
+      <span class="bio-email">hh[at]aim[dot]rwth-aachen[dot]de</span>
+      <p>Holger H. Hoos holds an Alexander von Humboldt professorship in AI at RWTH Aachen University (Germany), as well as a professorship in machine learning at Universiteit Leiden (the Netherlands) and an adjunct professorship in computer science at the University of British Columbia (Canada). He is a Fellow of the Association of Computing Machinery (ACM), the Association for the Advancement of Artificial Intelligence (AAAI) and the European AI Association (EurAI), past president of the Canadian Association for Artificial Intelligence and one of initiators of CLAIRE, an initiative by the European AI community that seeks to strengthen European excellence in AI research and innovation (claire-ai.org).</p>
+    </div>
+
+    <div class="bio-card">
+      <img src="{{ url_for('static', filename='oegundersen.jpg') }}" alt="Odd Erik Gundersen" class="bio-photo" />
+      <h3>Prof. Dr. Odd Erik Gundersen</h3>
+      <span class="bio-email">odderik[at]ntnu[dot]no</span>
+      <p>Odd Erik Gundersen is a Norwegian computer scientist and artificial intelligence (AI) researcher, currently serving as an Associate Professor at the Department of Computer Science at the Norwegian University of Science and Technology (NTNU) in Trondheim. He also holds the position of Chief AI Officer at Aneo AS, a renewable energy company, and is a co-founder of Virtur AS, a startup focused on AI-driven driver education. Gundersen earned both his MSc and PhD in AI from NTNU. Since 2006, he has applied AI in various industries, particularly startups, and has led several research projects in the field. His research interests include reproducibility in AI, time-series forecasting, decision support systems, and case-based reasoning. Gundersen has also explored the application of AI in oilwell drilling, renewable energy and driver training. As an educator, he teaches and supervises PhD and Master's students in AI at NTNU. Odd Erik is the Chair of the Norwegian Artificial Intelligence Society (NAIS) and the Co-editor in Chief for AI Magazine with K. Brent Venable.</p>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

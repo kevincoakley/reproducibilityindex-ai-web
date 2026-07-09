@@ -6,6 +6,36 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <section class="card">
+    <h1>Methodological Foundations</h1>
+    <div class="paper-grid">
+      <div class="paper-card">
+        <img src="{{ url_for('static', filename='arxiv.svg') }}" alt="arXiv" class="paper-icon" />
+        <div class="paper-info">
+          <h3>The Shift Toward Open and Reproducible AI Research</h3>
+          <p class="paper-venue">Under Review &middot; arXiv</p>
+          <p class="paper-links">
+            <a href="https://doi.org/10.48550/arXiv.2606.16974" target="_blank" rel="noopener noreferrer">DOI</a>
+            |
+            <a href="{{ url_for('static', filename='the_shift.pdf') }}" target="_blank" rel="noopener noreferrer">Mirror</a>
+          </p>
+        </div>
+      </div>
+      <div class="paper-card">
+        <img src="{{ url_for('static', filename='acm.svg') }}" alt="ACM" class="paper-icon" />
+        <div class="paper-info">
+          <h3>The AI Reproducibility Index: Ranking Venues, Countries and Institutions by Reproducibility</h3>
+          <p class="paper-venue">ACM Conference on Reproducibility and Replicability (2026)</p>
+          <p class="paper-links">
+            <a href="https://doi.org/10.1145/3820002.3828592" target="_blank" rel="noopener noreferrer">DOI</a>
+            |
+            <a href="{{ url_for('static', filename='the_ai_reproducibility_index.pdf') }}" target="_blank" rel="noopener noreferrer">Mirror</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
 
 <h1 id="sec:documentation-reproducibility-score">Documentation and
 Reproducibility Scores</h1>

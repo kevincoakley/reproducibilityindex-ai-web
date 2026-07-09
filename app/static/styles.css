@@ -507,3 +507,46 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+/* Methods page source papers */
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.paper-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.paper-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.paper-info h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.paper-venue {
+  margin: 0 0 0.35rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.paper-links {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .paper-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -18,7 +18,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
         "https://object.cloud.sdsc.edu/v1/" "AUTH_da4962d3368042ac8337e2dfdd3e7bf3/"
     )
     app.config.from_mapping(
-        SITE_TITLE=os.getenv("SITE_TITLE", "Reproducibility Index"),
+        SITE_TITLE=os.getenv("SITE_TITLE", "AI Reproducibility Index"),
         WEB_VERSION=os.getenv("WEB_VERSION", "dev"),
         DB_BACKEND=os.getenv("DB_BACKEND", "sqlite"),
         SQLITE_DB_PATH=os.getenv("SQLITE_DB_PATH", str(default_db_path)),

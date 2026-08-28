@@ -14,6 +14,21 @@
       </a>
     </p>
 
+    <div class="chart-grid">
+      <div>
+        <h4>Reproducibility Score</h4>
+        <div class="chart-wrap chart-wrap-half">
+          <canvas id="venue-repro-score-time-chart" aria-label="Reproducibility score by year"></canvas>
+        </div>
+      </div>
+      <div>
+        <h4>Documentation Score</h4>
+        <div class="chart-wrap chart-wrap-half">
+          <canvas id="venue-doc-score-time-chart" aria-label="Documentation score by year"></canvas>
+        </div>
+      </div>
+    </div>
+
     <h3>The Percentage of Empirical Papers Documenting Each Reproducibility Variable</h3>
     <div class="chart-wrap">
       <canvas id="venue-global-mean-chart" aria-label="Global mean trend by year"></canvas>
@@ -115,6 +130,70 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
+    const venueReproScorePoints = {{ venue_repro_score_points|tojson }};
+    const venueDocMeanPoints = {{ venue_doc_mean_points|tojson }};
+
+    const buildVenueScoreTimeChart = (canvasId, points, axisTitle, axisMax) => {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || !window.Chart || !points || points.length === 0) {
+        return;
+      }
+      new Chart(canvas, {
+        type: "line",
+        data: {
+          datasets: [
+            {
+              label: axisTitle,
+              data: points,
+              parsing: false,
+              tension: 0.2,
+              borderWidth: 2,
+              pointRadius: 3,
+              pointHoverRadius: 4,
+              spanGaps: true,
+              borderColor: "hsl(211, 65%, 42%)",
+              backgroundColor: "hsl(211, 65%, 42%)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: "linear",
+              title: { display: true, text: "Year" },
+              ticks: {
+                precision: 0,
+                callback: (value) => String(Math.trunc(Number(value))),
+              },
+            },
+            y: {
+              min: 0,
+              max: axisMax,
+              title: { display: true, text: axisTitle },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+          },
+        },
+      });
+    };
+
+    buildVenueScoreTimeChart(
+      "venue-repro-score-time-chart",
+      venueReproScorePoints,
+      "Reproducibility Score",
+      1
+    );
+    buildVenueScoreTimeChart(
+      "venue-doc-score-time-chart",
+      venueDocMeanPoints,
+      "Documentation Score",
+      7
+    );
+
     const venueChartDatasets = {{ venue_chart_datasets|tojson }};
     const venueChartCanvas = document.getElementById("venue-global-mean-chart");
 

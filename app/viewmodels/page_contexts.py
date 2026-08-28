@@ -504,10 +504,27 @@ def build_venue_years_context(
             }
         )
 
+    venue_repro_score_points: list[dict[str, float]] = []
+    venue_doc_mean_points: list[dict[str, float]] = []
+    for row in editions:
+        year_value = _to_int(row.get("year"))
+        if year_value is None:
+            continue
+        repro_value = _to_float(row.get("reproducibility_score"))
+        if repro_value is not None:
+            venue_repro_score_points.append({"x": year_value, "y": repro_value})
+        doc_value = _to_float(row.get("documentation_global_mean"))
+        if doc_value is not None:
+            venue_doc_mean_points.append({"x": year_value, "y": doc_value})
+    venue_repro_score_points.sort(key=lambda point: point["x"])
+    venue_doc_mean_points.sort(key=lambda point: point["x"])
+
     return {
         "venue": venue_row,
         "editions": editions,
         "venue_chart_datasets": venue_chart_datasets,
+        "venue_repro_score_points": venue_repro_score_points,
+        "venue_doc_mean_points": venue_doc_mean_points,
     }
 
 

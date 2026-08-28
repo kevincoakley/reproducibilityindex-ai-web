@@ -85,7 +85,29 @@ def test_build_home_context_builds_scatter_data_keyed_by_year() -> None:
 
     iclr_ind = next(p for p in scatter_data["2025"]["industry"] if p["venue"] == "ICLR")
     assert iclr_ind["x"] == 4.50
-    assert iclr_ind["pointStyle"] == "rectRot"
+    assert iclr_ind["pointStyle"] == "diamond"
+
+
+def test_home_scatter_venue_shapes_use_known_tokens() -> None:
+    from app.viewmodels.page_contexts import _VENUE_SHAPE_TOKENS
+
+    context = build_home_context([])
+    venue_shapes = context["home_scatter_venue_shapes"]
+
+    venues = [item["venue"] for item in venue_shapes]
+    assert venues == [
+        "AAAI",
+        "DMLR",
+        "ICLR",
+        "ICML",
+        "IJCAI",
+        "JAIR",
+        "JMLR",
+        "NeurIPS",
+        "TMLR",
+    ]
+    for item in venue_shapes:
+        assert item["pointStyle"] in _VENUE_SHAPE_TOKENS
 
 
 def test_build_home_context_omits_scatter_points_when_scores_missing() -> None:

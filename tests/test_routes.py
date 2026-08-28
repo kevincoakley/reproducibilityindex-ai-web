@@ -64,6 +64,10 @@ def test_home_page_lists_all_editions_table(
     assert "cdn.jsdelivr.net/npm/chart.js" in body
     assert "const homeReproScoreChartDatasets =" in body
     assert "const homeDocMeanChartDatasets =" in body
+    assert "function drawVenueSymbol(" in body
+    assert "function venueSymbolCanvas(" in body
+    assert 'class="scatter-venue-key"' in body
+    assert body.count('data-venue-shape="') == 9
     assert 'id="home-editions-table"' in body
     assert 'data-sort-key="docMean"' in body
     assert 'data-sort-key="reproScore"' in body

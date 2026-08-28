@@ -44,7 +44,7 @@
     <div id="home-scatter-chart-legend" class="chart-legend"></div>
     <div class="scatter-venue-key">
       {% for item in home_scatter_venue_shapes %}
-        <span class="scatter-venue-key-item scatter-shape-{{ item.pointStyle }}">{{ item.venue }}</span>
+        <span class="scatter-venue-key-item" data-venue-shape="{{ item.pointStyle }}">{{ item.venue }}</span>
       {% endfor %}
     </div>
   </section>
@@ -141,6 +141,120 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <script>
+    // Shared venue-symbol renderer: draws the scatter-plot markers AND the venue
+    // key below the chart, so the two can never disagree. Tokens come from
+    // _VENUE_POINT_STYLES in app/viewmodels/page_contexts.py.
+    const VENUE_SYMBOL_SIZE = 18;
+    const VENUE_SYMBOL_GRAY = "#6B7280";
+
+    function venueSymbolPolygon(ctx, cx, cy, r, sides, rot) {
+      for (let i = 0; i < sides; i++) {
+        const a = rot + (i * 2 * Math.PI) / sides;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+    }
+
+    function venueSymbolStar(ctx, cx, cy, points, outer, inner) {
+      for (let i = 0; i < points * 2; i++) {
+        const r = i % 2 === 0 ? outer : inner;
+        const a = -Math.PI / 2 + (i * Math.PI) / points;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+    }
+
+    function drawVenueSymbol(ctx, token, color) {
+      if (!ctx) return;
+      const s = VENUE_SYMBOL_SIZE;
+      const c = s / 2;
+      const r = s * 0.42;
+      ctx.clearRect(0, 0, s, s);
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      switch (token) {
+        case "circle":
+          ctx.arc(c, c, r, 0, 2 * Math.PI);
+          ctx.fill();
+          break;
+        case "square":
+          ctx.fillRect(c - r, c - r, 2 * r, 2 * r);
+          break;
+        case "diamond":
+          venueSymbolPolygon(ctx, c, c, r, 4, -Math.PI / 2);
+          ctx.fill();
+          break;
+        case "triangle":
+          venueSymbolPolygon(ctx, c, c, r, 3, -Math.PI / 2);
+          ctx.fill();
+          break;
+        case "downTriangle":
+          venueSymbolPolygon(ctx, c, c, r, 3, Math.PI / 2);
+          ctx.fill();
+          break;
+        case "hexagon":
+          venueSymbolPolygon(ctx, c, c, r, 6, -Math.PI / 2);
+          ctx.fill();
+          break;
+        case "star":
+          venueSymbolStar(ctx, c, c, 5, r, r * 0.45);
+          ctx.fill();
+          break;
+        case "plus": {
+          const t = r * 0.62;
+          ctx.fillRect(c - t / 2, c - r, t, 2 * r);
+          ctx.fillRect(c - r, c - t / 2, 2 * r, t);
+          break;
+        }
+        case "ex": {
+          ctx.lineWidth = r * 0.55;
+          ctx.lineCap = "round";
+          // Inset the endpoints so the stroke (plus its round caps) stays
+          // inside the canvas instead of clipping at the edges.
+          const e = r - ctx.lineWidth / 2;
+          ctx.moveTo(c - e, c - e);
+          ctx.lineTo(c + e, c + e);
+          ctx.moveTo(c + e, c - e);
+          ctx.lineTo(c - e, c + e);
+          ctx.stroke();
+          break;
+        }
+        default:
+          ctx.arc(c, c, r, 0, 2 * Math.PI);
+          ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    const venueSymbolCache = new Map();
+    function venueSymbolCanvas(token, color) {
+      const key = token + "|" + color;
+      let canvas = venueSymbolCache.get(key);
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.width = VENUE_SYMBOL_SIZE;
+        canvas.height = VENUE_SYMBOL_SIZE;
+        drawVenueSymbol(canvas.getContext("2d"), token, color);
+        venueSymbolCache.set(key, canvas);
+      }
+      return canvas;
+    }
+
     const homeReproScoreChartDatasets = {{ home_repro_score_chart_datasets|tojson }};
     const homeReproScoreChartCanvas = document.getElementById("home-repro-score-chart");
 
@@ -263,7 +377,9 @@
             data: yearData.academia,
             borderColor: ACADEMIA_COLOR,
             backgroundColor: ACADEMIA_COLOR,
-            pointStyle: yearData.academia.map((p) => p.pointStyle),
+            pointStyle: yearData.academia.map((p) =>
+              venueSymbolCanvas(p.pointStyle, ACADEMIA_COLOR)
+            ),
             pointRadius: 8,
             pointHoverRadius: 10,
             parsing: false,
@@ -273,7 +389,9 @@
             data: yearData.industry,
             borderColor: INDUSTRY_COLOR,
             backgroundColor: INDUSTRY_COLOR,
-            pointStyle: yearData.industry.map((p) => p.pointStyle),
+            pointStyle: yearData.industry.map((p) =>
+              venueSymbolCanvas(p.pointStyle, INDUSTRY_COLOR)
+            ),
             pointRadius: 8,
             pointHoverRadius: 10,
             parsing: false,
@@ -321,6 +439,17 @@
       });
 
       buildChartLegend(scatterChart, "home-scatter-chart-legend");
+
+      document.querySelectorAll(".scatter-venue-key-item").forEach((el) => {
+        const token = el.dataset.venueShape;
+        if (!token) return;
+        const keyCanvas = document.createElement("canvas");
+        keyCanvas.width = VENUE_SYMBOL_SIZE;
+        keyCanvas.height = VENUE_SYMBOL_SIZE;
+        keyCanvas.setAttribute("aria-hidden", "true");
+        drawVenueSymbol(keyCanvas.getContext("2d"), token, VENUE_SYMBOL_GRAY);
+        el.prepend(keyCanvas);
+      });
 
       if (homeScatterYearSelect) {
         homeScatterYearSelect.addEventListener("change", () => {

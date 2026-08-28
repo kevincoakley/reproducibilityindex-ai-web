@@ -45,17 +45,35 @@ def _mask_email_addresses(text: str) -> str:
     return STANDARD_EMAIL_PATTERN.sub("EMAIL", masked)
 
 
+# Values are neutral shape tokens rendered by drawVenueSymbol() in home.html
+# (the same renderer draws the scatter markers and the venue key), not Chart.js
+# built-in pointStyle names.
 _VENUE_POINT_STYLES: dict[str, str] = {
     "AAAI": "star",
     "DMLR": "triangle",
-    "ICLR": "rectRot",
-    "ICML": "rect",
+    "ICLR": "diamond",
+    "ICML": "square",
     "IJCAI": "circle",
-    "JAIR": "cross",
-    "JMLR": "crossRot",
-    "NeurIPS": "rectRounded",
-    "TMLR": "dash",
+    "JAIR": "plus",
+    "JMLR": "ex",
+    "NeurIPS": "hexagon",
+    "TMLR": "downTriangle",
 }
+
+# Shape tokens drawVenueSymbol() knows how to render.
+_VENUE_SHAPE_TOKENS: frozenset[str] = frozenset(
+    {
+        "star",
+        "triangle",
+        "diamond",
+        "square",
+        "circle",
+        "plus",
+        "ex",
+        "hexagon",
+        "downTriangle",
+    }
+)
 
 
 def build_home_context(all_edition_source_rows: list[Record]) -> dict[str, object]:

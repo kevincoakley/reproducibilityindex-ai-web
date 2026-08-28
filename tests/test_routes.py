@@ -244,6 +244,10 @@ def test_venue_page(client, sample_data: dict[str, str]) -> None:
     body = response.get_data(as_text=True)
     assert 'id="venue-global-mean-chart"' in body
     assert "const venueChartDatasets =" in body
+    assert 'id="venue-repro-score-time-chart"' in body
+    assert 'id="venue-doc-score-time-chart"' in body
+    assert "const venueReproScorePoints =" in body
+    assert "const venueDocMeanPoints =" in body
     assert 'id="venue-editions-table"' in body
     assert 'data-sort-key="year"' in body
     assert 'data-sort-key="papers"' in body

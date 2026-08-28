@@ -7,6 +7,7 @@ from app.viewmodels.page_contexts import (
     build_institutions_context,
     build_paper_detail_context,
     build_venue_results_context,
+    build_venue_years_context,
 )
 
 
@@ -227,6 +228,29 @@ def test_build_institutions_context_scales_chart_height_from_100_plus_baseline()
     assert baseline_context["institutions_chart_height"] == 4400
     assert larger_context["institutions_chart_height"] == 8800
     assert smaller_context["institutions_chart_height"] == 1139
+
+
+def test_build_venue_years_context_builds_score_time_series() -> None:
+    editions = [
+        _make_edition_row("ICML", "2024"),
+        _make_edition_row("ICML", "2022"),
+        {
+            **_make_edition_row("ICML", "2023"),
+            "reproducibility_score": None,
+            "documentation_global_mean": "not-a-number",
+        },
+    ]
+
+    context = build_venue_years_context({"venue": "ICML"}, editions)
+
+    assert context["venue_repro_score_points"] == [
+        {"x": 2022, "y": 0.5},
+        {"x": 2024, "y": 0.5},
+    ]
+    assert context["venue_doc_mean_points"] == [
+        {"x": 2022, "y": 3.0},
+        {"x": 2024, "y": 3.0},
+    ]
 
 
 def test_build_venue_results_context_computes_totals_and_icons() -> None:

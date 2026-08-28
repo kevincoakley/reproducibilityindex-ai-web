@@ -177,6 +177,7 @@
     }
 
     function drawVenueSymbol(ctx, token, color) {
+      if (!ctx) return;
       const s = VENUE_SYMBOL_SIZE;
       const c = s / 2;
       const r = s * 0.42;
@@ -221,12 +222,15 @@
           break;
         }
         case "ex": {
-          ctx.lineWidth = r * 0.6;
+          ctx.lineWidth = r * 0.55;
           ctx.lineCap = "round";
-          ctx.moveTo(c - r, c - r);
-          ctx.lineTo(c + r, c + r);
-          ctx.moveTo(c + r, c - r);
-          ctx.lineTo(c - r, c + r);
+          // Inset the endpoints so the stroke (plus its round caps) stays
+          // inside the canvas instead of clipping at the edges.
+          const e = r - ctx.lineWidth / 2;
+          ctx.moveTo(c - e, c - e);
+          ctx.lineTo(c + e, c + e);
+          ctx.moveTo(c + e, c - e);
+          ctx.lineTo(c - e, c + e);
           ctx.stroke();
           break;
         }

@@ -6,6 +6,12 @@ from app.route_utils import _store
 
 _CACHE_CONTROL = "public, max-age=86400"
 
+
+def _site_url() -> str:
+    """Return the configured public origin without a trailing slash."""
+    return current_app.config["SITE_URL"].rstrip("/")
+
+
 # Fixed content pages worth indexing. Detail pages (venues, editions, runs) are
 # added dynamically from the datastore. Individual paper pages are intentionally
 # excluded: there are ~80k of them and every page currently shares one <title>.
@@ -20,7 +26,7 @@ _STATIC_ENDPOINTS = (
 
 
 def robots() -> Response:
-    body = render_template("robots.txt", site_url=current_app.config["SITE_URL"])
+    body = render_template("robots.txt", site_url=_site_url())
     return Response(
         body,
         mimetype="text/plain",
@@ -29,7 +35,7 @@ def robots() -> Response:
 
 
 def sitemap() -> Response:
-    base_url = current_app.config["SITE_URL"]
+    base_url = _site_url()
     store = _store()
 
     paths = [url_for(endpoint) for endpoint in _STATIC_ENDPOINTS]

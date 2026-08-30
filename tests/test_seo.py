@@ -99,3 +99,25 @@ def test_sitemap_excludes_paper_and_threshold_pages(client) -> None:
     assert "/paper/" not in body
     assert "/papers/" not in body
     assert "/contributing_papers/" not in body
+
+
+def test_trailing_slash_in_site_url_does_not_produce_double_slashes() -> None:
+    app = create_app(
+        {
+            "TESTING": True,
+            "SITE_TITLE": "test.reproducibilityindex.ai",
+            "SITE_URL": f"{SITE_URL}/",
+            "SQLITE_DB_PATH": str(DB_PATH),
+            "DB_BACKEND": "sqlite",
+        }
+    )
+    client = app.test_client()
+
+    robots_body = client.get("/robots.txt").get_data(as_text=True)
+    assert f"Sitemap: {SITE_URL}/sitemap.xml" in robots_body
+
+    root = ET.fromstring(client.get("/sitemap.xml").get_data())
+    locs = [el.text for el in root.findall(".//sm:loc", _SITEMAP_NS)]
+    assert locs
+    assert all(loc.startswith(f"{SITE_URL}/") for loc in locs)
+    assert all("//" not in loc[len("https://") :] for loc in locs)

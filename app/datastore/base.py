@@ -93,4 +93,4 @@ class DataStore(ABC):
 
     @abstractmethod
     def list_runs(self) -> list[Record]:
-        """Return all run rows."""
+        """Return an identifying row (at least ``run``) for every run."""

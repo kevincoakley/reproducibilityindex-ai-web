@@ -2,7 +2,16 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from app.page_routes import about, data_page, home, methods, papers, rankings, venues
+from app.page_routes import (
+    about,
+    data_page,
+    home,
+    methods,
+    papers,
+    rankings,
+    seo,
+    venues,
+)
 
 
 def register_routes(bp: Blueprint) -> None:
@@ -13,3 +22,4 @@ def register_routes(bp: Blueprint) -> None:
     data_page.register(bp)
     venues.register(bp)
     papers.register(bp)
+    seo.register(bp)

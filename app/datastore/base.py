@@ -90,3 +90,7 @@ class DataStore(ABC):
     @abstractmethod
     def get_run(self, run: str) -> Record | None:
         """Return run metadata by run id."""
+
+    @abstractmethod
+    def list_runs(self) -> list[Record]:
+        """Return all run rows."""

@@ -22,6 +22,8 @@ Key pages:
 - `/institutions/` institution-level reproducibility chart and table, defaulting to institutions with 100+ contributing papers
 - `/institutions/contributing_papers/100` institution chart and table filtered to 100+ contributing papers
 - `/data/` stacked area chart of paper counts by venue and year
+- `/robots.txt` crawler policy (open) with a link to the sitemap
+- `/sitemap.xml` content and detail pages (individual paper pages are excluded)
 
 ## Run (production-style)
 
@@ -74,6 +76,7 @@ uv run black .
 ## Configuration
 
 - `SITE_TITLE` (default: `reproducibilityindex.ai`)
+- `SITE_URL` (default: `https://reproducibilityindex.ai`) — public origin used for absolute URLs in `sitemap.xml` and `robots.txt`
 - `DB_BACKEND` (default: `sqlite`)
 - `SQLITE_DB_PATH` (default: `results.sqlite` in repo root)
 - `GUNICORN_BIND` (default: `0.0.0.0:5000`)

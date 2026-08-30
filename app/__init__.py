@@ -19,6 +19,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     )
     app.config.from_mapping(
         SITE_TITLE=os.getenv("SITE_TITLE", "AI Reproducibility Index"),
+        SITE_URL=os.getenv("SITE_URL", "https://reproducibilityindex.ai"),
         WEB_VERSION=os.getenv("WEB_VERSION", "dev"),
         DB_BACKEND=os.getenv("DB_BACKEND", "sqlite"),
         SQLITE_DB_PATH=os.getenv("SQLITE_DB_PATH", str(default_db_path)),

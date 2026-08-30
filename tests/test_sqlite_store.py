@@ -378,6 +378,36 @@ def test_get_total_tokens_returns_zero_on_empty_table(tmp_path: Path) -> None:
     assert store.get_total_output_tokens() == 0
 
 
+def test_list_runs_returns_all_runs_ordered(tmp_path: Path) -> None:
+    db_path = tmp_path / "runs.sqlite"
+    _create_scores_table(db_path, "percent_empirical")
+    connection = sqlite3.connect(db_path)
+    connection.execute("""
+        CREATE TABLE runs (
+            run TEXT,
+            model TEXT,
+            prompt TEXT,
+            questions TEXT,
+            temperature REAL,
+            top_p REAL
+        )
+        """)
+    connection.execute(
+        "INSERT INTO runs VALUES ('20260225', 'model-b', 'p', 'q', 0.0, 1.0)"
+    )
+    connection.execute(
+        "INSERT INTO runs VALUES ('20250715', 'model-a', 'p', 'q', 0.0, 1.0)"
+    )
+    connection.commit()
+    connection.close()
+    store = SQLiteDataStore(db_path)
+
+    runs = store.list_runs()
+
+    assert [row["run"] for row in runs] == ["20250715", "20260225"]
+    assert runs[0]["model"] == "model-a"
+
+
 def test_build_data_store_rejects_unsupported_backend() -> None:
     app = Flask(__name__)
     app.config.update(

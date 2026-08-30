@@ -12,6 +12,7 @@ COPY run.py ./
 
 ENV DB_BACKEND=sqlite
 ENV SQLITE_DB_PATH=/data/results.sqlite
+ENV SITE_URL=https://reproducibilityindex.ai
 ENV GUNICORN_BIND=0.0.0.0:5000
 ENV GUNICORN_WORKERS=4
 ENV GUNICORN_THREADS=2

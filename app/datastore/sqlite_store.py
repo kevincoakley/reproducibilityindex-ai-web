@@ -458,3 +458,10 @@ class SQLiteDataStore(DataStore):
             """,
             (run,),
         )
+
+    def list_runs(self) -> list[Record]:
+        return self._fetch_all("""
+            SELECT run, model
+            FROM runs
+            ORDER BY run
+            """)

@@ -22,16 +22,18 @@
 │   │   ├── __init__.py             # Package initializer
 │   │   ├── base.py                 # Base datastore interface
 │   │   └── sqlite_store.py         # SQLite implementation of the datastore
-│   ├── routes.py                   # Flask route definitions
+│   ├── routes.py                   # Blueprint setup; route modules live in app/page_routes/
+│   ├── page_routes                 # Per-area route modules (home, venues, papers, seo, ...)
+│   │   └── seo.py                  # /robots.txt and /sitemap.xml
 │   ├── static                      # Static files (CSS, JS, images)
 │   │   └── styles.css              # Main stylesheet
 │   └── templates                   # HTML templates
 │       ├── base.html               # Base template with common layout
-│       ├── conference_results.html # Template for /conferences/<conference>
-│       ├── conference_years.html   # Template for /conferences/<conference>/<year>
 │       ├── home.html               # Template for homepage
 │       ├── paper_detail.html       # Template for /paper/<key>
-│       └── run_detail.html         # Template for /runs/<run>
+│       ├── run_detail.html         # Template for /runs/<run>
+│       ├── robots.txt              # Crawler policy (open) + sitemap link
+│       └── sitemap.xml             # Generated urlset (see section 9)
 ├── Dockerfile                      # Docker configuration file
 ├── pyproject.toml                  # Project configuration
 ├── README.md                       # Project description
@@ -167,7 +169,14 @@ Always use `uv` for package management and script execution.
 ## Impact
 ```
 
-## 9. Critical Rules for Agents
+### 9. Sitemap & robots.txt
+- `robots.txt` and `sitemap.xml` are served from the site root by `app/page_routes/seo.py` (registered in `app/page_routes/__init__.py`), not from `app/static`.
+- `robots.txt` is intentionally fully open (`Allow: /`, no `Disallow`) and only advertises the sitemap. Keep it that way unless explicitly asked to change crawler policy.
+- `sitemap.xml` is generated dynamically. It lists: the fixed content pages named in `_STATIC_ENDPOINTS`, every venue (`list_venues`), every edition (`list_all_editions`), and every run (`list_runs`). Individual `/paper/<key>` (and `/papers/<key>`) pages and the `/institutions/contributing_papers/<n>` filter variants are intentionally excluded.
+- **When you add a new user-facing route/page type, add its URL(s) to the `sitemap()` generator in `app/page_routes/seo.py` (and update `tests/test_seo.py`, including the expected `<loc>` count).** If enumerating the new pages needs data, add a `list_*` method to `app/datastore/base.py` + `sqlite_store.py` following the existing read-only pattern. Do not add per-paper URLs.
+- `<loc>` values must be absolute; they are built from the `SITE_URL` config value (env `SITE_URL`, default `https://reproducibilityindex.ai`). Use `url_for(...)` for the path and prefix `SITE_URL` — do not use `url_for(..., _external=True)`.
+
+## 10. Critical Rules for Agents
 - Do not update `uv.lock` manually. Use `uv add` or `uv sync`.
 - Check `pyproject.toml` to see existing dependencies before adding new ones.
 - Run tests after every significant code change to ensure no regressions.
@@ -175,4 +184,5 @@ Always use `uv` for package management and script execution.
 - Preserve existing code style and patterns
 - Aways update the README.md file with instructions for running the code. Be concise, don't include unnecessary information. Focus on how to run the code for testing (unit tests and dev server) and in production.
 - Keep the website very simple, it will consist of a few static pages and a few dynamic paths using data from a read-only database.
+- When adding a new page/route, update `sitemap.xml` (see section 9) so its `<loc>` entries are included.
 - Ask for clarification if requirements are unclear

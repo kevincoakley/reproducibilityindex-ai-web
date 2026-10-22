@@ -235,6 +235,18 @@ def test_methods_page(client) -> None:
     assert 'id="sec:documentation-reproducibility-score"' in body
     assert "mathjax@3/es5/tex-mml-chtml.js" in body
     assert "💡 Methods" in body
+    assert "https://doi.org/10.1038/s44488-026-00015-x" in body
+    assert "Nature Communications AI & Computing" in body
+    assert "springer.svg" in body
+    assert "Mirror" not in body
+    assert (
+        'DOI: <a href="https://doi.org/10.1038/s44488-026-00015-x" target="_blank" rel="noopener noreferrer">https://doi.org/10.1038/s44488-026-00015-x</a>'
+        in body
+    )
+    assert (
+        'DOI: <a href="https://doi.org/10.1145/3820002.3828592" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/3820002.3828592</a>'
+        in body
+    )
 
 
 def test_venue_page(client, sample_data: dict[str, str]) -> None:

@@ -244,7 +244,7 @@ def test_methods_page(client) -> None:
         in body
     )
     assert (
-        'Code: <a href="https://doi.org/10.5281/zenodo.20944647" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20944647</a>'
+        'Code & Data: <a href="https://doi.org/10.5281/zenodo.20944647" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20944647</a>'
         in body
     )
     assert (
@@ -252,7 +252,7 @@ def test_methods_page(client) -> None:
         in body
     )
     assert (
-        'Code: <a href="https://doi.org/10.5281/zenodo.20145235" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20145235</a>'
+        'Code & Data: <a href="https://doi.org/10.5281/zenodo.20145235" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20145235</a>'
         in body
     )
 

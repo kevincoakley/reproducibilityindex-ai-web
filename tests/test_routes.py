@@ -244,7 +244,15 @@ def test_methods_page(client) -> None:
         in body
     )
     assert (
+        'Code: <a href="https://doi.org/10.5281/zenodo.20944647" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20944647</a>'
+        in body
+    )
+    assert (
         'DOI: <a href="https://doi.org/10.1145/3820002.3828592" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/3820002.3828592</a>'
+        in body
+    )
+    assert (
+        'Code: <a href="https://doi.org/10.5281/zenodo.20145235" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.20145235</a>'
         in body
     )
 
